@@ -203,6 +203,23 @@ Phase completion state update (one per phase):
   Overall progress: {completed}/{total_plans} ({pct}%)
 
   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+Milestone completion commit (one per completed milestone):
+  chore(agency): complete milestone {N} — {milestone_name}
+
+  Phases {start}-{end}: {phase_count} phases, {plans_completed} plans
+  Requirements: {requirement_count} satisfied
+  Summary: .planning/milestones/MILESTONE-{N}.md
+
+  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+Milestone archive commit (one per archived milestone):
+  chore(agency): archive milestone {N} — {milestone_name}
+
+  Phases moved to .planning/archive/milestone-{N}/
+  STATE.md and ROADMAP.md updated
+
+  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ```
 
 Scope `(agency)` is always used — never use plan-specific scopes in state commits. The brief plan name in plan completion commits comes from the `name` field in the plan's YAML frontmatter.
