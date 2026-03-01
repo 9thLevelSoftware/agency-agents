@@ -12,12 +12,13 @@ A Claude Code plugin for orchestrating 51 AI specialist personalities as coordin
 | `/agency:review` | Run quality review cycle with testing/QA agents |
 | `/agency:status` | Show progress dashboard and route to next action |
 | `/agency:quick <task>` | Run ad-hoc task with intelligent agent selection |
+| `/agency:portfolio` | Multi-project dashboard with dependency tracking |
 
 ## Project Structure
 
 ```
 .claude/
-  commands/agency/    — 6 /agency: command entry points
+  commands/agency/    — 7 /agency: command entry points
   skills/agency/      — Reusable workflow skills (agent-registry, workflow-common)
 agency-agents/        — 51 agent personality .md files organized by division
 .planning/            — Project state (PROJECT.md, ROADMAP.md, STATE.md)

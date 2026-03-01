@@ -52,8 +52,8 @@
 
 ### Portfolio Management (PORT)
 
-- [ ] PORT-01: Multi-project portfolio management — track multiple projects with shared agent pool
-- [ ] PORT-02: Studio Producer agent coordination — orchestrate cross-project dependencies and resources
+- [x] PORT-01: Multi-project portfolio management — track multiple projects with shared agent pool
+- [x] PORT-02: Studio Producer agent coordination — orchestrate cross-project dependencies and resources
 
 ### Milestone Management (MILE)
 
@@ -116,7 +116,7 @@
 | EXEC-01 through EXEC-06 | Phase 4 |
 | QA-01 through QA-05 | Phase 5 |
 | STATUS-01 through STATUS-04 | Phase 6 |
-| PORT-01 through PORT-02 | TBD |
+| PORT-01 through PORT-02 | Phase 7 |
 | MILE-01 through MILE-02 | TBD |
 | LEARN-01 through LEARN-05 | TBD |
 | CUSTOM-01 through CUSTOM-03 | TBD |
