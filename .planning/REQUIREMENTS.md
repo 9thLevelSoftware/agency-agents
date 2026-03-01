@@ -37,11 +37,11 @@
 
 ### Quality Gates (QA)
 
-- [ ] QA-01: `/agency:review` command — triggers quality review cycle
-- [ ] QA-02: Review agent selection — maps task type to appropriate testing/review agents
-- [ ] QA-03: Specific actionable feedback — reviewers cite exact issues, not vague assessments
-- [ ] QA-04: Fix loop — max 3 cycles of review → fix → re-review before escalation
-- [ ] QA-05: Verification before completion — no phase marked done without passing review
+- [x] QA-01: `/agency:review` command — triggers quality review cycle
+- [x] QA-02: Review agent selection — maps task type to appropriate testing/review agents
+- [x] QA-03: Specific actionable feedback — reviewers cite exact issues, not vague assessments
+- [x] QA-04: Fix loop — max 3 cycles of review → fix → re-review before escalation
+- [x] QA-05: Verification before completion — no phase marked done without passing review
 
 ### Status & Quick (STATUS)
 
