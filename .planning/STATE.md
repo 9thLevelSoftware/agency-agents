@@ -1,13 +1,13 @@
 # Project State
 
 ## Current Position
-- **Phase**: 7 of 14 (executed, pending review)
-- **Status**: Phase 7 complete — all 2 plans executed successfully
-- **Last Activity**: Phase 7 execution (2026-03-01)
+- **Phase**: 8 of 14 (executing)
+- **Status**: Phase 8 executing — Plan 08-01 complete
+- **Last Activity**: Plan 08-01 execution (2026-03-01)
 
 ## Progress
 ```
-[#################...] 85% — 17/20 plans complete (phases 8-14 not yet planned)
+[##################..] 81% — 18/22 plans complete
 ```
 
 ## Phase 1 Results
@@ -35,6 +35,9 @@
 - Plan 07-01 (Wave 1): Portfolio-manager skill (328 lines) — 6-section registry, CRUD, state aggregation, dependencies, agent allocation + workflow-common and start.md updates
 - Plan 07-02 (Wave 2): Full /agency:portfolio implementation (245 lines) — 8-step dashboard with health indicators, dependency tracking, Studio Producer integration, manual registration
 
+## Phase 8 Results
+- Plan 08-01 (Wave 1): Milestone-tracker skill (434 lines) — 6-section milestone management with format, definition, completion, archiving, metrics, error handling + workflow-common and execution-tracker updates
+
 ## Recent Decisions
 - Plugin format: Claude Code .claude/ directory structure
 - Full personality injection for all agent spawns
@@ -50,6 +53,9 @@
 - /agency:portfolio as separate command from /agency:status — single-responsibility
 - Read-time state aggregation — no background sync, always fresh
 - Studio Producer analysis is opt-in on demand (Opus cost)
+- Milestones placed between Phase Details and Progress in ROADMAP.md
+- Plan percentage as primary milestone metric (finer than phase count)
+- 10-char milestone progress bar (vs 20-char project bar)
 
 ## Phase 6 Results
 - Plan 06-01 (Wave 1): Full /agency:status implementation (134 lines) — 6-step dashboard with progress bar, phase history, session resume, deterministic next-action routing
@@ -62,4 +68,4 @@
 - ~~status.md missing execution-tracker in execution_context~~ — Fixed (2026-03-01)
 
 ## Next Action
-Run `/agency:review` to verify Phase 7: Portfolio Management. Phases 8-14 still need planning.
+Continue Phase 8: execute Plan 08-02 (milestone command implementation).

@@ -169,7 +169,7 @@
 | 5. Quality Gates | 2 | 2 | Complete |
 | 6. Status & Quick | 2 | 2 | Complete |
 | 7. Portfolio Management | 2 | 2 | Complete |
-| 8. Milestone Management | TBD | 0 | Pending |
+| 8. Milestone Management | 2 | 1 | In Progress |
 | 9. Cross-Session Learning | TBD | 0 | Pending |
 | 10. Custom Agents | TBD | 0 | Pending |
 | 11. GitHub Integration | TBD | 0 | Pending |
