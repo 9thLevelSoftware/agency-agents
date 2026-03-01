@@ -1,0 +1,576 @@
+---
+name: agency:wave-executor
+description: Executes wave-structured plans with parallel personality-injected agents via Claude Code Teams
+---
+
+# Wave Executor
+
+Engine for `/agency:build`. Takes the plan files in a phase directory and executes them in wave order — spawning personality-injected agents in parallel within each wave, waiting for completion before advancing to the next wave. The full flow: discover plans, validate structure, inject personalities, spawn parallel agents, collect results, write summaries, report.
+
+---
+
+## Section 1: Execution Principles
+
+These rules govern all execution decisions. Do not deviate from them.
+
+1. **Wave-sequential, parallel-within** — all Wave 1 plans must complete before any Wave 2 plan begins. Within a wave, all plans run at the same time via a Claude Code Team.
+2. **Full personality injection** — each agent receives the ENTIRE contents of its assigned personality `.md` file as system instructions. No summaries, no excerpts, no paraphrasing.
+3. **Sonnet for execution** — all spawned agents use `model: "sonnet"`. This matches the Cost Profile Convention from `workflow-common.md`.
+4. **No automatic retries** — if an agent fails, capture the error output and stop the wave. Report to the user. Do not re-spawn the failed agent. See Error Handling Pattern in `workflow-common.md`.
+5. **Each plan produces a summary** — after an agent completes, write a `{NN}-{PP}-SUMMARY.md` file to the phase directory, whether the result is success or failure.
+6. **Orchestrator stays in main context** — the `/agency:build` command itself does not execute plan work. It reads, validates, dispatches, and collects. Agents get fresh contexts.
+7. **Failed wave blocks subsequent waves** — if any plan in a wave fails, do not proceed to the next wave. Report wave status and pause for user decision.
+8. **Files isolation per wave** — plans within the same wave must not share files_modified entries. This is guaranteed by plan authoring (see phase-decomposer.md), but flag a warning if a conflict is detected.
+9. **One Team per phase** — create a single Claude Code Team for the entire phase execution. Do not create separate Teams per wave. This minimizes TeamCreate/TeamDelete overhead.
+10. **Agents report via SendMessage** — spawned agents send their structured completion summary to the coordinator via SendMessage, not via Agent tool return. This keeps the coordinator's context window small (~200 tokens per agent instead of ~2000+).
+
+---
+
+## Section 2: Plan Discovery
+
+How to find, read, and organize plan files for a phase before any execution begins.
+
+```
+Step 1: Determine the phase directory path
+  - Read .planning/STATE.md to find the current phase number and slug
+  - Or accept a --phase argument from the build command
+  - Construct the directory: .planning/phases/{NN}-{phase-slug}/
+  - Example: .planning/phases/04-parallel-execution/
+
+Step 2: List all files in the phase directory
+  - Read directory contents
+  - Filter for files matching: {NN}-{PP}-PLAN.md
+  - Exclude: {NN}-CONTEXT.md, {NN}-{PP}-SUMMARY.md, and any other files
+  - Sort plans by plan number (PP) ascending
+
+Step 3: Read each plan file's YAML frontmatter
+  For each plan file, parse the frontmatter block (between --- delimiters):
+  - wave: integer (required — which execution wave this plan belongs to)
+  - depends_on: list of "NN-PP" strings (plans that must complete before this one)
+  - autonomous: boolean (true = no agent needed, false = agent-delegated)
+  - files_modified: list of file paths this plan creates or modifies
+  - requirements: list of requirement IDs covered by this plan
+  Extract the plan's assigned agent from the plan content body if present
+  (look for a line like: Agent: {agent-id} in the objective or context block)
+
+Step 4: Build the wave map
+  Construct a data structure grouping plans by wave number:
+  {
+    1: [plan-04-01, plan-04-02],   -- runs first, in parallel
+    2: [plan-04-03],               -- runs after wave 1 completes
+    3: [plan-04-04, plan-04-05],   -- runs after wave 2 completes
+  }
+
+Step 5: Validate the plan structure
+  Check all of the following before proceeding:
+  a) At least one plan file exists. If not: error "No plans found for Phase {N}.
+     Run /agency:plan {N} first."
+  b) All depends_on references point to plans in earlier (lower) waves. If a plan
+     in wave 2 depends on another wave 2 plan: error "Circular wave dependency
+     detected in plan {NN}-{PP}. Plans within the same wave cannot depend on
+     each other. Re-run /agency:plan {N} to fix the plan structure."
+  c) Each wave number is a positive integer with no gaps above wave 1 (wave 1
+     always present; wave 3 allowed only if wave 2 exists).
+  d) All files_modified lists are disjoint within each wave (no two plans in the
+     same wave modify the same file). If a conflict is found: warn the user —
+     do not abort, but flag for review.
+  If validation fails on (a), (b), or (c): stop and report the error. Do not execute.
+
+Step 6: Report discovery results
+  Before executing, show a discovery summary:
+  "Found {total} plans across {wave_count} waves:
+   Wave 1: {plan names} ({count} plans)
+   Wave 2: {plan names} ({count} plans)
+   ..."
+```
+
+---
+
+## Section 3: Personality Injection
+
+How to load a full agent personality and construct the execution prompt for each plan.
+
+```
+For each plan where autonomous: false:
+
+Step 1: Identify the assigned agent
+  - Check the plan's <objective> or <context> block for "Agent: {agent-id}"
+  - Cross-reference agent-id against agent-registry.md to confirm division and file path
+  - Path format: agency-agents/{division}/{agent-id}.md
+  - Example: agency-agents/engineering/engineering-senior-developer.md
+
+Step 2: Read the complete personality file
+  - Use the Read tool to load the ENTIRE agent .md file
+  - Do not truncate, summarize, or excerpt any portion
+  - The personality content includes: the agent's identity, specialization, behavioral
+    traits, communication style, technical focus areas, and working principles
+  - Capture this as: PERSONALITY_CONTENT
+
+Step 3: Read the complete plan file
+  - Use the Read tool to load the full plan .md file
+  - Capture the section starting from <objective> through end of file as: PLAN_CONTENT
+
+Step 4: Construct the agent execution prompt
+  Combine personality and plan using this exact format:
+
+  """
+  {PERSONALITY_CONTENT}
+
+  ---
+
+  # Execution Task
+
+  You are executing a plan as part of The Agency Workflows. Follow the tasks below precisely.
+
+  {PLAN_CONTENT}
+
+  ## Important
+  - Execute each task in the order listed
+  - Run the <verify> commands after each task to confirm completion before moving on
+  - After all tasks complete, run the full <verification> checklist
+  - Do NOT modify files outside of the plan's files_modified list unless the task
+    explicitly requires it (e.g., updating an import in a file that uses the new file)
+  - If a task is ambiguous, apply your specialist expertise to resolve the ambiguity
+    and document the decision in your summary
+
+  ## Reporting Results
+  When all tasks and verification are complete, you MUST:
+  1. Use the SendMessage tool to send your structured summary to the coordinator:
+     SendMessage(type: "message", recipient: "coordinator", summary: "Plan {NN}-{PP} complete", content: "...")
+  2. Use TaskUpdate to mark your task as completed.
+
+  Your SendMessage content MUST include these fields:
+  - **Status**: Complete | Complete with Warnings | Failed
+  - **Files**: list of files created/modified with brief descriptions
+  - **Verification**: outputs from <verify> commands
+  - **Decisions**: key implementation decisions made
+  - **Issues**: any problems or warnings encountered (or "None")
+  - **Errors**: error details if failed (or "None")
+  """
+
+Step 5: Spawn the agent via the Agent tool
+  Parameters:
+  - subagent_type: "general-purpose"
+  - prompt: {constructed prompt from Step 4}
+  - model: "sonnet"              -- cost profile: Sonnet for execution
+  - name: "{agent-id}-{NN}-{PP}" -- e.g., "engineering-senior-developer-04-01"
+  - team_name: "{phase_team_name}" -- e.g., "phase-04-execution"
+
+For autonomous plans (autonomous: true):
+
+  Step 1: Skip personality loading entirely
+
+  Step 2: Read the complete plan file
+
+  Step 3: Construct the autonomous execution prompt:
+  """
+  # Execution Task
+
+  You are executing a plan as part of The Agency Workflows. No specialist agent
+  personality is needed for this plan — execute the tasks directly.
+
+  {PLAN_CONTENT}
+
+  ## Important
+  - Execute each task in the order listed
+  - Run the <verify> commands after each task to confirm completion
+  - After all tasks complete, run the full <verification> checklist
+
+  ## Reporting Results
+  When all tasks and verification are complete, you MUST:
+  1. Use the SendMessage tool to send your structured summary to the coordinator:
+     SendMessage(type: "message", recipient: "coordinator", summary: "Plan {NN}-{PP} complete", content: "...")
+  2. Use TaskUpdate to mark your task as completed.
+
+  Your SendMessage content MUST include these fields:
+  - **Status**: Complete | Complete with Warnings | Failed
+  - **Files**: list of files created/modified with brief descriptions
+  - **Verification**: outputs from <verify> commands
+  - **Decisions**: key implementation decisions made
+  - **Issues**: any problems or warnings encountered (or "None")
+  - **Errors**: error details if failed (or "None")
+  """
+
+  Step 4: Spawn the agent via the Agent tool
+  Parameters:
+  - subagent_type: "general-purpose"
+  - prompt: {constructed autonomous prompt}
+  - model: "sonnet"
+  - name: "executor-{NN}-{PP}" -- e.g., "executor-04-01"
+  - team_name: "{phase_team_name}" -- e.g., "phase-04-execution"
+```
+
+### Personality Loading Notes
+
+- If the personality file does not exist at the expected path, fall back to autonomous execution (no personality). Log: "Warning: personality file not found for {agent-id} at {path}. Executing plan {NN}-{PP} without personality injection."
+- The personality content may be 200-500 lines. This is expected and intentional — full injection is the core mechanism that gives agents their specialist behavior.
+- Cross-reference agent-registry.md (Section 1: Agent Catalog) for the canonical file path when in doubt.
+
+---
+
+## Section 4: Wave Execution
+
+How to execute each wave in order, dispatching plans in parallel within each wave.
+
+```
+Step 0: Set up the phase Team (once, before the wave loop)
+  - Call TeamCreate with team_name: "phase-{NN}-execution"
+    (e.g., "phase-04-execution"). One Team per phase — not per wave.
+  - Call TaskCreate for each plan in the phase:
+    - subject: "Execute plan {NN}-{PP}: {plan_name}"
+    - description: brief plan summary
+  - Set cross-wave dependencies via TaskUpdate:
+    - For each plan with depends_on references, call TaskUpdate with
+      addBlockedBy pointing to the task IDs of the dependency plans
+  - The coordinator is auto-registered as a Team member when TeamCreate is called.
+    Use the coordinator's name consistently in agent prompt templates for SendMessage recipient.
+
+For each wave number in ascending order (1, 2, 3, ...):
+
+Step 1: Identify plans in the current wave
+  - Filter the wave map for the current wave number
+  - Collect: plan file paths, agent IDs, autonomous flags
+
+Step 2: Pre-execution dependency check
+  - For each plan in this wave, inspect depends_on list
+  - Verify each referenced plan (e.g., "04-01") has a corresponding SUMMARY.md file
+    in the phase directory (indicating completion)
+  - If any dependency SUMMARY.md is missing or contains Status: Failed:
+    - Skip the current wave entirely
+    - Report: "Wave {N} skipped: dependency plan {NN}-{PP} did not complete
+      successfully. Resolve the failure before retrying."
+    - Stop execution
+
+Step 3: Construct agent prompts for all plans in the wave
+  - For each plan, run the Personality Injection flow from Section 3
+  - Prepare all prompts before spawning any agents
+
+Step 4: Spawn agents in parallel via the Team
+  - For a SINGLE plan in the wave:
+    - Spawn one agent via the Agent tool with team_name: "{phase_team_name}"
+  - For MULTIPLE plans in the wave:
+    - Issue ALL Agent tool calls in a SINGLE message response
+    - Each Agent call MUST include team_name: "{phase_team_name}"
+    - This maximizes parallelism — Claude Code will run them concurrently
+    - Do NOT spawn agents one at a time for multi-plan waves
+    - Each agent gets its own fully-constructed prompt (personality + plan)
+    - Agents in the same wave are fully independent — they share no state or
+      communication during execution
+
+Step 5: Collect agent results via SendMessage
+  - Wait for every agent in the wave to send its completion message via SendMessage
+  - Each agent's SendMessage contains a structured summary with Status, Files,
+    Verification, Decisions, Issues, and Errors fields
+  - Track: which plans succeeded (Status: Complete), which failed (Status: Failed),
+    what files were modified (from the Files field)
+  - If an agent goes idle without sending a message, send a follow-up message
+    asking for status. If still no response, check the filesystem for partial work.
+
+Step 6: Process wave results
+  - For each completed agent, run the Agent Result Processing flow (Section 5)
+    to generate the SUMMARY.md file
+  - Compile the wave completion report:
+    Completed: [list of plan names that succeeded]
+    Failed: [list of plan names that failed, with error summaries]
+    Files modified: [aggregate list across all plans in the wave]
+
+Step 7: Post-wave decision
+  - If ALL plans in the wave completed successfully:
+    - Report wave success
+    - Proceed to the next wave
+  - If ANY plan in the wave failed:
+    - Report wave failure with the full list of failed plans and errors
+    - STOP — do not proceed to subsequent waves
+    - Instruct the user: "Wave {N} had {count} failure(s). Fix the issue and
+      re-run /agency:build, or run /agency:review for diagnosis."
+
+Step 8: After all waves complete
+  - Report full execution summary: total plans, total waves, files modified
+  - Update .planning/STATE.md: mark phase as complete, record completion timestamp
+  - Suggest next action: "/agency:review to validate the phase output"
+
+Step 9: Shutdown the Team
+  - Send shutdown_request via SendMessage to every agent spawned during the phase:
+    SendMessage(type: "shutdown_request", recipient: "{agent-name}", content: "Phase execution complete")
+  - Wait for shutdown confirmations
+  - Call TeamDelete to clean up the Team configuration
+  - This step runs on BOTH success and failure paths — never leave orphaned agents
+    or stale Team configs behind
+```
+
+### Parallelism Implementation via Claude Code Teams
+
+The full Teams lifecycle for parallel execution:
+
+1. **TeamCreate** (once per phase, in Step 0):
+   ```
+   TeamCreate(team_name: "phase-04-execution", description: "Phase 4: Parallel Execution")
+   ```
+
+2. **TaskCreate** (one per plan, in Step 0):
+   ```
+   TaskCreate(subject: "Execute plan 04-01: wave-executor skill", ...)
+   TaskCreate(subject: "Execute plan 04-02: execution-tracker skill", ...)
+   TaskCreate(subject: "Execute plan 04-03: build command", ...)
+   TaskUpdate(taskId: "3", addBlockedBy: ["1", "2"])  -- wave 2 depends on wave 1
+   ```
+
+3. **Spawn with team_name** (per wave, in Step 4):
+   ```
+   [In a single response, issue all Agent tool calls for the wave:]
+   Agent(name="engineering-senior-developer-04-01", prompt="...", model="sonnet", team_name="phase-04-execution")
+   Agent(name="executor-04-02", prompt="...", model="sonnet", team_name="phase-04-execution")
+   ```
+
+4. **Collect via SendMessage** (per wave, in Step 5):
+   Each agent sends a structured summary via SendMessage to the coordinator.
+   The coordinator receives ~200 tokens per agent instead of the full ~2000+ execution trace.
+   Wait for all agents in the wave before advancing.
+
+5. **Shutdown + TeamDelete** (once per phase, in Step 9):
+   ```
+   SendMessage(type: "shutdown_request", recipient: "engineering-senior-developer-04-01", content: "Phase complete")
+   SendMessage(type: "shutdown_request", recipient: "executor-04-02", content: "Phase complete")
+   SendMessage(type: "shutdown_request", recipient: "design-ux-architect-04-03", content: "Phase complete")
+   TeamDelete()
+   ```
+
+All Team members in a wave run concurrently. The orchestrator waits until all agents send their SendMessage summaries before writing SUMMARY.md files or advancing to the next wave. Within the Team, agents share no state — each operates on its own plan in its own fresh context.
+
+---
+
+## Section 5: Agent Result Processing
+
+How to interpret what each agent returns and write the plan summary file.
+
+```
+For each completed agent (success or failure):
+
+Step 1: Parse the agent's SendMessage content
+  The agent's SendMessage contains a structured summary with these fields:
+  - **Status**: Complete | Complete with Warnings | Failed
+  - **Files**: list of files created/modified with brief descriptions
+  - **Verification**: outputs from <verify> commands
+  - **Decisions**: key implementation decisions made
+  - **Issues**: any problems or warnings encountered
+  - **Errors**: error details if failed
+
+  Use the Status field directly to determine the result:
+  - "Complete" → SUCCESS
+  - "Complete with Warnings" → COMPLETE WITH WARNINGS
+  - "Failed" → FAILED
+  If the Status field is missing or ambiguous, fall back to parsing for signals:
+  - SUCCESS indicators: "verification passed", "complete", all verify commands ran
+  - FAILURE indicators: "error:", "failed:", "could not", "exception"
+
+Step 2: Determine result status
+  - SUCCESS: agent completed all tasks and verification passed
+  - COMPLETE WITH WARNINGS: agent completed tasks but some verify steps had issues
+    (e.g., a file exists but line count is lower than expected)
+  - FAILED: agent could not complete one or more tasks, or critical verification failed
+
+Step 3: Generate the plan summary file
+  Path: .planning/phases/{NN}-{phase-slug}/{NN}-{PP}-SUMMARY.md
+
+  Write the file using this format:
+
+  ---
+
+  # Plan {NN}-{PP} Summary: {plan_name}
+
+  ## Result
+  **Status**: Complete | Complete with Warnings | Failed
+  **Wave**: {wave_number}
+  **Agent**: {agent-id} | Autonomous
+  **Completed**: {timestamp}
+
+  ## What Was Done
+  {Summary of actions taken, derived from the agent's return message.
+   Should be specific: "Created .claude/skills/agency/wave-executor.md (312 lines)
+   with 6 sections covering plan discovery, personality injection, wave execution,
+   result processing, and error handling."}
+
+  ## Files Created / Modified
+  - {file path 1} — {brief description of what changed}
+  - {file path 2} — {brief description of what changed}
+
+  ## Verification Results
+  {Output from the plan's verification steps, as reported by the agent.
+   Include actual command outputs where available.}
+
+  ## Key Decisions
+  {Notable implementation decisions, ambiguities resolved, approaches chosen.
+   If none: "No significant decisions — followed plan as written."}
+
+  ## Issues Encountered
+  {Any problems, deviations, or warnings. If none: "None."}
+
+  ## Requirements Covered
+  {List the requirement IDs from the plan's frontmatter}
+  - {REQ-ID}: {brief description}
+
+  ---
+
+  For FAILED plans, also include:
+
+  ## Error Details
+  {Full error output from the agent. Do not truncate — this is used for diagnosis
+   in /agency:review. Include: error messages, stack traces if available, which
+   task failed, what the state of the filesystem is (what was partially completed).}
+
+Step 4: Confirm summary file was written
+  - Verify the file exists at the expected path
+  - If write failed: report error to orchestrator — the summary file is required
+    for the wave completion check in Wave Execution Step 2
+```
+
+### Summary File Naming
+
+Summary files follow the Plan File Convention from `workflow-common.md`:
+
+```
+.planning/phases/{NN-name}/{NN}-{PP}-SUMMARY.md
+```
+
+Examples:
+- `.planning/phases/04-parallel-execution/04-01-SUMMARY.md`
+- `.planning/phases/04-parallel-execution/04-02-SUMMARY.md`
+
+The presence of a SUMMARY.md file is the signal used in Section 4, Step 2 to verify that a dependency plan completed. A failed plan still gets a SUMMARY.md (with Status: Failed) so that the dependency check correctly identifies and blocks dependent waves.
+
+---
+
+## Section 6: Error Scenarios
+
+How to handle common failure modes without retrying or hiding problems.
+
+```
+1. AGENT SPAWN FAILURE
+   Symptom: The Agent tool call itself returns an error (model unavailable,
+            invalid parameters, context too large, team_name invalid, etc.)
+   Action:
+   - Mark the plan as failed in the wave results
+   - Call TaskUpdate to mark the plan's task as failed (if task was created)
+   - Capture the tool error message
+   - Write a SUMMARY.md with Status: Failed and the spawn error details
+   - Continue executing other plans in the same wave that haven't failed
+   - After wave collection, apply post-wave decision logic (Section 4, Step 7)
+   Example errors:
+   - "Failed to spawn agent for plan 04-01: model sonnet unavailable"
+   - "Failed to spawn agent for plan 04-01: team 'phase-04-execution' not found"
+
+2. AGENT TIMEOUT / CONTEXT OVERFLOW
+   Symptom: Agent runs but produces incomplete output; context limit reached
+   Action:
+   - Capture whatever output the agent produced before stopping
+   - Treat as a failure — do not try to resume the agent
+   - Write SUMMARY.md with Status: Failed and note: "Agent context limit reached.
+     The plan may need to be split into smaller tasks."
+   - Include partial output in Error Details for diagnosis
+
+3. VERIFICATION FAILURE
+   Symptom: Agent completes all tasks but verify commands produce unexpected results
+            (file missing, grep finds wrong content, line count too low, etc.)
+   Action:
+   - Do NOT mark as hard failure — agent completed its work
+   - Status: Complete with Warnings
+   - Include the failing verify outputs in the Verification Results section
+   - Note in Issues Encountered: "Verify step N returned unexpected result: {output}"
+   - The plan is not retried; /agency:review will assess whether it's acceptable
+
+4. FILE MODIFICATION CONFLICT (same-wave file collision)
+   Symptom: Two plans in the same wave have overlapping files_modified entries
+   Detection: During plan discovery (Section 2, Step 5d)
+   Action:
+   - Do NOT abort — continue execution with a warning
+   - Log: "Warning: plans {NN}-{PP} and {NN}-{PP2} both modify {file path}.
+     The second agent's changes will overwrite the first. Review the phase plan."
+   - In the wave completion report, flag the conflict explicitly
+   - Suggest the user re-plan the phase to move one plan to a later wave
+
+5. MISSING PERSONALITY FILE
+   Symptom: The agent .md file does not exist at agency-agents/{division}/{agent-id}.md
+   Action:
+   - Fall back to autonomous execution — run the plan without personality injection
+   - Log: "Warning: personality file not found for {agent-id} at {expected-path}.
+     Executing plan {NN}-{PP} as autonomous (no personality injection)."
+   - In the plan SUMMARY.md, note the fallback under Issues Encountered
+   - Do NOT fail the plan because of a missing personality file
+
+6. NO PLANS FOUND
+   Symptom: The phase directory exists but contains no {NN}-{PP}-PLAN.md files
+   Action:
+   - Error immediately — do not attempt execution
+   - Message: "No plans found for Phase {N} in .planning/phases/{NN}-{slug}/.
+     Run /agency:plan {N} first to generate plan files."
+   - Suggest: check if the phase directory name matches STATE.md's current phase
+
+7. PARTIAL WAVE FAILURE (some plans succeed, some fail)
+   Symptom: A wave with multiple plans has a mix of successes and failures
+   Action:
+   - Write SUMMARY.md files for ALL plans in the wave (both succeeded and failed)
+   - Collect and report all results before making the post-wave stop decision
+   - Stop after the wave — do not proceed to the next wave even if most plans succeeded
+   - Report clearly: "Wave {N}: {X} of {Y} plans succeeded. Stopping before Wave {N+1}.
+     Failed plans: {list}."
+   - This prevents later waves from building on a broken foundation
+
+8. PHASE ALREADY PARTIALLY EXECUTED
+   Symptom: Some SUMMARY.md files already exist for plans in the phase
+   Detection: During plan discovery
+   Action:
+   - Report the already-completed plans: "Found {count} existing summaries.
+     The following plans have already been executed: {list}"
+   - Ask user: "Re-run all plans (including completed ones), or skip to
+     incomplete plans only?"
+   - If skip: filter the wave map to exclude plans with existing SUMMARY.md files
+   - If re-run: delete existing SUMMARY.md files and execute all plans fresh
+
+9. AGENT COMPLETES BUT DOESN'T SEND MESSAGE
+   Symptom: An agent goes idle without sending a SendMessage to the coordinator.
+            The agent may have completed its work but forgot the Reporting Results step.
+   Detection: Agent shows as idle in the Team but no SendMessage was received
+   Action:
+   - Send a follow-up message to the agent via SendMessage:
+     "Your task appears complete but no summary was received. Please send your
+      structured summary now using SendMessage with Status, Files, Verification,
+      Decisions, Issues, and Errors fields."
+   - Wait for the agent's response
+   - If the agent still doesn't respond: infer the result from the filesystem
+     - Check if the plan's files_modified list has been created/updated
+     - Run the plan's <verification> commands manually
+     - Write the SUMMARY.md based on filesystem evidence
+     - Mark Status as "Complete with Warnings" and note: "Agent did not send
+       completion message — result inferred from filesystem."
+```
+
+---
+
+## References
+
+This skill implements patterns defined in `workflow-common.md`:
+
+| Pattern | Source Section | Used In |
+|---------|---------------|---------|
+| Personality Injection Pattern | workflow-common.md — Personality Injection Pattern | Section 3 |
+| Wave Execution Pattern | workflow-common.md — Wave Execution Pattern | Section 4 |
+| Cost Profile Convention | workflow-common.md — Cost Profile Convention | Section 1 (Sonnet for execution) |
+| Error Handling Pattern | workflow-common.md — Error Handling Pattern | Section 6 |
+| Plan File Convention | workflow-common.md — Plan File Convention | Section 2, Section 5 |
+| State Update Pattern | workflow-common.md — State Update Pattern | Section 4, Step 8 |
+
+Agent file paths are resolved using the `agent-registry.md` Agent Catalog (Section 1), which maps every agent ID to its division and file path.
+
+### Quick Reference: Agent Path Format
+
+```
+agency-agents/{division}/{agent-id}.md
+
+Examples:
+  agency-agents/engineering/engineering-senior-developer.md
+  agency-agents/testing/testing-evidence-collector.md
+  agency-agents/design/design-ux-architect.md
+  agency-agents/specialized/agents-orchestrator.md
+```
+
+Division lookup: if an agent-id's division prefix is ambiguous, check agent-registry.md Section 1 for the canonical file path.
