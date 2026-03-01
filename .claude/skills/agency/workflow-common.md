@@ -17,6 +17,8 @@ Shared constants, paths, and patterns used across all /agency: commands.
 | Templates | `.planning/templates/` | Schema files for generating PROJECT/ROADMAP/STATE |
 | Phase Plans | `.planning/phases/{NN-name}/` | Plan and summary files per phase |
 | PORTFOLIO.md | `~/.claude/agency/portfolio.md` | Global portfolio registry — all Agency projects |
+| Milestone Summaries | `.planning/milestones/MILESTONE-{N}.md` | Completion summaries with metrics per milestone |
+| Milestone Archive | `.planning/archive/milestone-{N}/` | Archived phase directories from completed milestones |
 
 ## Agent Personality Paths
 
@@ -138,3 +140,29 @@ Portfolio commands read each registered project's `.planning/STATE.md` and `.pla
 | Command | Purpose | Cost Tier |
 |---------|---------|-----------|
 | `/agency:portfolio` | Multi-project dashboard and dependency management | Haiku (dashboard), Opus (Studio Producer insights) |
+
+## Milestone Conventions
+
+### Milestone Definition
+Milestones group consecutive phases in ROADMAP.md under a `## Milestones` section. Each milestone has a name, phase range, goal, and status. Milestones are defined interactively via `/agency:milestone` or during `/agency:start` for new projects.
+
+### Milestone Lifecycle
+```
+Pending → In Progress → Complete → Archived
+```
+- **Pending**: No phases started
+- **In Progress**: At least one phase started
+- **Complete**: All phases in range are Complete in the Progress table
+- **Archived**: Phase directories moved to `.planning/archive/milestone-{N}/`
+
+### Milestone Paths
+| Artifact | Path | When Created |
+|----------|------|-------------|
+| Milestone section | `.planning/ROADMAP.md ## Milestones` | During milestone definition |
+| Milestone summary | `.planning/milestones/MILESTONE-{N}.md` | On milestone completion |
+| Archive directory | `.planning/archive/milestone-{N}/{NN-name}/` | On milestone archiving |
+
+### Milestone Command Convention
+| Command | Purpose | Cost Tier |
+|---------|---------|-----------|
+| `/agency:milestone` | Milestone status, completion, archiving, and definition | Haiku (status), Sonnet (summary generation) |
