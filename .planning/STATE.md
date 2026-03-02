@@ -20,15 +20,15 @@ progress:
 
 ## Current Position
 
-Phase: 18 (Command Migration and Path Updates) — Complete
-Plan: 18-01 (complete, 3 tasks)
-Status: Phase 18 complete. All commands migrated, all paths updated, old directories removed.
-Last activity: 2026-03-02 — Phase 18 executed (18-01 complete)
+Phase: 20 (Distribution) — Not started
+Plan: 20-01 (not started)
+Status: Phase 19 complete — registry verified, all 51 agent paths confirmed, AGENT-04 satisfied
+Last activity: 2026-03-02 — Phase 19 execution complete
 
 ## Progress (v2.0)
 
 ```
-[############                  ]  44% — 4/9 phases complete
+[###############               ]  56% — 5/9 phases complete
 ```
 
 | Phase | Plans Complete | Status | Completed |
@@ -37,7 +37,7 @@ Last activity: 2026-03-02 — Phase 18 executed (18-01 complete)
 | 16. Agent Migration | 1/1 | Complete | 2026-03-02 |
 | 17. Skill Migration | 1/1 | Complete | 2026-03-02 |
 | 18. Command Migration and Path Updates | 1/1 | Complete | 2026-03-02 |
-| 19. Registry Integration | 0/? | Not started | - |
+| 19. Registry Integration | 1/1 | Complete | 2026-03-02 |
 | 20. Distribution | 0/? | Not started | - |
 | 21. Strategic Advisors | 0/? | Not started | - |
 | 22. Dynamic Review Panels | 0/? | Not started | - |
@@ -84,5 +84,5 @@ Last activity: 2026-03-02 — Phase 18 executed (18-01 complete)
 
 ### Next Steps
 
-Phase 18 complete. Next up is Phase 19 (Registry Integration).
-Run `/gsd:plan-phase 19` to plan the next phase.
+Phase 19 complete. Run `/gsd:plan-phase 20` to plan the Distribution phase.
+Phase 20 covers marketplace entry, README, CHANGELOG, and developer testing docs (DIST-01 through DIST-04).

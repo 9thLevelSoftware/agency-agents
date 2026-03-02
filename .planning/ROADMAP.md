@@ -65,7 +65,8 @@
   3. All cross-skill `@skill` and cross-command references within the plugin resolve correctly under the new structure
   4. Agent personality file paths in wave-executor and any command that spawns agents reference the new `agents/` location
   5. No command or skill contains a hardcoded `.claude/` path that would break under the plugin directory layout
-**Plans**: TBD
+**Plans**: 1
+- Plan 18-01 (Wave 1): Migrate commands, update all path references, clean up — copy 9 commands to `commands/`, update 48 skill refs + 7 template refs + 8 agent refs in commands, update 101 agent paths in 6 skill files, remove `.claude/commands/agency/` and `.planning/templates/`
 
 ### Phase 19: Registry Integration
 **Goal**: The agent-registry skill correctly resolves all 51 agent paths under the new plugin structure, so agent lookup, recommendation, and team assembly work without modification after installation
@@ -75,7 +76,8 @@
   1. The agent-registry skill lists all 51 agents using paths relative to the plugin root (`agents/` prefix)
   2. `/agency:plan` successfully recommends agents by name and the referenced files exist at the resolved paths
   3. `/agency:build` can inject agent personalities by reading from the new `agents/` location — no 404-equivalent file-not-found errors
-**Plans**: TBD
+**Plans**: 1
+- Plan 19-01 (Wave 1): Verify registry completeness, validate path resolution, update state — cross-check all 51 registry entries against disk, validate command execution_context declarations, verify spawning path patterns, update ROADMAP/STATE/REQUIREMENTS
 
 ### Phase 20: Distribution
 **Goal**: The plugin has all artifacts needed for installation via `claude plugin add github:user/repo`, discovery via a marketplace entry, and local development testing via `--plugin-dir`
@@ -128,8 +130,8 @@
 | 15. Plugin Scaffold | 1/1 | Complete | 2026-03-01 |
 | 16. Agent Migration | 1/1 | Complete | 2026-03-02 |
 | 17. Skill Migration | 1/1 | Complete    | 2026-03-02 |
-| 18. Command Migration and Path Updates | 0/? | Not started | - |
-| 19. Registry Integration | 0/? | Not started | - |
+| 18. Command Migration and Path Updates | 1/1 | Complete | 2026-03-02 |
+| 19. Registry Integration | 1/1 | Complete | 2026-03-02 |
 | 20. Distribution | 0/? | Not started | - |
 | 21. Strategic Advisors | 0/? | Not started | - |
 | 22. Dynamic Review Panels | 0/? | Not started | - |

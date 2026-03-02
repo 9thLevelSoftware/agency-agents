@@ -20,7 +20,7 @@ Requirements for plugin conversion. Each maps to roadmap phases.
 - [ ] **AGENT-01**: All 51 agent files moved to flat `agents/` directory with plugin-compatible frontmatter
 - [ ] **AGENT-02**: Agent frontmatter includes `name` and `description` fields matching Claude Code plugin agent schema
 - [ ] **AGENT-03**: Division grouping preserved as metadata in agent frontmatter (`division` field)
-- [ ] **AGENT-04**: Agent registry skill updated to reference new plugin-relative paths
+- [x] **AGENT-04**: Agent registry skill updated to reference new plugin-relative paths
 
 ### Skill Migration (SKILL)
 
@@ -96,7 +96,7 @@ Requirements for plugin conversion. Each maps to roadmap phases.
 | PATH-01 | Phase 18 | Pending |
 | PATH-02 | Phase 18 | Pending |
 | PATH-03 | Phase 18 | Pending |
-| AGENT-04 | Phase 19 | Pending |
+| AGENT-04 | Phase 19 | Complete |
 | DIST-01 | Phase 20 | Pending |
 | DIST-02 | Phase 20 | Pending |
 | DIST-03 | Phase 20 | Pending |
