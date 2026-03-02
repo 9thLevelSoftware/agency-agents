@@ -16,6 +16,20 @@ Engine for `/legion:review`. Takes the output of a completed `/legion:build` pha
 
 These rules govern all review decisions. Do not deviate from them.
 
+> **MANDATORY: Agent Teams are the ONLY execution method.**
+>
+> All review and fix agents MUST be spawned within a Claude Code Team:
+> 1. `TeamCreate` — one Team per phase review lifecycle (reused across all cycles)
+> 2. `TaskCreate` — one task per review/fix agent
+> 3. `Agent` with `team_name` — every agent spawn MUST include the `team_name` parameter
+> 4. `SendMessage` — agents report findings/fixes to the coordinator
+> 5. `SendMessage(type: "shutdown_request")` — graceful shutdown on pass or escalation
+> 6. `TeamDelete` — clean up after the review lifecycle ends
+>
+> **Spawning agents without `team_name` is a violation of this skill.** Do not use bare
+> subagents. If Teams are unavailable, stop and tell the user to enable
+> `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` — do not silently fall back to subagents.
+
 1. **Review the output, not the plan** — review agents evaluate files created/modified during `/legion:build`, not the plan documents themselves. The plan is the specification; the output is what gets reviewed.
 2. **Full personality injection** — each review agent receives the ENTIRE contents of its assigned `.md` file as system instructions. No summaries, no excerpts, no paraphrasing.
 3. **Structured feedback only** — review agents must use the exact Finding format defined in Section 3. Vague assessments like "looks good" or letter grades are rejected.

@@ -16,6 +16,25 @@ Engine for `/legion:build`. Takes the plan files in a phase directory and execut
 
 These rules govern all execution decisions. Do not deviate from them.
 
+> **MANDATORY: Agent Teams are the ONLY execution method.**
+>
+> Every phase execution MUST use the full Claude Code Teams lifecycle:
+> 1. `TeamCreate` — before any agents are spawned
+> 2. `TaskCreate` — one task per plan, with cross-wave `addBlockedBy` dependencies
+> 3. `Agent` with `team_name` — every agent spawn MUST include the `team_name` parameter
+> 4. `SendMessage` — agents report results to the coordinator, coordinator communicates with agents
+> 5. `SendMessage(type: "shutdown_request")` — graceful shutdown of all agents
+> 6. `TeamDelete` — clean up after execution
+>
+> **Spawning agents without `team_name` is a violation of this skill.** Do not use bare
+> subagents (Agent tool without team_name). If Teams are unavailable (e.g., the
+> `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` setting is not enabled), stop and tell the
+> user to enable it — do not silently fall back to subagents.
+>
+> This is not optional. This is not a suggestion. If you are about to call the Agent
+> tool without `team_name`, STOP — you are skipping the coordination layer that makes
+> wave execution, result collection, and lifecycle management work correctly.
+
 1. **Wave-sequential, parallel-within** — all Wave 1 plans must complete before any Wave 2 plan begins. Within a wave, all plans run at the same time via a Claude Code Team.
 2. **Full personality injection** — each agent receives the ENTIRE contents of its assigned personality `.md` file as system instructions. No summaries, no excerpts, no paraphrasing.
 3. **Sonnet for execution** — all spawned agents use `model: "sonnet"`. This matches the Cost Profile Convention from `workflow-common.md`.
@@ -24,7 +43,7 @@ These rules govern all execution decisions. Do not deviate from them.
 6. **Orchestrator stays in main context** — the `/legion:build` command itself does not execute plan work. It reads, validates, dispatches, and collects. Agents get fresh contexts.
 7. **Failed wave blocks subsequent waves** — if any plan in a wave fails, do not proceed to the next wave. Report wave status and pause for user decision.
 8. **Files isolation per wave** — plans within the same wave must not share files_modified entries. This is guaranteed by plan authoring (see phase-decomposer.md), but flag a warning if a conflict is detected.
-9. **One Team per phase** — create a single Claude Code Team for the entire phase execution. Do not create separate Teams per wave. This minimizes TeamCreate/TeamDelete overhead.
+9. **One Team per phase (mandatory)** — call `TeamCreate` once before any agents are spawned. One Team per phase, not per wave. Every `Agent` call MUST pass `team_name`. If you find yourself spawning an Agent without `team_name`, you are violating this skill — see the enforcement block above.
 10. **Agents report via SendMessage** — spawned agents send their structured completion summary to the coordinator via SendMessage, not via Agent tool return. This keeps the coordinator's context window small (~200 tokens per agent instead of ~2000+).
 11. **Verification-gated completion** — after each task, the agent MUST run all `> verification:` commands from the task's action block. If any verification command returns a non-zero exit code, the task is marked as failed and the agent must report the failure. Do not proceed to the next task until all verifications pass.
 
