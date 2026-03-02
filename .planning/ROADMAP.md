@@ -127,7 +127,7 @@
 |-------|----------------|--------|-----------|
 | 15. Plugin Scaffold | 1/1 | Complete | 2026-03-01 |
 | 16. Agent Migration | 1/1 | Complete | 2026-03-02 |
-| 17. Skill Migration | 1/1 | Complete   | 2026-03-02 |
+| 17. Skill Migration | 1/1 | Complete    | 2026-03-02 |
 | 18. Command Migration and Path Updates | 0/? | Not started | - |
 | 19. Registry Integration | 0/? | Not started | - |
 | 20. Distribution | 0/? | Not started | - |
