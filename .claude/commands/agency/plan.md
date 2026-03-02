@@ -16,6 +16,7 @@ Decompose a roadmap phase into wave-structured plans with max 3 tasks each. Reco
 @./.claude/skills/agency/memory-manager.md
 @./.claude/skills/agency/github-sync.md
 @./.claude/skills/agency/codebase-mapper.md
+@./.claude/skills/agency/marketing-workflows.md
 </execution_context>
 
 <context>
@@ -71,6 +72,28 @@ Decompose a roadmap phase into wave-structured plans with max 3 tasks each. Reco
         - Include "Touch with care" warnings for flagged files
    - If no:
      Skip silently (greenfield project or user declined analysis)
+
+   MARKETING PHASE DETECTION (optional — follows marketing-workflows Section 1):
+   - Run marketing domain detection on the current phase:
+     a. Check if phase requirements include MKT-* IDs
+     b. Check if phase description contains marketing keywords
+        ("campaign", "content calendar", "social media", "cross-channel", "marketing",
+         "brand awareness", "audience", "engagement strategy")
+   - If marketing phase detected:
+     a. Read marketing-workflows skill for domain-specific patterns
+     b. In step 4 (decomposition), use marketing-specific wave pattern:
+        Wave 1: Strategy & Planning (Social Media Strategist + Growth Hacker)
+        Wave 2: Content Creation (Content Creator + Channel Specialists)
+        Wave 3 (optional): Distribution (all channel agents)
+     c. In step 5 (agent recommendation), use marketing team assembly pattern:
+        Required: Strategy Lead + Content Lead
+        Per-channel: one specialist per selected channel
+     d. Before generating plan files, run campaign brief questioning
+        (marketing-workflows Section 2.1) and generate campaign document
+        at .planning/campaigns/{campaign-slug}.md
+     e. All plan files reference the campaign document in their context section
+   - If not marketing phase:
+     Skip silently (standard decomposition applies)
 
 4. DECOMPOSE INTO PLANS
    Follow phase-decomposer skill Section 3 (Task Decomposition):
