@@ -36,8 +36,8 @@
 ### Execution Resilience (EXE)
 
 - [ ] **EXE-01**: Accepted/rejected/edited file proposals generate DPO preference pairs stored for future agent routing improvement
-- [ ] **EXE-02**: Missing dependencies and environment issues auto-generate setup tasks instead of blocking execution with unactionable errors
-- [ ] **EXE-03**: Noisy command output (`npm install`, build logs, etc.) is redirected to temp files with exit code checks, saving context tokens
+- [x] **EXE-02**: Missing dependencies and environment issues auto-generate setup tasks instead of blocking execution with unactionable errors
+- [x] **EXE-03**: Noisy command output (`npm install`, build logs, etc.) is redirected to temp files with exit code checks, saving context tokens
 
 ## Traceability
 
@@ -56,7 +56,7 @@
 | KNW-02 | Phase 33 | beads (git-native context) | Pending |
 | KNW-03 | Phase 33 | beads (semantic compaction) | Pending |
 | EXE-01 | Phase 34 | Puzld.ai (DPO extraction) | Pending |
-| EXE-02 | Phase 34 | bjarne (environment remediation) | Pending |
-| EXE-03 | Phase 34 | bjarne (output redirection) | Pending |
+| EXE-02 | Phase 34 | bjarne (environment remediation) | **Complete** |
+| EXE-03 | Phase 34 | bjarne (output redirection) | **Complete** |
 
-**Coverage:** 0/15 requirements satisfied (0%)
+**Coverage:** 5/15 requirements satisfied (33%) — KNW-01, KNW-02, KNW-03, EXE-02, EXE-03 complete

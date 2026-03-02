@@ -33,10 +33,10 @@ progress:
 ## Current Position
 
 Milestone: v4.0 — Inspiration Audit Adoption
-Status: Active — 5/6 phases complete, Phase 34 planned
-Last activity: 2026-03-02 — Phase 34 planned (2 plans across 2 waves, EXE-01 + EXE-02 + EXE-03)
+Status: Active — Phase 34 executing (Plan 1/2 complete)
+Last activity: 2026-03-02 — Phase 34 Plan 01 complete (execution resilience conventions: Auto-Remediation + Output Redirection added to workflow-common and build command)
 
-Progress: [========..] 83% (5/6 phases complete)
+Progress: [========..] 83% (5/6 phases complete, Phase 34 in progress)
 
 ## v4.0 Phase Map
 
@@ -71,9 +71,16 @@ Progress: [========..] 83% (5/6 phases complete)
 
 ## Next Steps
 
-Phase 34 planned — 2 plans across 2 waves covering EXE-01, EXE-02, EXE-03. All 6 phases now planned.
-Dependencies satisfied (Phase 30 + Phase 33 both complete).
-Run `/legion:build` to execute Phase 34: Execution Resilience & Learning.
+Phase 34 Plan 01 complete — execution resilience conventions (auto-remediation + output redirection) added to workflow-common and build command.
+Run Phase 34 Plan 02 to complete the phase (EXE-01 checkpoint verification).
+
+### Key Decisions Added (34-01)
+
+- BLOCKER vs ENVIRONMENT classification is the core decision gate for auto-remediation — environment errors auto-fix, business logic errors always escalate
+- Max 1 remediation attempt per unique error prevents infinite retry loops
+- Auto-remediation scope is bounded by the CLAUDE.md authority matrix (declared deps, expected dirs only)
+- Output redirection never applies to test runners, linting, or type-checkers — those outputs are always informative
+- Execution Resilience content is identical in both personality and autonomous agent prompts
 
 ### Key Decisions Added (33-02)
 
