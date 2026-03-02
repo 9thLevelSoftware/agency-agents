@@ -1,6 +1,9 @@
 ---
 name: legion:wave-executor
 description: Executes wave-structured plans with parallel personality-injected agents via Claude Code Teams
+triggers: [build, execute, parallel, wave, dispatch, spawn]
+token_cost: high
+summary: "Executes wave-structured plans via Claude Code Teams. Parallel within waves, sequential between. Full personality injection, SendMessage-based result collection. Core engine for /legion:build."
 ---
 
 # Wave Executor
@@ -23,6 +26,7 @@ These rules govern all execution decisions. Do not deviate from them.
 8. **Files isolation per wave** — plans within the same wave must not share files_modified entries. This is guaranteed by plan authoring (see phase-decomposer.md), but flag a warning if a conflict is detected.
 9. **One Team per phase** — create a single Claude Code Team for the entire phase execution. Do not create separate Teams per wave. This minimizes TeamCreate/TeamDelete overhead.
 10. **Agents report via SendMessage** — spawned agents send their structured completion summary to the coordinator via SendMessage, not via Agent tool return. This keeps the coordinator's context window small (~200 tokens per agent instead of ~2000+).
+11. **Verification-gated completion** — after each task, the agent MUST run all `> verification:` commands from the task's action block. If any verification command returns a non-zero exit code, the task is marked as failed and the agent must report the failure. Do not proceed to the next task until all verifications pass.
 
 ---
 
@@ -127,6 +131,15 @@ Step 4: Construct the agent execution prompt
   ## Important
   - Execute each task in the order listed
   - Run the <verify> commands after each task to confirm completion before moving on
+  - CRITICAL: Extract all `> verification:` lines from each task's <action> block and run them as bash commands
+  - Each `> verification:` line is a bash command that must return exit code 0
+  - If ANY verification command fails (non-zero exit code):
+    a. Record the failed command and its output
+    b. Attempt to fix the issue (re-read the task, check your work)
+    c. Re-run the failed verification
+    d. If it still fails after one fix attempt: mark the task as FAILED in your summary
+    e. Do NOT skip failed verifications or proceed to the next task
+  - Run verifications in order — they may have implicit dependencies
   - After all tasks complete, run the full <verification> checklist
   - Do NOT modify files outside of the plan's files_modified list unless the task
     explicitly requires it (e.g., updating an import in a file that uses the new file)
@@ -143,6 +156,9 @@ Step 4: Construct the agent execution prompt
   - **Status**: Complete | Complete with Warnings | Failed
   - **Files**: list of files created/modified with brief descriptions
   - **Verification**: outputs from <verify> commands
+  - **Verification Commands Run**: count of `> verification:` commands executed
+  - **Verification Passed**: count that returned exit code 0
+  - **Verification Failed**: count that returned non-zero, with command + output for each
   - **Decisions**: key implementation decisions made
   - **Issues**: any problems or warnings encountered (or "None")
   - **Errors**: error details if failed (or "None")
@@ -174,6 +190,15 @@ For autonomous plans (autonomous: true):
   ## Important
   - Execute each task in the order listed
   - Run the <verify> commands after each task to confirm completion
+  - CRITICAL: Extract all `> verification:` lines from each task's <action> block and run them as bash commands
+  - Each `> verification:` line is a bash command that must return exit code 0
+  - If ANY verification command fails (non-zero exit code):
+    a. Record the failed command and its output
+    b. Attempt to fix the issue (re-read the task, check your work)
+    c. Re-run the failed verification
+    d. If it still fails after one fix attempt: mark the task as FAILED in your summary
+    e. Do NOT skip failed verifications or proceed to the next task
+  - Run verifications in order — they may have implicit dependencies
   - After all tasks complete, run the full <verification> checklist
 
   ## Reporting Results
@@ -186,6 +211,9 @@ For autonomous plans (autonomous: true):
   - **Status**: Complete | Complete with Warnings | Failed
   - **Files**: list of files created/modified with brief descriptions
   - **Verification**: outputs from <verify> commands
+  - **Verification Commands Run**: count of `> verification:` commands executed
+  - **Verification Passed**: count that returned exit code 0
+  - **Verification Failed**: count that returned non-zero, with command + output for each
   - **Decisions**: key implementation decisions made
   - **Issues**: any problems or warnings encountered (or "None")
   - **Errors**: error details if failed (or "None")
@@ -362,6 +390,9 @@ Step 1: Parse the agent's SendMessage content
   - **Status**: Complete | Complete with Warnings | Failed
   - **Files**: list of files created/modified with brief descriptions
   - **Verification**: outputs from <verify> commands
+  - **Verification Commands Run**: count of `> verification:` commands executed
+  - **Verification Passed**: count that returned exit code 0
+  - **Verification Failed**: count that returned non-zero, with command + output for each
   - **Decisions**: key implementation decisions made
   - **Issues**: any problems or warnings encountered
   - **Errors**: error details if failed
@@ -375,10 +406,16 @@ Step 1: Parse the agent's SendMessage content
   - FAILURE indicators: "error:", "failed:", "could not", "exception"
 
 Step 2: Determine result status
-  - SUCCESS: agent completed all tasks and verification passed
-  - COMPLETE WITH WARNINGS: agent completed tasks but some verify steps had issues
-    (e.g., a file exists but line count is lower than expected)
-  - FAILED: agent could not complete one or more tasks, or critical verification failed
+  - SUCCESS: agent completed all tasks, ALL verification commands passed (exit code 0)
+  - COMPLETE WITH WARNINGS: agent completed tasks but some non-critical verify steps had issues
+    (e.g., line count slightly below expected but content is correct)
+  - FAILED: agent could not complete one or more tasks, OR any `> verification:` command
+    returned non-zero exit code and the agent could not fix it after one attempt
+
+  IMPORTANT: Verification failure is a hard gate. Unlike `<verify>` block outputs which
+  are advisory, `> verification:` command failures block plan completion. A plan with
+  any failed verification command MUST have Status: Failed or Status: Complete with Warnings
+  (never Status: Complete).
 
 Step 3: Generate the plan summary file
   Path: .planning/phases/{NN}-{phase-slug}/{NN}-{PP}-SUMMARY.md
@@ -408,6 +445,13 @@ Step 3: Generate the plan summary file
   ## Verification Results
   {Output from the plan's verification steps, as reported by the agent.
    Include actual command outputs where available.}
+
+  ## Verification Commands
+  | Command | Exit Code | Result |
+  |---------|-----------|--------|
+  | `test -f path/to/file.md` | 0 | PASS |
+  | `grep -q "Section 1:" path/to/file.md` | 0 | PASS |
+  | `wc -l < path/to/file.md \| xargs test 50 -le` | 1 | FAIL — file has 42 lines |
 
   ## Key Decisions
   {Notable implementation decisions, ambiguities resolved, approaches chosen.

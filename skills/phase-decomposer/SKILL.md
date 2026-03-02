@@ -1,6 +1,9 @@
 ---
 name: legion:phase-decomposer
 description: Decomposes roadmap phases into wave-structured plans with agent recommendations and plan file generation
+triggers: [plan, decompose, phase, task, wave, breakdown]
+token_cost: high
+summary: "Decomposes roadmap phases into wave-structured plans. Analyzes requirements, groups deliverables by dependency, recommends agents, generates PLAN.md files. Core engine for /legion:plan."
 ---
 
 # Phase Decomposer
@@ -15,7 +18,10 @@ Engine for `/legion:plan`. Takes a ROADMAP.md phase entry and transforms it into
 2. **Wave-structured execution** — Wave 1 plans have no internal dependencies. Wave 2 plans depend on Wave 1 outputs. Parallel within waves, sequential between waves.
 3. **Per-plan agent assignment** — different plans in the same phase may use different agents. A frontend plan gets a frontend agent; a testing plan gets a testing agent.
 4. **Self-contained plans** — each plan must be executable with only its `<context>` references. An agent should never need to read a file not listed in context.
-5. **Concrete verification** — every task has a `<verify>` step with bash commands. No "manually check" or "visually inspect" instructions. If you can not script the check, the task is too vague.
+5. **Concrete verification** — every task has BOTH:
+   - `> verification:` inline lines after the task description — machine-checkable commands that can be extracted and run automatically by the wave-executor
+   - A `<verify>` block with the same commands in executable form
+   No "manually check" or "visually inspect" instructions. If you cannot script the check, the task is too vague.
 6. **Fewer plans over more** — 2 focused plans beats 4 thin ones. Combine related work when it fits within the 3-task limit. Only create additional plans when dependency ordering or agent specialization requires separation.
 
 ---
@@ -448,11 +454,14 @@ Relevant source files:
 {Detailed, unambiguous instructions for what to do.
 Include format examples, specific content guidance,
 and enough detail that the executor does not need to guess.}
+
+> verification: {bash command that proves task 1 success — e.g., test -f path/to/file.md}
+> verification: {second check — e.g., grep -q "expected string" path/to/file.md}
   </action>
   <verify>
-{Bash commands to verify the task was completed correctly.
-Every task MUST have concrete verification -- file existence,
-content checks, line counts, grep patterns.}
+{Same verification commands from above in executable form:}
+test -f path/to/file.md
+grep -q "expected string" path/to/file.md
   </verify>
   <done>{Single sentence describing the completed state.}</done>
 </task>
@@ -511,6 +520,39 @@ Task `<action>` blocks must be detailed enough for an executor (agent or autonom
 
 Bad action: "Create the authentication module."
 Good action: "Create `src/auth/jwt.ts`. Export two functions: `generateToken(userId: string): string` and `verifyToken(token: string): { userId: string } | null`. Use the `jose` library. Tokens expire in 24 hours. Include the refresh token rotation pattern from `@docs/auth-spec.md` Section 3."
+
+### Writing Verification Lines
+
+Every task MUST include `> verification:` lines at the end of its `<action>` block. These are machine-readable commands that the wave-executor extracts and runs automatically after task execution.
+
+**Format**: `> verification: {bash command}`
+
+The command must:
+- Return exit code 0 on success, non-zero on failure
+- Be self-contained (no variables, no prior setup needed)
+- Run from the repository root directory
+
+**Good verification lines:**
+```
+> verification: test -f skills/new-skill/SKILL.md
+> verification: grep -q "Section 1:" skills/new-skill/SKILL.md
+> verification: wc -l < skills/new-skill/SKILL.md | xargs test 50 -le
+> verification: grep -c "## Section" skills/new-skill/SKILL.md | xargs test 3 -le
+```
+
+**Bad verification lines:**
+```
+> verification: echo "looks good"          # Always passes — tests nothing
+> verification: cat skills/new-skill/SKILL.md  # Reads but doesn't assert
+> verification: open http://localhost:3000  # Not scriptable, requires browser
+```
+
+**Relationship to `<verify>` blocks:**
+The `> verification:` lines and `<verify>` blocks contain the SAME commands. The difference:
+- `> verification:` lines are inline, grep-able (`grep '^> verification:' PLAN.md`), and parsed by wave-executor for automated checking
+- `<verify>` blocks are the human-readable executable form used during manual review
+
+Both exist for redundancy — inline format for automation, block format for readability.
 
 ---
 

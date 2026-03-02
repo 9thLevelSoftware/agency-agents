@@ -1,6 +1,9 @@
 ---
 name: legion:review-panel
 description: Dynamic multi-perspective review panel composition with domain-weighted rubrics and synthesis
+triggers: [review, panel, expert, opinion, advisory, evaluate]
+token_cost: medium
+summary: "Dynamic expert review panels assembled from relevant agents. Each panelist reviews independently, findings are synthesized. Used for targeted quality assessment within /legion:review."
 ---
 
 # Review Panel
@@ -128,6 +131,17 @@ Evaluate ONLY against these criteria. Other aspects are covered by fellow panel 
 ...
 
 For each finding, tag it with the criterion number: "**Criterion**: {N} — {criterion_name}"
+
+## Confidence Requirement
+
+For EVERY finding, you MUST rate your confidence:
+- **HIGH (80-100%)**: Certain this is a real issue based on evidence in the code/content
+- **MEDIUM (50-79%)**: Suspect an issue but can't fully confirm — flag it but it may be deferred
+- **LOW (<50%)**: Uncertain — do NOT report this finding
+
+Only HIGH-confidence findings are actioned. Rate conservatively — a false positive wastes more time than a missed MEDIUM finding that surfaces in the next review.
+
+Include in each finding: `- **Confidence**: {HIGH | MEDIUM | LOW} — {percentage}%`
 ```
 
 ### Rubric Definitions
@@ -300,14 +314,30 @@ After all panel reviewers submit findings via SendMessage:
 Step 1: Collect and parse
   Same as review-loop Section 4 (Feedback Collection):
   - Parse Finding blocks from each reviewer
-  - Record: finding number, file, line/section, severity, issue, suggested fix,
-    reviewer agent ID, criterion tag (from rubric)
+  - Record for each finding:
+    - Finding number
+    - File path
+    - Line/section reference
+    - Severity (BLOCKER, WARNING, or SUGGESTION)
+    - Confidence (HIGH, MEDIUM, or LOW with percentage)
+    - Issue (one-sentence description)
+    - Suggested fix
+    - Reviewer agent ID
+    - Criterion tag (from rubric)
 
 Step 2: Deduplicate across reviewers
   Same deduplication rules as review-loop Section 4, Step 2:
   - Same file + same line/section: keep highest severity
   - Same file + different lines: keep both
   - Severity disagreement on same issue: escalate to BLOCKER
+
+Step 2.5: Filter by confidence
+  - HIGH-confidence findings (80%+): include in synthesis
+  - MEDIUM-confidence findings (50-79%): collect into "Deferred" section
+  - LOW-confidence findings: discard
+  - When deduplicating findings with different confidence levels from different
+    reviewers, keep the HIGHER confidence rating (if one reviewer is HIGH and
+    another is MEDIUM on the same finding, it's HIGH)
 
 Step 3: Group by domain lens
   Organize findings by each reviewer's rubric focus area:
@@ -359,6 +389,15 @@ Step 6: Produce consolidated report
   | Reviewer | Rubric Focus | Verdict | Key Finding |
   |----------|-------------|---------|-------------|
   | {agent-id} | {rubric_name} | {verdict} | {most critical finding or "No issues"} |
+
+  ### Deferred Findings (MEDIUM Confidence)
+  {count} findings were flagged at MEDIUM confidence (50-79%) and excluded from
+  the actionable report. These may warrant review if HIGH-confidence findings
+  are sparse or if the user requests the full report.
+
+  | # | Confidence | Reviewer | File | Issue |
+  |---|------------|----------|------|-------|
+  | 1 | MEDIUM (65%) | {agent-id} | path | {issue} |
 
   The aggregate verdict and must-fix list then feed back into the standard
   review-loop cycle (Section 5: Fix Cycle if NEEDS WORK, Section 7 if PASS,

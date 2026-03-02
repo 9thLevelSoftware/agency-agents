@@ -6,9 +6,9 @@ status: active
 last_updated: "2026-03-02"
 progress:
   total_phases: 6
-  completed_phases: 0
+  completed_phases: 3
   total_requirements: 15
-  completed_requirements: 0
+  completed_requirements: 7
 ---
 
 # Project State
@@ -20,18 +20,18 @@ progress:
 ## Current Position
 
 Milestone: v4.0 — Inspiration Audit Adoption
-Status: Active — 0/6 phases complete
-Last activity: 2026-03-02 — Milestone initialized from inspiration audit plan
+Status: Active — 3/6 phases complete
+Last activity: 2026-03-02 — Phase 30 complete (REV-01, REV-02, REV-03 satisfied)
 
-Progress: [..........] 0% (0/6 phases complete)
+Progress: [=====.....] 50% (3/6 phases complete)
 
 ## v4.0 Phase Map
 
 | Phase | Name | Requirements | Depends On | Status |
 |-------|------|-------------|------------|--------|
-| 29 | Progressive Disclosure | PRG-01, PRG-02 | — | Pending |
-| 30 | Review & Verification | REV-01, REV-02, REV-03 | — | Pending |
-| 31 | Behavioral Guardrails | DSC-01, DSC-02 | — | Pending |
+| 29 | Progressive Disclosure | PRG-01, PRG-02 | — | **Complete** |
+| 30 | Review & Verification | REV-01, REV-02, REV-03 | — | **Complete** |
+| 31 | Behavioral Guardrails | DSC-01, DSC-02 | — | **Complete** |
 | 32 | Planning Intelligence | PLN-01, PLN-02 | Phase 29 | Pending |
 | 33 | Knowledge & Memory | KNW-01, KNW-02, KNW-03 | Phase 31 | Pending |
 | 34 | Execution Resilience | EXE-01, EXE-02, EXE-03 | Phase 30, 33 | Pending |
@@ -51,14 +51,16 @@ Progress: [..........] 0% (0/6 phases complete)
 ## What's Deployed
 
 - 10 commands (`/legion:start`, `plan`, `build`, `review`, `status`, `quick`, `portfolio`, `milestone`, `agent`, `advise`)
-- 17 skills (agent-registry, phase-decomposer, wave-executor, review-loop, review-panel, plan-critique, + 11 more)
+- 17 skills with progressive disclosure metadata (triggers, token_cost, summary in frontmatter)
 - 51 agents across 9 divisions
 - Plugin manifest at `.claude-plugin/plugin.json` — name: `legion`, version: `3.0.0`
 - Repository: `https://github.com/9thLevelSoftware/legion`
 
 ## Next Steps
 
-Run `/gsd:plan-phase 29` (or 30, 31 — all unblocked) to begin execution.
+Wave 1 complete (Phases 29, 30, 31). Wave 2 unblocked: Phase 32 (needs 29), Phase 33 (needs 31).
+Phase 34 still blocked (needs 30 + 33 — 30 done, waiting on 33).
+Run `/gsd:plan-phase 32` or `/gsd:plan-phase 33` to start wave 2.
 
 ## Session Continuity
 

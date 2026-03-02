@@ -1,6 +1,9 @@
 ---
 name: legion:review-loop
 description: Dev-QA loop engine with structured feedback, fix routing, and user escalation for /legion:review
+triggers: [review, quality, fix, iterate, qa, test]
+token_cost: high
+summary: "Iterative review cycle: test → review → fix → re-test. Spawns testing agents, collects findings, coordinates fixes, re-validates. Core engine for /legion:review with max iteration limits."
 ---
 
 # Review Loop
@@ -20,7 +23,8 @@ These rules govern all review decisions. Do not deviate from them.
 5. **Sonnet for all agents** — review agents and fix agents both use `model: "sonnet"`. This matches the Cost Profile Convention from `workflow-common.md` (execution = Sonnet).
 6. **Approval required, not exhaustion** — a phase is NOT marked complete when cycles run out. It is marked complete only when review agents give a PASS verdict with no remaining BLOCKERs or WARNINGs.
 7. **Skeptical by default** — "no issues found" on a first review is a yellow flag. Review agents should expect to find at least something on an initial pass. If a reviewer returns PASS on cycle 1, their reasoning must explain what was checked and why confidence is warranted.
-8. **Do not auto-proceed after escalation** — if 3 cycles are exhausted, stop and wait for user decision. Do NOT mark the phase complete or advance to the next phase without explicit user confirmation.
+8. **Confidence-gated reporting** — every finding must include a confidence level: HIGH (80-100%), MEDIUM (50-79%), or LOW (<50%). Only HIGH-confidence findings appear in the default report. MEDIUM findings are collected but only surfaced if the user explicitly requests the full report. LOW findings are discarded — if you are not at least 50% confident, it is not a finding.
+9. **Do not auto-proceed after escalation** — if 3 cycles are exhausted, stop and wait for user decision. Do NOT mark the phase complete or advance to the next phase without explicit user confirmation.
 
 ---
 
@@ -163,6 +167,10 @@ Step 3: Construct the review prompt
   - **Issue**: {One sentence describing the exact problem}
   - **Details**: {2-3 sentences explaining why this is a problem and what should be true instead}
   - **Suggested Fix**: {Specific, actionable fix — not vague guidance}
+  - **Confidence**: {HIGH | MEDIUM | LOW} — {percentage}%
+    - HIGH (80-100%): You are certain this is a real issue. Report it.
+    - MEDIUM (50-79%): You suspect this is an issue but aren't certain. Record it but it won't appear in the default report.
+    - LOW (<50%): You're guessing. Do not report this finding — delete it.
 
   Severity definitions:
   - BLOCKER: Prevents the phase from working correctly. Must be fixed before approval.
@@ -185,6 +193,10 @@ Step 3: Construct the review prompt
   - "No issues found" requires a brief paragraph explaining what you checked and why you're
     confident — this is not permitted as a bare statement
   - PASS on the first review cycle requires a clear explanation of what evidence you reviewed
+  - Every finding MUST include a Confidence rating with a percentage
+  - Only HIGH-confidence findings (80%+) are actioned by default
+  - If you are unsure, rate MEDIUM and explain your uncertainty in Details
+  - Never pad reports with LOW-confidence findings to appear thorough
 
   ## Reporting Results
 
@@ -233,6 +245,13 @@ Step 2: Deduplicate across reviewers
   - Same file + different lines: keep both as separate findings
   - Reviewers disagree on severity for the same issue: escalate to BLOCKER
 
+Step 2.5: Filter by confidence
+  - HIGH-confidence findings (80%+): pass through to triage
+  - MEDIUM-confidence findings (50-79%): collect into a "Deferred Findings" list
+  - LOW-confidence findings (<50%): discard entirely
+  - The must-fix list and nice-to-have list only contain HIGH-confidence findings
+  - Report the deferred count: "{N} MEDIUM-confidence findings deferred (use --verbose to see)"
+
 Step 3: Triage findings into lists
   - Must-fix list: all BLOCKERs + all WARNINGs
   - Nice-to-have list: all SUGGESTIONs
@@ -246,13 +265,14 @@ Step 4: Report findings to user
 
   ## Review Findings — Cycle {cycle_number}/3
 
-  | #  | Severity    | File                    | Issue (brief)              | Reviewer           |
-  |----|-------------|-------------------------|----------------------------|--------------------|
-  | 1  | BLOCKER     | path/to/file.md         | Missing error handling     | testing-reality-checker |
-  | 2  | WARNING     | path/to/other.md        | Inconsistent naming        | testing-evidence-collector |
-  | 3  | SUGGESTION  | path/to/third.md        | Could add more examples    | testing-reality-checker |
+  | #  | Severity    | Confidence | File                    | Issue (brief)              | Reviewer           |
+  |----|-------------|------------|-------------------------|----------------------------|--------------------|
+  | 1  | BLOCKER     | HIGH (95%) | path/to/file.md         | Missing error handling     | testing-reality-checker |
+  | 2  | WARNING     | HIGH (85%) | path/to/other.md        | Inconsistent naming        | testing-evidence-collector |
+  | 3  | SUGGESTION  | HIGH (80%) | path/to/third.md        | Could add more examples    | testing-reality-checker |
 
   **Blockers**: {count} | **Warnings**: {count} | **Suggestions**: {count}
+  **Deferred (MEDIUM confidence)**: {count} findings not shown (--verbose to reveal)
   **Verdicts**: {reviewer-id}: {PASS|NEEDS WORK|FAIL}, {reviewer-id}: {PASS|NEEDS WORK|FAIL}
 
   Must-fix: {count} items (blockers + warnings)
@@ -395,6 +415,27 @@ After fix agents complete:
 Step 1: Increment cycle counter
   - cycle_count += 1
   - If cycle_count > 3: go to Section 8 (Escalation) — do not spawn more agents
+
+Step 1.5: Check for stale loop (no-delta detection)
+  Compare the current cycle's must-fix findings with the previous cycle's must-fix findings:
+  - Extract finding fingerprints: (file_path, line/section, severity, issue_summary)
+  - Compare current fingerprints against previous cycle's fingerprints
+  - Calculate delta:
+    - findings_resolved: findings in previous cycle but not in current
+    - findings_new: findings in current cycle but not in previous
+    - findings_unchanged: findings present in both cycles
+
+  If findings_resolved == 0 AND findings_new == 0 (exact same findings, no progress):
+    → Increment stale_counter
+    → If stale_counter >= 2 (same findings for 2 consecutive re-reviews):
+      → Go to Section 8.5 (Stale Loop Abort) — do NOT continue to fix cycle
+    → Log: "Warning: No delta detected between cycle {C-1} and cycle {C}.
+      Stale counter: {stale_counter}/2. Same {count} findings persist."
+
+  If findings_resolved > 0 OR findings_new > 0 (some progress detected):
+    → Reset stale_counter to 0
+    → Log: "Progress detected: {findings_resolved} resolved, {findings_new} new,
+      {findings_unchanged} unchanged."
 
 Step 2: Determine what to re-review
   - Re-review only files that were modified by fix agents in this cycle
@@ -603,6 +644,86 @@ Step 4: Present escalation report to user
 
 ---
 
+## Section 8.5: Stale Loop Abort
+
+What happens when 2 consecutive re-review cycles show zero delta (same findings, no resolution progress).
+
+This is different from Section 8 (Escalation): Section 8 triggers when the max cycle count is reached. Section 8.5 triggers earlier when the loop is detected as stuck — burning tokens without making progress.
+
+```
+When stale_counter reaches 2 (no delta for 2 consecutive cycles):
+
+Step 1: Generate stale loop report
+  Write .planning/phases/{NN}-{slug}/{NN}-REVIEW.md:
+
+  # Phase {N}: {phase_name} — Review Summary
+
+  ## Result: STALE LOOP ABORTED
+  **Cycles Used**: {current_cycle} of 3
+  **Stale Cycles**: 2 consecutive cycles with no delta
+  **Remaining Findings**: {count}
+
+  ## Why the Loop Stalled
+  The following findings persisted across {stale_count} consecutive review-fix cycles
+  with no resolution. The fix agents were unable to address them, suggesting the
+  issues may require a different approach or architectural change.
+
+  ## Persistent Findings
+  {For each finding that persisted unchanged across stale cycles:}
+  ### Finding {N} (Persistent)
+  - **File**: {file path}
+  - **Severity**: {BLOCKER | WARNING}
+  - **Original Issue**: {issue description}
+  - **Fix Attempts**: {what was tried in each cycle}
+  - **Likely Root Cause**: {why the fix agents couldn't resolve it — pattern analysis}
+
+  ## Resolved Findings (before loop stalled)
+  {Any findings that WERE resolved in earlier cycles}
+
+  ## Recommendations
+  {Analysis of why the loop stalled:}
+  - Are the persistent findings symptoms of a deeper design problem?
+  - Would a different fix agent (different specialty) have more success?
+  - Is manual intervention the fastest path to resolution?
+  - Specific guidance on what to investigate or change
+
+Step 2: Update STATE.md
+  - Status: "Phase {N} review stale — {count} finding(s) unchanged after {stale_count} cycles"
+  - Last Activity: "Phase {N} review stale loop detected ({date})"
+  - Next Action: "Review .planning/phases/{NN}-{slug}/{NN}-REVIEW.md for diagnosis.
+    Options: fix manually then re-run /legion:review, or try different review agents."
+  Write updated STATE.md
+
+Step 3: Shutdown the review Team
+  Same as Section 7, Step 4 — send shutdown_request to all agents, TeamDelete
+
+Step 4: Present stale loop report to user
+
+  ## Phase {N}: {phase_name} — Review Loop Stalled
+
+  {stale_count} consecutive review cycles with no progress. {count} finding(s) unchanged.
+
+  ### Persistent Findings
+  | # | Severity | File          | Issue                 | Cycles Unchanged |
+  |---|----------|---------------|-----------------------|------------------|
+  | 1 | BLOCKER  | path/file.md  | brief issue           | {cycles}         |
+
+  ### Why It Stalled
+  {1-2 sentence analysis of the pattern — e.g., "Fix agents addressed surface symptoms
+  but the underlying issue is structural" or "The finding references a pattern that
+  doesn't exist in the current architecture"}
+
+  ### Options
+  1. **Fix manually** — address the persistent findings directly, then re-run `/legion:review`
+  2. **Try different agents** — swap review/fix agents for a fresh perspective
+  3. **Accept as-is** — acknowledge the findings and proceed
+  4. **Investigate root cause** — examine the fix agent outputs to understand the failure pattern
+
+  **Do not auto-proceed.** Wait for explicit user decision.
+```
+
+---
+
 ## Section 9: Error Handling
 
 How to handle failures during the review loop itself.
@@ -666,6 +787,7 @@ This skill implements patterns defined in `workflow-common.md`:
 | State Update Pattern       | workflow-common.md — State Update Pattern         | Section 6, Section 7, Section 8      |
 | Plan File Convention       | workflow-common.md — Plan File Convention         | Section 3, Section 7, Section 8      |
 | Wave Execution Pattern     | workflow-common.md — Wave Execution Pattern       | Section 5 (parallel fix agents)      |
+| Stale Loop Detection    | review-loop.md — Section 8.5                    | Section 6 (delta tracking trigger)   |
 
 Agent file paths are resolved using `agent-registry.md` Section 1 (Agent Catalog) for canonical division and path.
 

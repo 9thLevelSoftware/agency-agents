@@ -91,9 +91,9 @@ Phase 34 depends on 30 + 33.
 
 | Phase | Requirements | Status |
 |-------|-------------|--------|
-| 29. Progressive Disclosure | PRG-01, PRG-02 | Pending |
-| 30. Review & Verification | REV-01, REV-02, REV-03 | Pending |
-| 31. Behavioral Guardrails | DSC-01, DSC-02 | Pending |
+| 29. Progressive Disclosure | PRG-01, PRG-02 | **Complete** |
+| 30. Review & Verification | REV-01, REV-02, REV-03 | **Complete** |
+| 31. Behavioral Guardrails | DSC-01, DSC-02 | **Complete** |
 | 32. Planning Intelligence | PLN-01, PLN-02 | Pending |
 | 33. Knowledge & Memory | KNW-01, KNW-02, KNW-03 | Pending |
 | 34. Execution Resilience | EXE-01, EXE-02, EXE-03 | Pending |
