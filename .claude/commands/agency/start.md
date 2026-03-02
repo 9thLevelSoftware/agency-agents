@@ -13,6 +13,7 @@ Guide the user through an adaptive questioning flow to capture project vision, r
 @./.claude/skills/agency/agent-registry.md
 @./.claude/skills/agency/questioning-flow.md
 @./.claude/skills/agency/portfolio-manager.md
+@./.claude/skills/agency/codebase-mapper.md
 </execution_context>
 
 <context>
@@ -30,12 +31,33 @@ Guide the user through an adaptive questioning flow to capture project vision, r
      - Option 2: "No, keep existing" — abort and suggest `/agency:status` instead
    - If it doesn't exist: proceed directly
 
-2. ENSURE DIRECTORY STRUCTURE
+2. BROWNFIELD DETECTION
+   Follow codebase-mapper skill Section 1 (Source Code Detection Heuristic):
+   - Check for non-Agency source files in the current directory:
+     - Any source files outside .planning/ and .claude/?
+     - Any package.json, Gemfile, pyproject.toml, requirements.txt, go.mod at root?
+     - Any src/, app/, lib/, components/ directories?
+   - If existing source code detected:
+     Use AskUserQuestion:
+       "I see an existing codebase here. Should I map it before we plan?"
+       Option 1: "Yes, analyze the codebase first"
+         → Run codebase-mapper Sections 2-4 to build the structural map
+         → Write .planning/CODEBASE.md using Section 5 format
+         → Display summary: "{N} files across {M} languages, {framework} detected, {risk_count} risk areas flagged"
+         → Continue to step 3
+       Option 2: "No, skip the analysis"
+         → Proceed directly to step 3 (greenfield mode)
+       Option 3: "I'll run /agency:plan directly"
+         → Abort start, let user plan manually
+   - If no existing source code detected:
+     Skip brownfield flow entirely (pure greenfield) — proceed to step 3
+
+3. ENSURE DIRECTORY STRUCTURE
    - Create `.planning/` directory if it doesn't exist
    - Create `.planning/phases/` directory if it doesn't exist
    - Verify `.planning/templates/` exists (required — fail with clear error if missing)
 
-3. QUESTIONING STAGE 1: VISION & IDENTITY
+4. QUESTIONING STAGE 1: VISION & IDENTITY
    Follow the questioning-flow skill's Stage 1 exactly:
    - Open with: "What are you building? Give me the elevator pitch."
    - Ask follow-up questions adaptively based on what's missing from the response
@@ -43,7 +65,7 @@ Guide the user through an adaptive questioning flow to capture project vision, r
    - Summarize and confirm: "Here's what I'm understanding: [summary]. Anything to correct or add?"
    - Wait for user confirmation before proceeding
 
-4. QUESTIONING STAGE 2: REQUIREMENTS & CONSTRAINTS
+5. QUESTIONING STAGE 2: REQUIREMENTS & CONSTRAINTS
    Follow the questioning-flow skill's Stage 2 exactly:
    - Ask: "What are the must-have features for v1?"
    - Ask: "What's explicitly out of scope?"
@@ -51,7 +73,7 @@ Guide the user through an adaptive questioning flow to capture project vision, r
    - Capture: requirements_list, out_of_scope, constraints, architecture_notes, decisions
    - Summarize requirements as bullet list and confirm with user
 
-5. QUESTIONING STAGE 3: WORKFLOW PREFERENCES
+6. QUESTIONING STAGE 3: WORKFLOW PREFERENCES
    Follow the questioning-flow skill's Stage 3 exactly:
    - Use AskUserQuestion with 3 structured choice questions:
      - Execution mode: Guided (Recommended) / Autonomous / Collaborative
@@ -59,13 +81,13 @@ Guide the user through an adaptive questioning flow to capture project vision, r
      - Cost profile: Balanced (Recommended) / Economy / Premium
    - Record choices as decisions
 
-6. GENERATE PROJECT.MD
+7. GENERATE PROJECT.MD
    - Read `.planning/templates/project-template.md` for the structure
    - Fill all placeholders using the output mapping from questioning-flow skill Section 3
    - Omit sections with no content (don't write "N/A")
    - Write the completed document to `.planning/PROJECT.md`
 
-7. GENERATE ROADMAP.MD
+8. GENERATE ROADMAP.MD
    - Analyze requirements captured in Stage 2
    - Follow phase decomposition guidelines from questioning-flow skill Section 4:
      - Group requirements by dependency and domain
@@ -80,7 +102,7 @@ Guide the user through an adaptive questioning flow to capture project vision, r
    - Read `.planning/templates/roadmap-template.md` for the structure
    - Fill placeholders and write to `.planning/ROADMAP.md`
 
-8. GENERATE STATE.MD
+9. GENERATE STATE.MD
    - Read `.planning/templates/state-template.md` for the structure
    - Fill placeholders:
      - total_phases: count from roadmap
@@ -91,7 +113,7 @@ Guide the user through an adaptive questioning flow to capture project vision, r
      - date: current date
    - Write to `.planning/STATE.md`
 
-9. REGISTER IN PORTFOLIO
+10. REGISTER IN PORTFOLIO
    Follow portfolio-manager Section 2 (Register Project):
    a. Check if `~/.claude/agency/` directory exists; create it if not (including parent directories)
    b. Read `~/.claude/agency/portfolio.md` if it exists; otherwise initialize with empty structure:
@@ -121,7 +143,7 @@ Guide the user through an adaptive questioning flow to capture project vision, r
    f. Write the updated `~/.claude/agency/portfolio.md`
    g. Display: "Registered in portfolio: ~/.claude/agency/portfolio.md"
 
-10. DISPLAY SUMMARY
+11. DISPLAY SUMMARY
    - Show the user a concise summary:
      - Project: {project_name} — {one-line description}
      - Phases: {count} phases planned
