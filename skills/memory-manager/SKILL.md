@@ -1,6 +1,9 @@
 ---
 name: legion:memory-manager
 description: Cross-session memory — outcome tracking, pattern recall with decay, and graceful degradation for Legion workflows
+triggers: [memory, outcome, pattern, recall, learn]
+token_cost: medium
+summary: "Cross-session learning layer via OUTCOMES.md. Stores agent performance and task outcomes with importance scoring and time-based decay. Enhances agent recommendations and status briefings."
 ---
 
 # Memory Manager
@@ -24,7 +27,7 @@ Core rules governing all memory operations:
 3. **Graceful degradation** — every caller checks for memory availability before using it. If memory files don't exist, the workflow proceeds identically to how it worked before Phase 9. Memory is an enhancement, never a requirement.
 4. **Append-only records** — outcome records are added, never modified or deleted automatically. Decay happens at recall time through scoring, not through deletion.
 5. **Supplement, not override** — memory boosts agent recommendations but cannot override mandatory roles, division alignment, or the core recommendation algorithm in agent-registry.md.
-6. **Minimal footprint** — one directory (`.planning/memory/`), one file (`OUTCOMES.md`). No proliferation of memory fragments or indexes.
+6. **Minimal footprint** — one directory (`.planning/memory/`), three files (`OUTCOMES.md`, `PATTERNS.md`, `ERRORS.md`). Each file has a distinct schema and purpose — no duplication across files.
 
 ---
 
@@ -349,3 +352,253 @@ This skill is consumed by:
 | `status.md` | Recall session briefing for dashboard | Section 4 |
 
 Memory file path is defined in `workflow-common.md` (Memory Conventions section).
+
+---
+
+## Section 8: Patterns Knowledge Base
+
+Captures distilled wisdom from successful outcomes — what worked, under what conditions, and when to reuse it.
+
+File path: `.planning/memory/PATTERNS.md`
+Created: on first pattern store operation (not during project initialization)
+
+**File structure:**
+
+```markdown
+# Memory — Pattern Library
+
+Successful patterns distilled from agent outcomes. Each pattern captures what worked, under what conditions, and when to reuse it.
+Managed by memory-manager skill. Do not edit manually unless curating entries.
+
+## Patterns
+
+| ID | Date | Pattern | Context | Reuse Criteria | Source | Tags |
+|----|------|---------|---------|----------------|--------|------|
+| P-001 | 2026-03-01 | Wave-parallel testing with dedicated QA agent | Phase 5 review — QA agent found 3 issues that parallel execution missed | Use when phase has 3+ plans in a wave AND includes test-adjacent tasks | O-001 | testing, wave-execution, quality |
+```
+
+**Field definitions:**
+
+| Field | Format | Description |
+|-------|--------|-------------|
+| ID | `P-{NNN}` | Sequential, zero-padded to 3 digits |
+| Date | `YYYY-MM-DD` | When the pattern was captured |
+| Pattern | Free text | Brief description of the successful approach (what was done) |
+| Context | Free text | The situation where this pattern proved effective (when/why it worked) |
+| Reuse Criteria | Free text | Conditions under which this pattern should be applied again |
+| Source | `O-{NNN}` or free text | Link to the outcome record that generated this pattern, or description |
+| Tags | Comma-separated | Searchable keywords: task types, agent divisions, technologies |
+
+**Store Pattern operation:**
+
+```
+Store Pattern:
+
+Step 1: Check memory directory
+  - If .planning/memory/ does not exist: create it with mkdir -p
+  - If .planning/memory/PATTERNS.md does not exist: create it with the header template above
+
+Step 2: Determine next ID
+  - Read PATTERNS.md
+  - Count rows in the Patterns table (exclude header row)
+  - Next ID = P-{count + 1}, zero-padded to 3 digits
+
+Step 3: Build the record
+  - Date: current date (YYYY-MM-DD)
+  - Pattern: describe what the agent did that worked well
+  - Context: describe the situation (phase, task type, constraints)
+  - Reuse Criteria: under what conditions should future agents try this approach
+  - Source: link to the OUTCOMES.md record ID, or describe the source
+  - Tags: task-related keywords for recall matching
+
+Step 4: Append and verify
+  - Append the new row to the Patterns table
+  - Write updated PATTERNS.md
+  - If write fails: output the record as text (never lose data)
+```
+
+**When to store patterns:**
+- After `/legion:review` passes on first cycle (the approach worked cleanly)
+- After an agent resolves a complex task with a novel approach (importance ≥ 4 in OUTCOMES.md)
+- After a cross-division agent succeeds (unusual pairing worth remembering)
+- NOT after every success — only when the approach has learning value
+
+**Recall Patterns operation:**
+
+```
+Recall Patterns:
+
+Input:
+  - query_tags: list of tags to filter by (optional)
+  - limit: max records to return (default: 10)
+
+Step 1: Check if .planning/memory/PATTERNS.md exists
+  - If not: return empty results (do NOT create the file)
+
+Step 2: Read and parse PATTERNS.md
+  - Parse the Patterns table into individual records
+  - If parse fails: log warning, return empty results
+
+Step 3: Filter by query_tags
+  - If provided: keep records where any tag matches any query_tag
+  - If not provided: return all records
+
+Step 4: Apply recency scoring
+  - Same decay formula as OUTCOMES.md (Section 5):
+    days_old <= 7: 1.0, <= 30: 0.7, <= 90: 0.4, > 90: 0.1
+  - No importance weight (all patterns are inherently high-value)
+  - Sort by recency_weight descending
+
+Step 5: Return top {limit} records
+```
+
+---
+
+## Section 9: Error Knowledge Base
+
+Maps error signatures to known fixes — so agents encountering the same error can immediately try the solution that worked before.
+
+File path: `.planning/memory/ERRORS.md`
+Created: on first error store operation
+
+**File structure:**
+
+```markdown
+# Memory — Error Fixes
+
+Error signatures mapped to known fixes. When an agent encounters a matching error, it should try the documented fix before investigating from scratch.
+Managed by memory-manager skill. Do not edit manually unless curating entries.
+
+## Errors
+
+| ID | Date | Error Signature | Fix | Agent | Resolved | Tags |
+|----|------|-----------------|-----|-------|----------|------|
+| E-001 | 2026-03-01 | `TypeError: Cannot read property 'map' of undefined` in component render | Check for null/undefined data before mapping — add optional chaining or default empty array | engineering-senior-developer | true | frontend, react, null-safety |
+```
+
+**Field definitions:**
+
+| Field | Format | Description |
+|-------|--------|-------------|
+| ID | `E-{NNN}` | Sequential, zero-padded to 3 digits |
+| Date | `YYYY-MM-DD` | When the error was first encountered |
+| Error Signature | Free text | The error message or pattern (enough to match, not full stack trace) |
+| Fix | Free text | What resolved the error (actionable, specific) |
+| Agent | Agent ID | The agent that resolved it |
+| Resolved | `true` / `false` | Whether the fix actually worked (false = attempted but unverified) |
+| Tags | Comma-separated | Searchable keywords: technology, error category, file types |
+
+**Store Error operation:**
+
+```
+Store Error:
+
+Step 1: Check memory directory and file
+  - If .planning/memory/ does not exist: create it with mkdir -p
+  - If .planning/memory/ERRORS.md does not exist: create it with the header template above
+
+Step 2: Check for duplicate
+  - Read existing ERRORS.md
+  - If an entry with a substantially similar Error Signature already exists:
+    - If the existing fix worked (Resolved = true): skip store, return existing entry ID
+    - If the existing fix did not work (Resolved = false): update with the new fix, set Resolved = true
+  - Duplicate detection is fuzzy — match on key error terms, not exact string
+
+Step 3: Determine next ID (using E-{NNN}, same zero-padding as PATTERNS.md)
+  - Count rows in the Errors table (exclude header row)
+  - Next ID = E-{count + 1}, zero-padded to 3 digits
+
+Step 4: Build the record
+  - Date: current date
+  - Error Signature: the error message or pattern, trimmed to essential identifying info
+  - Fix: what resolved the error (specific actions, not generic advice)
+  - Agent: the agent that resolved it
+  - Resolved: true if verified, false if attempted but not confirmed
+  - Tags: technology, error category, affected file types
+
+Step 5: Append and verify
+  - Append the new row to the Errors table
+  - Write updated ERRORS.md
+  - If write fails: output the record as text (never lose data)
+```
+
+**When to store errors:**
+- After an agent encounters and resolves an error during `/legion:build`
+- After `/legion:review` identifies and fixes a recurring issue
+- NOT for trivial errors (typos, missing imports) — only for errors that required investigation
+- Error importance threshold: only store if the error took more than a trivial fix to resolve
+
+**Recall Errors operation:**
+
+```
+Recall Errors:
+
+Input:
+  - error_text: the error message to match against (optional)
+  - query_tags: list of tags to filter by (optional)
+  - limit: max records to return (default: 5)
+
+Step 1: Check if .planning/memory/ERRORS.md exists
+  - If not: return empty results
+
+Step 2: Read and parse ERRORS.md
+
+Step 3: Match against error_text
+  - If error_text provided: score each entry by keyword overlap between error_text and Error Signature
+  - Rank by match score (higher = more keywords in common)
+  - If query_tags also provided: AND-combine with tag filtering
+
+Step 4: Filter by Resolved
+  - Prioritize entries where Resolved = true (verified fixes)
+  - Include Resolved = false entries at lower rank
+
+Step 5: Return top {limit} records with Fix text prominently displayed
+```
+
+---
+
+## Section 10: Cross-File Integration
+
+How the three memory files work together as a unified knowledge layer.
+
+```
+Memory File Relationships:
+
+OUTCOMES.md — Event log (raw data)
+  Records individual task/review outcomes with agent, result, importance, date.
+  Growing: appends every build/review cycle.
+  Query pattern: "How did agent X perform on task type Y?"
+
+PATTERNS.md — Distilled wisdom (curated knowledge)
+  Captures what worked and when to reuse it, distilled from successful outcomes.
+  Slower growing: only stored when an approach has genuine learning value.
+  Query pattern: "What approaches have worked for task type Y?"
+
+ERRORS.md — Fix database (troubleshooting reference)
+  Maps error signatures to known fixes for faster resolution.
+  Growing: appends when non-trivial errors are resolved.
+  Query pattern: "Has this error been seen before? What fixed it?"
+
+Data flow:
+  Build outcome (success) → OUTCOMES.md → distill → PATTERNS.md
+  Build outcome (failure + fix) → OUTCOMES.md + ERRORS.md
+  Review outcome (pass on first cycle) → OUTCOMES.md → distill → PATTERNS.md
+  Review outcome (found recurring issue) → OUTCOMES.md + ERRORS.md
+
+All three files:
+  - Live in .planning/memory/
+  - Created on first write (not during initialization)
+  - Follow identical graceful degradation (Section 6)
+  - Use append-only records with sequential IDs
+  - Never auto-prune or auto-delete
+  - Are human-readable markdown tables
+```
+
+**Graceful degradation for all three files:**
+
+The caller pattern from Section 6 applies identically to PATTERNS.md and ERRORS.md:
+- Check for file existence before any read operation
+- Return empty results (not errors) when file is absent
+- Only store operations create the file
+- Never block workflow execution on memory availability
+- Never warn the user when memory files are absent
