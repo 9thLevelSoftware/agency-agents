@@ -23,6 +23,7 @@ Shared constants, paths, and patterns used across all /agency: commands.
 | Custom Agents | `agency-agents/{division}/{agent-id}.md` | User-created agent personality files (via `/agency:agent`) |
 | Codebase Map | `.planning/CODEBASE.md` | Structured map of existing codebase architecture, patterns, and risks (via codebase-mapper skill) |
 | Campaign Documents | `.planning/campaigns/{campaign-slug}.md` | Structured campaign plans with objectives, messaging, audience, channels, calendar, and agent assignments (via marketing-workflows skill) |
+| Design Documents | `.planning/designs/{project-slug}-system.md` | Structured design system specifications with tokens, components, accessibility, and agent assignments (via design-workflows skill) |
 
 ## Agent Personality Paths
 
@@ -326,3 +327,45 @@ All marketing workflow integration follows this pattern:
 2. If yes: use marketing-specific decomposition, wave patterns, and campaign templates
 3. If no: standard decomposition -- no impact whatsoever
 4. Never error, never block, never require marketing workflows for non-marketing phases
+
+## Design Workflow Conventions
+
+### Design Purpose
+Structured design workflows for design-focused phases -- design system creation, UX research planning and synthesis, and three-lens design review (brand, accessibility, usability). Design agents (6 specialists) are orchestrated through domain-specific wave patterns rather than generic engineering decomposition.
+
+### Design Lifecycle
+```
+Unplanned --> Research (user insights, brand audit) --> Designing (tokens, components, visual language) --> Review (3-lens) --> Complete
+```
+- **Unplanned**: Phase not yet planned. Standard decomposition applies.
+- **Research**: UX research and brand audit underway (Wave 1). Design document generated at `.planning/designs/{slug}-system.md`.
+- **Designing**: Design system creation, component specs, visual assets (Wave 2).
+- **Review**: Three-lens review cycle -- brand, accessibility, usability (Wave 3 or `/agency:review`).
+- **Complete**: Design system documented, handoff ready, outcomes recorded to memory (if memory layer active).
+
+### Design Paths
+| Artifact | Path | When Created |
+|----------|------|-------------|
+| Design system documents | `.planning/designs/{project-slug}-system.md` | During /agency:plan when design phase detected |
+| UX research reports | `.planning/designs/{research-slug}-research.md` | During /agency:plan when research is in scope |
+
+### Design Wave Pattern
+| Wave | Role | Agents | Produces |
+|------|------|--------|----------|
+| Wave 1 | Research & Foundation | UX Researcher, Brand Guardian | Research brief, brand foundation, design principles |
+| Wave 2 | Design System & Creation | UI Designer, UX Architect, Visual Storyteller | Design system document, component specs, visual language |
+| Wave 3 (optional) | Polish & Validation | Whimsy Injector, Review agents | Enhanced specs, audit reports |
+
+### Design Integration Points
+| Workflow | Operation | When |
+|----------|-----------|------|
+| `/agency:plan` | Detect design phase, design questioning, generate design docs | During phase decomposition (if DSN-* requirements or design keywords) |
+| `/agency:build` | Design wave execution, research-to-design handoff | During plan execution (if design documents exist) |
+| `/agency:review` | Three-lens review (brand + accessibility + usability) | During quality review (if design documents exist) |
+
+### Graceful Degradation Rule
+All design workflow integration follows this pattern:
+1. Check if phase is design (DSN-* requirements or keyword detection)
+2. If yes: use design-specific decomposition, wave patterns, and three-lens review
+3. If no: standard decomposition -- no impact whatsoever
+4. Never error, never block, never require design workflows for non-design phases
