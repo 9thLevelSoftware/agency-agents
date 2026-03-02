@@ -52,6 +52,8 @@ Each phase: plan (decompose + assign agents) → build (parallel execution) → 
 
 GitHub integration is opt-in — when a GitHub remote exists, `/agency:plan` creates issues, `/agency:build` creates PRs, and `/agency:status` shows GitHub status.
 
+Brownfield support is automatic — when `/agency:start` detects an existing codebase, it offers to analyze architecture, frameworks, and risks before planning. The analysis produces `.planning/CODEBASE.md`, which `/agency:plan` injects into agent task context.
+
 ## Memory Layer (Optional)
 
 After build/review cycles, outcomes are recorded to `.planning/memory/OUTCOMES.md`. During planning, past outcomes boost agent recommendations. During status, recent outcomes enrich the session briefing. All memory features degrade gracefully — the system works identically without them.

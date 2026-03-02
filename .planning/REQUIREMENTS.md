@@ -82,9 +82,9 @@
 
 ### Brownfield Support (BROWN)
 
-- [ ] BROWN-01: Codebase mapping — analyze existing codebase before planning phases
-- [ ] BROWN-02: Dependency detection — identify existing patterns, frameworks, conventions
-- [ ] BROWN-03: Risk assessment — flag areas of complexity or technical debt before agent work
+- [x] BROWN-01: Codebase mapping — analyze existing codebase before planning phases
+- [x] BROWN-02: Dependency detection — identify existing patterns, frameworks, conventions
+- [x] BROWN-03: Risk assessment — flag areas of complexity or technical debt before agent work
 
 ### Marketing Workflows (MKT)
 
@@ -121,6 +121,6 @@
 | LEARN-01 through LEARN-05 | Phase 9 |
 | CUSTOM-01 through CUSTOM-03 | Phase 10 |
 | GH-01 through GH-03 | Phase 11 |
-| BROWN-01 through BROWN-03 | TBD |
+| BROWN-01 through BROWN-03 | Phase 12 |
 | MKT-01 through MKT-03 | TBD |
 | DSN-01 through DSN-03 | TBD |
