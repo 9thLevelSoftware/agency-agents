@@ -33,15 +33,15 @@ progress:
 
 ## Current Position
 
-Phase: 21 (Strategic Advisors) — Complete
-Plan: 21-01 (complete, 2 tasks — advise.md command + state updates)
-Status: Phase 21 executed — /agency:advise command created with three-layer read-only enforcement
-Last activity: 2026-03-02 — Phase 21 execution complete
+Phase: 22 (Dynamic Review Panels) — Executed, pending review
+Plan: 22-01 (complete, 3 tasks — review-panel skill created, review command updated, state updated)
+Status: Phase 22 executed — review-panel skill with 3 sections, review command with panel mode option
+Last activity: 2026-03-02 — Phase 22 execution complete
 
 ## Progress (v2.0)
 
 ```
-[#####################         ]  78% — 7/9 phases complete
+[#########################     ]  89% — 8/9 phases complete
 ```
 
 | Phase | Plans Complete | Status | Completed |
@@ -53,7 +53,7 @@ Last activity: 2026-03-02 — Phase 21 execution complete
 | 19. Registry Integration | 1/1 | Complete | 2026-03-02 |
 | 20. Distribution | 1/1 | Complete | 2026-03-02 |
 | 21. Strategic Advisors | 1/1 | Complete | 2026-03-02 |
-| 22. Dynamic Review Panels | 0/? | Not started | - |
+| 22. Dynamic Review Panels | 1/1 | Complete | 2026-03-02 |
 | 23. Plan Critique | 0/? | Not started | - |
 
 ## Accumulated Context
@@ -97,6 +97,6 @@ Last activity: 2026-03-02 — Phase 21 execution complete
 
 ### Next Steps
 
-Phase 21 complete. `/agency:advise` command created with three-layer read-only enforcement (command allowed-tools + Explore subagent + prompt instruction).
-Next: Run `/gsd:plan-phase 22` to plan Dynamic Review Panels.
-Remaining phases: 22 (Dynamic Review Panels), 23 (Plan Critique).
+Phase 22 executed. `skills/review-panel/SKILL.md` created (panel composition + rubrics + synthesis), `commands/review.md` updated (panel mode option + rubric injection + synthesis step).
+Next: Run `/agency:review` to review Phase 22, or `/gsd:plan-phase 23` to plan the final phase.
+Remaining phases: 23 (Plan Critique — not started).

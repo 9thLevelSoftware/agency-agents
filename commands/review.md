@@ -13,6 +13,7 @@ Select appropriate review agents for the current phase, run a personality-inject
 skills/workflow-common/SKILL.md
 skills/agent-registry/SKILL.md
 skills/review-loop/SKILL.md
+skills/review-panel/SKILL.md
 skills/execution-tracker/SKILL.md
 skills/memory-manager/SKILL.md
 skills/github-sync/SKILL.md
@@ -58,6 +59,20 @@ skills/design-workflows/SKILL.md
       {file list — one per line}"
 
 3. SELECT REVIEW AGENTS
+
+   **3.0 Choose Review Mode**
+   Use AskUserQuestion to offer the review approach:
+   "How should reviewers be selected for this phase?"
+   Options:
+   - "Dynamic review panel (Recommended)" — 2-4 agents selected by agent-registry scoring with domain-weighted rubrics
+     Description: "Panel composer analyzes what was built and assembles the best reviewers with non-overlapping evaluation criteria"
+   - "Classic reviewer selection" — static mapping based on phase type
+     Description: "Uses the predefined phase-type-to-agent table (testing-reality-checker + domain secondary)"
+
+   If user selects "Dynamic review panel": go to Step 3-PANEL below
+   If user selects "Classic reviewer selection": continue with existing Step 3.a-3.e unchanged
+
+   **CLASSIC MODE** (unchanged from original):
    Follow review-loop skill Section 2 (Review Agent Selection):
 
    a. Classify the phase type from its CONTEXT.md and SUMMARY.md content — detect which of
@@ -116,6 +131,41 @@ skills/design-workflows/SKILL.md
    - If not a design phase or no design documents:
      Use default review agent selection (no impact)
 
+   **3-PANEL: DYNAMIC REVIEW PANEL COMPOSITION** (only if panel mode selected in 3.0)
+   Follow review-panel skill Section 1 (Panel Composition Algorithm):
+
+   a. Extract review signals from phase artifacts (Section 1, Step 1):
+      - Read CONTEXT.md for phase goal and domains
+      - Read SUMMARY.md files for what was actually built
+      - Read files_modified lists for file types produced
+      - Compose a task description combining domains, file types, and keywords
+
+   b. Score agents using agent-registry Section 3 (Section 1, Step 2):
+      - Pass the composite task description to the recommendation algorithm
+      - Apply scoring: exact match (3 pts), partial (1 pt), division (2 pts)
+      - Apply memory boost if available
+
+   c. Filter to review-capable agents (Section 1, Step 3):
+      - Keep only agents from the review-capable list in review-panel Section 1
+      - Skip non-review agents even if they scored highly
+
+   d. Cap panel size and enforce diversity (Section 1, Step 4):
+      - 2 reviewers for single-domain, 3 for standard, 4 for cross-domain
+      - Max 2 from same division
+      - At least 1 Testing division agent
+
+   e. Assign rubrics from review-panel Section 2 (Section 1, Step 5):
+      - Look up each agent's rubric by agent ID
+      - Fall back to division default if no specific rubric exists
+
+   f. Present panel to user for confirmation (Section 1, Step 6):
+      - Show the panel table with scores, rubric focus, and rationale
+      - Allow adding, replacing, or customizing reviewers
+      - Store the confirmed panel for use in Step 4
+
+   **Panel mode reviewers are used in Step 4 identically to classic reviewers**, with one
+   addition: each reviewer's prompt includes the rubric injection from review-panel Section 2.
+
 4. EXECUTE REVIEW CYCLE
    Initialize: cycle_count = 0
 
@@ -141,6 +191,23 @@ skills/design-workflows/SKILL.md
          - For re-review cycles (cycle_count > 1): include the re-review context block from
            review-loop Section 6, Step 3 with previous findings, what was fixed, and what
            remains unresolved
+      2.5. If PANEL MODE is active (selected in Step 3.0):
+           After the "## Your Review Instructions" section and before "## Required Feedback Format",
+           inject the reviewer's domain rubric from review-panel Section 2:
+
+           "## Your Domain Rubric — {rubric_name}
+
+           Evaluate ONLY against these criteria. Other aspects are covered by fellow panel reviewers.
+
+           | # | Criterion | What to Check |
+           |---|-----------|---------------|
+           {rubric criteria rows from review-panel Section 2}
+
+           For each finding, tag it with the criterion number: '**Criterion**: {N} — {criterion_name}'"
+
+           This scopes the reviewer's evaluation to their assigned domain, ensuring non-overlapping
+           coverage across the panel.
+
       3. Spawn via Agent tool:
          - subagent_type: "general-purpose"
          - model: "sonnet"
@@ -172,6 +239,15 @@ skills/design-workflows/SKILL.md
       **Blockers**: {count} | **Warnings**: {count} | **Suggestions**: {count}
       **Verdicts**: {reviewer-id}: {PASS|NEEDS WORK|FAIL}, ...
       Verdict: {aggregate verdict — PASS if no blockers/warnings, NEEDS WORK otherwise}
+
+   d2. PANEL SYNTHESIS (only if panel mode active):
+       Follow review-panel Section 3 (Panel Result Synthesis):
+       - Group findings by domain lens (each reviewer's rubric focus area)
+       - Identify cross-cutting themes: hot spots, criteria at risk, strong areas
+       - Compute aggregate verdict using panel rules
+       - Display the consolidated synthesis report
+       The aggregate verdict from synthesis REPLACES the simple verdict computation —
+       use it for the pass/fail decision in steps 4.e and 4.f.
 
    e. If aggregate verdict is PASS (must-fix list is empty AND all reviewers gave PASS):
       - Break the loop — go to step 5, Path A

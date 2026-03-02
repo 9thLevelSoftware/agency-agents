@@ -112,7 +112,8 @@
   2. Each reviewer evaluates using domain-weighted scoring rubrics specific to their specialty — criteria do not overlap between reviewers
   3. Panel results are synthesized into a consolidated report with per-reviewer findings and an overall verdict
   4. Review panel is available as an option within `/agency:review` alongside existing single-reviewer mode
-**Plans**: TBD
+**Plans**: 1
+- Plan 22-01 (Wave 1): Create review panel skill and integrate into /agency:review — skills/review-panel/SKILL.md with panel composition, rubric registry, synthesis; commands/review.md with panel mode option, rubric injection, synthesis step
 
 ### Phase 23: Plan Critique
 **Goal**: Before executing a plan, users can stress-test it with pre-mortem analysis ("assume it failed — why?") and assumption hunting ("what are we taking for granted?") using the most skeptical agents from the pool
@@ -136,5 +137,5 @@
 | 19. Registry Integration | 1/1 | Complete    | 2026-03-02 |
 | 20. Distribution | 1/1 | Complete | 2026-03-02 |
 | 21. Strategic Advisors | 1/1 | Complete | 2026-03-02 |
-| 22. Dynamic Review Panels | 0/? | Not started | - |
+| 22. Dynamic Review Panels | 1/1 | Complete | 2026-03-02 |
 | 23. Plan Critique | 0/? | Not started | - |
