@@ -7,22 +7,22 @@
 
 ## Current Position
 
-Phase: 15 (Plugin Scaffold) — Not started
-Plan: —
-Status: Roadmap defined, ready for Phase 15
-Last activity: 2026-03-01 — v2.0 roadmap created
+Phase: 17 (Skill Migration) — Complete
+Plan: 17-01 (complete, 3 tasks: migrate skills → co-locate templates → validate & cleanup)
+Status: Phase 17 complete. Ready to plan Phase 18 (Command Migration).
+Last activity: 2026-03-02 — Phase 17 executed (17-01)
 
 ## Progress (v2.0)
 
 ```
-[                              ]   0% — 0/9 phases complete
+[#########                     ]  33% — 3/9 phases complete
 ```
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 15. Plugin Scaffold | 0/? | Not started | - |
-| 16. Agent Migration | 0/? | Not started | - |
-| 17. Skill Migration | 0/? | Not started | - |
+| 15. Plugin Scaffold | 1/1 | Complete | 2026-03-01 |
+| 16. Agent Migration | 1/1 | Complete | 2026-03-02 |
+| 17. Skill Migration | 1/1 | Complete | 2026-03-02 |
 | 18. Command Migration and Path Updates | 0/? | Not started | - |
 | 19. Registry Integration | 0/? | Not started | - |
 | 20. Distribution | 0/? | Not started | - |
@@ -34,6 +34,9 @@ Last activity: 2026-03-01 — v2.0 roadmap created
 
 ### Key Decisions (v2.0)
 
+- Templates co-located at `skills/questioning-flow/templates/` — plugin assets belong with the plugin, not project-level `.planning/` (Phase 17)
+- `.planning/templates/` left intact until Phase 18 — current `.claude/` commands still reference it; Phase 18 will clean up
+- Skill content migrated verbatim; path updates in skill bodies are Phase 18's responsibility
 - Plugin manifest goes in `.claude-plugin/plugin.json` — standard Claude Code plugin location
 - `settings.json` at plugin root alongside manifest phase (Phase 15)
 - Agent migration (Phase 16) and skill migration (Phase 17) are independent — can proceed in parallel
@@ -65,8 +68,7 @@ Last activity: 2026-03-01 — v2.0 roadmap created
 3. Run `/gsd:plan-phase {N}` for the next unstarted phase
 4. After planning, run `/gsd:build` to execute
 
-### Phase 15 Entry Point
+### Next Steps
 
-Start here: `plugin manifest and settings.json`
-Requirements: PLUG-01, PLUG-05
-Goal: `.claude-plugin/plugin.json` and `settings.json` exist, root directory structure scaffolded
+Phase 17 (Skill Migration) is complete — all 15 skills at `skills/{name}/SKILL.md`.
+Phase 18 (Command Migration) is next — run `/gsd:plan-phase 18` to plan. Depends on Phase 16 (done) and Phase 17 (done).

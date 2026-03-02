@@ -9,7 +9,7 @@
 
 - [ ] **Phase 15: Plugin Scaffold** - Create the `.claude-plugin/plugin.json` manifest and `settings.json`; establish the root directory structure every subsequent phase builds into
 - [ ] **Phase 16: Agent Migration** - Move all 51 agent files to plugin `agents/` directory with updated frontmatter (name, description, division fields)
-- [ ] **Phase 17: Skill Migration** - Convert all 15 skills to `skills/{name}/SKILL.md` directory structure with supporting files alongside
+- [x] **Phase 17: Skill Migration** - Convert all 15 skills to `skills/{name}/SKILL.md` directory structure with supporting files alongside
 - [ ] **Phase 18: Command Migration and Path Updates** - Move 9 commands to plugin `commands/` directory and update all cross-references throughout the codebase
 - [ ] **Phase 19: Registry Integration** - Update agent-registry skill to reference new plugin-relative agent paths so lookup and recommendation work correctly
 - [ ] **Phase 20: Distribution** - Produce marketplace entry, README, CHANGELOG, and developer testing docs so the plugin can be installed and shared
@@ -28,7 +28,8 @@
   2. `settings.json` exists at the plugin root with default configuration that activates when the plugin is enabled
   3. The root directory contains empty `commands/`, `skills/`, and `agents/` directories ready to receive migrated files
   4. Running `claude plugin add --plugin-dir .` loads the plugin without manifest validation errors
-**Plans**: TBD
+**Plans**: 1
+- Plan 15-01 (Wave 1): Plugin manifest, settings, and directory structure — create `.claude-plugin/plugin.json`, `settings.json`, and empty `commands/`, `skills/`, `agents/` directories
 
 ### Phase 16: Agent Migration
 **Goal**: All 51 agent personalities live in the plugin `agents/` directory with schema-compliant frontmatter, so Claude Code can discover and inject them
@@ -39,7 +40,8 @@
   2. Every agent file has `name` and `description` frontmatter fields matching the Claude Code plugin agent schema
   3. Every agent file has a `division` frontmatter field preserving the original grouping (Engineering, Design, Marketing, etc.)
   4. No agent files remain in the old `agency-agents/` directory — migration is complete, not duplicated
-**Plans**: TBD
+**Plans**: 1
+- Plan 16-01 (Wave 1): Migrate, validate, and clean up — copy 51 agent files to `agents/` with normalized frontmatter (name, description, division), validate schema compliance, remove old `agency-agents/` directory
 
 ### Phase 17: Skill Migration
 **Goal**: All 15 skills are restructured into `skills/{name}/SKILL.md` directories with schema-compliant frontmatter and supporting files co-located
@@ -50,7 +52,8 @@
   2. Every `SKILL.md` has `name` and `description` frontmatter fields matching the Claude Code skill schema
   3. Template and reference files previously stored alongside skills are present in the same directory as their `SKILL.md`
   4. No skill files remain in the old `.claude/skills/agency/` location
-**Plans**: TBD
+**Plans**: 1
+- Plan 17-01 (Wave 1): Migrate skills, co-locate templates, validate and clean up — create 15 `skills/{name}/SKILL.md` directories, move templates to questioning-flow, remove old `.claude/skills/agency/`
 
 ### Phase 18: Command Migration and Path Updates
 **Goal**: All 9 commands live in the plugin `commands/` directory and every `@` reference, cross-skill link, and agent path inside commands and skills points to the new plugin-relative locations
@@ -122,9 +125,9 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 15. Plugin Scaffold | 0/? | Not started | - |
-| 16. Agent Migration | 0/? | Not started | - |
-| 17. Skill Migration | 0/? | Not started | - |
+| 15. Plugin Scaffold | 1/1 | Complete | 2026-03-01 |
+| 16. Agent Migration | 1/1 | Complete | 2026-03-02 |
+| 17. Skill Migration | 1/1 | Complete   | 2026-03-02 |
 | 18. Command Migration and Path Updates | 0/? | Not started | - |
 | 19. Registry Integration | 0/? | Not started | - |
 | 20. Distribution | 0/? | Not started | - |

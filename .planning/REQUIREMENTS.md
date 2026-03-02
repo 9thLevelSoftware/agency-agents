@@ -11,7 +11,7 @@ Requirements for plugin conversion. Each maps to roadmap phases.
 
 - [ ] **PLUG-01**: Plugin has `.claude-plugin/plugin.json` manifest with name, version, description, author, keywords, repository
 - [ ] **PLUG-02**: Plugin has `commands/` directory at root with all 9 command `.md` files
-- [ ] **PLUG-03**: Plugin has `skills/` directory at root with 15 skills in `{name}/SKILL.md` format
+- [x] **PLUG-03**: Plugin has `skills/` directory at root with 15 skills in `{name}/SKILL.md` format
 - [ ] **PLUG-04**: Plugin has `agents/` directory at root with all 51 agent `.md` files
 - [ ] **PLUG-05**: Plugin has `settings.json` with default configuration when enabled
 
@@ -24,9 +24,9 @@ Requirements for plugin conversion. Each maps to roadmap phases.
 
 ### Skill Migration (SKILL)
 
-- [ ] **SKILL-01**: All 15 skills converted to `skills/{name}/SKILL.md` directory structure
-- [ ] **SKILL-02**: Skill frontmatter includes `name` and `description` matching Claude Code skill schema
-- [ ] **SKILL-03**: Templates and reference files moved alongside their SKILL.md as supporting files
+- [x] **SKILL-01**: All 15 skills converted to `skills/{name}/SKILL.md` directory structure
+- [x] **SKILL-02**: Skill frontmatter includes `name` and `description` matching Claude Code skill schema
+- [x] **SKILL-03**: Templates and reference files moved alongside their SKILL.md as supporting files
 
 ### Path & Reference Updates (PATH)
 
@@ -88,10 +88,10 @@ Requirements for plugin conversion. Each maps to roadmap phases.
 | AGENT-01 | Phase 16 | Pending |
 | AGENT-02 | Phase 16 | Pending |
 | AGENT-03 | Phase 16 | Pending |
-| PLUG-03 | Phase 17 | Pending |
-| SKILL-01 | Phase 17 | Pending |
-| SKILL-02 | Phase 17 | Pending |
-| SKILL-03 | Phase 17 | Pending |
+| PLUG-03 | Phase 17 | Complete |
+| SKILL-01 | Phase 17 | Complete |
+| SKILL-02 | Phase 17 | Complete |
+| SKILL-03 | Phase 17 | Complete |
 | PLUG-02 | Phase 18 | Pending |
 | PATH-01 | Phase 18 | Pending |
 | PATH-02 | Phase 18 | Pending |
