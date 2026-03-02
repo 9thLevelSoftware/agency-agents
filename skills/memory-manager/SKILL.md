@@ -665,3 +665,128 @@ Merge behavior:
 - Existing records without a Branch field are treated as "main" (or whatever the default branch is)
 - All recall operations work identically when branch_filter is "all" (the default)
 - No migration needed — old records are valid, new records just have an extra column
+
+---
+
+## Section 12: Semantic Compaction
+
+AI-summarized compaction of completed phase work. Preserves reasoning, decisions, and outcomes while trimming verbose execution details to free context for active work.
+
+**What Gets Compacted:**
+```
+Compaction targets phase SUMMARY files:
+  .planning/phases/{NN-name}/{NN}-{PP}-SUMMARY.md
+
+These files are written by execution-tracker after each plan completes.
+After a phase is fully complete (all plans executed, review passed),
+the summaries can be compacted.
+```
+
+**Compaction Rules:**
+```
+Preserved (MUST appear in compacted summary):
+  - What was done (deliverables produced, files modified)
+  - Why it was done (requirements satisfied, goal addressed)
+  - Key decisions made (architecture choices, trade-offs, rejected alternatives)
+  - Requirements satisfied (IDs and brief descriptions)
+  - Verification results (what passed, what was flagged)
+  - Agent assignments (who did what)
+
+Trimmed (can be removed):
+  - Full verification command output (keep pass/fail, drop verbose output)
+  - Intermediate step-by-step execution details
+  - File content diffs (keep file paths and change summaries)
+  - Agent execution traces and tool call details
+  - Repeated context that appears in multiple summaries for the same phase
+
+Target: compacted summary should be 30-50% of original length
+  while retaining 100% of decision-relevant information
+```
+
+**Compaction Operation:**
+```
+Compact Phase Summaries:
+
+Input:
+  - phase_number: the completed phase to compact
+  - phase_dir: .planning/phases/{NN-name}/
+
+Preconditions:
+  - Phase must be marked Complete in ROADMAP.md
+  - All plan SUMMARY files must exist in the phase directory
+
+Step 1: Read all SUMMARY files for the phase
+  - Glob: .planning/phases/{NN-name}/{NN}-*-SUMMARY.md
+  - Read each file fully
+
+Step 2: Produce compacted summary
+  - Combine all plan summaries into a single phase-level compacted summary
+  - Apply the Preserved/Trimmed rules above
+  - Write to: .planning/phases/{NN-name}/{NN}-COMPACTED.md
+
+Step 3: Preserve originals
+  - Do NOT delete or overwrite original SUMMARY files
+  - The {NN}-COMPACTED.md file is an addition, not a replacement
+  - Original summaries remain for detailed audit if needed
+
+Step 4: Verify compaction quality
+  - Check that every requirement ID from the phase appears in the compacted summary
+  - Check that every file path from the phase appears in the compacted summary
+  - If any requirement or file is missing: warn and include the missing items
+
+Compacted file format:
+  ---
+  phase: {NN}-{name}
+  compacted: {date}
+  original_summaries: [{list of summary files}]
+  requirements_satisfied: [{list of requirement IDs}]
+  ---
+
+  # Phase {N}: {name} — Compacted Summary
+
+  ## Deliverables
+  {What was built, one bullet per plan}
+
+  ## Decisions
+  {Key decisions made during execution, with rationale}
+
+  ## Files Modified
+  | File | Change |
+  |------|--------|
+  {Combined file table from all plan summaries}
+
+  ## Verification
+  {Pass/fail per requirement, one line each}
+
+  ## Agents
+  {Who executed what}
+```
+
+**When Compaction Runs:**
+```
+Compaction is triggered at two points:
+
+1. After /legion:review passes for a phase (optional step)
+   - execution-tracker Section 4 can trigger compaction after phase completion
+   - Only if all plans passed and review approved the work
+
+2. Before /legion:plan for a new phase (optional context-saving step)
+   - When planning a new phase, check if previous completed phases have uncompacted summaries
+   - Suggest compaction to free context: "Phase {N} has {count} uncompacted summaries. Compact now?"
+   - Never auto-compact — user confirms
+
+Compaction is always opt-in:
+  - Never runs automatically
+  - Never deletes originals
+  - System works identically without compacted files
+```
+
+**Recall Integration:**
+```
+When recalling phase context (e.g., during /legion:plan or /legion:status):
+
+1. Check if .planning/phases/{NN-name}/{NN}-COMPACTED.md exists
+2. If yes: use the compacted summary (smaller, faster to read)
+3. If no: fall back to reading individual SUMMARY files
+4. If detailed audit needed: always read original SUMMARY files regardless of compaction
+```
