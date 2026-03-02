@@ -21,6 +21,7 @@ Shared constants, paths, and patterns used across all /agency: commands.
 | Milestone Archive | `.planning/archive/milestone-{N}/` | Archived phase directories from completed milestones |
 | Memory Outcomes | `.planning/memory/OUTCOMES.md` | Agent performance and task outcome records for cross-session learning |
 | Custom Agents | `agency-agents/{division}/{agent-id}.md` | User-created agent personality files (via `/agency:agent`) |
+| Codebase Map | `.planning/CODEBASE.md` | Structured map of existing codebase architecture, patterns, and risks (via codebase-mapper skill) |
 
 ## Agent Personality Paths
 
@@ -252,3 +253,34 @@ All GitHub integration follows this pattern:
 2. If github_available is true: perform the operation
 3. If github_available is false: skip silently, proceed with default behavior
 4. Never error, never block, never require GitHub for workflow completion
+
+## Brownfield Conventions
+
+### Brownfield Purpose
+Pre-planning codebase analysis that maps existing architecture, detects patterns and frameworks, and flags risk areas before agents begin work. All operations are opt-in and degrade gracefully.
+
+### Brownfield Lifecycle
+```
+Absent → Analyzed (CODEBASE.md created) → Stale (>30 days old, re-analysis recommended)
+```
+- **Absent**: No `.planning/CODEBASE.md`. All workflows function identically (greenfield mode).
+- **Analyzed**: Codebase mapped during `/agency:start`. CODEBASE.md available for plan enrichment.
+- **Stale**: CODEBASE.md is >30 days old. `/agency:plan` warns but does not block or auto-refresh.
+
+### Brownfield Paths
+| Artifact | Path | When Created |
+|----------|------|-------------|
+| Codebase map | `.planning/CODEBASE.md` | After brownfield analysis during /agency:start (user opts in) |
+
+### Brownfield Integration Points
+| Workflow | Operation | When |
+|----------|-----------|------|
+| `/agency:start` | Detect + analyze | After pre-flight, before questioning (if existing codebase found) |
+| `/agency:plan` | Inject risk areas into context | During phase decomposition (if CODEBASE.md exists) |
+
+### Graceful Degradation Rule
+All brownfield integration follows this pattern:
+1. Check if `.planning/CODEBASE.md` exists
+2. If yes: inject relevant sections into planning context
+3. If no: skip silently -- greenfield project, proceed normally
+4. Never error, never block, never require brownfield analysis for workflow completion
