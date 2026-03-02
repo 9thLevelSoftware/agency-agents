@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-02T05:21:01.317Z"
+last_updated: "2026-03-02T06:00:00.000Z"
 progress:
-  total_phases: 17
-  completed_phases: 17
-  total_plans: 33
-  completed_plans: 33
+  total_phases: 18
+  completed_phases: 18
+  total_plans: 34
+  completed_plans: 34
 ---
 
 # Project State
@@ -20,15 +20,15 @@ progress:
 
 ## Current Position
 
-Phase: 17 (Skill Migration) — Complete
-Plan: 17-01 (complete, 3 tasks: migrate skills → co-locate templates → validate & cleanup)
-Status: Phase 17 complete. Ready to plan Phase 18 (Command Migration).
-Last activity: 2026-03-02 — Phase 17 executed (17-01)
+Phase: 18 (Command Migration and Path Updates) — Complete
+Plan: 18-01 (complete, 3 tasks)
+Status: Phase 18 complete. All commands migrated, all paths updated, old directories removed.
+Last activity: 2026-03-02 — Phase 18 executed (18-01 complete)
 
 ## Progress (v2.0)
 
 ```
-[#########                     ]  33% — 3/9 phases complete
+[############                  ]  44% — 4/9 phases complete
 ```
 
 | Phase | Plans Complete | Status | Completed |
@@ -36,7 +36,7 @@ Last activity: 2026-03-02 — Phase 17 executed (17-01)
 | 15. Plugin Scaffold | 1/1 | Complete | 2026-03-01 |
 | 16. Agent Migration | 1/1 | Complete | 2026-03-02 |
 | 17. Skill Migration | 1/1 | Complete | 2026-03-02 |
-| 18. Command Migration and Path Updates | 0/? | Not started | - |
+| 18. Command Migration and Path Updates | 1/1 | Complete | 2026-03-02 |
 | 19. Registry Integration | 0/? | Not started | - |
 | 20. Distribution | 0/? | Not started | - |
 | 21. Strategic Advisors | 0/? | Not started | - |
@@ -48,8 +48,9 @@ Last activity: 2026-03-02 — Phase 17 executed (17-01)
 ### Key Decisions (v2.0)
 
 - Templates co-located at `skills/questioning-flow/templates/` — plugin assets belong with the plugin, not project-level `.planning/` (Phase 17)
-- `.planning/templates/` left intact until Phase 18 — current `.claude/` commands still reference it; Phase 18 will clean up
-- Skill content migrated verbatim; path updates in skill bodies are Phase 18's responsibility
+- `.planning/templates/` removed in Phase 18 — commands now reference `skills/questioning-flow/templates/`
+- All skill and command path updates complete — zero stale `.claude/` or `agency-agents/` references remain (Phase 18)
+- `.claude/commands/` removed (empty after migration) — `.claude/` directory now contains no project files
 - Plugin manifest goes in `.claude-plugin/plugin.json` — standard Claude Code plugin location
 - `settings.json` at plugin root alongside manifest phase (Phase 15)
 - Agent migration (Phase 16) and skill migration (Phase 17) are independent — can proceed in parallel
@@ -83,5 +84,5 @@ Last activity: 2026-03-02 — Phase 17 executed (17-01)
 
 ### Next Steps
 
-Phase 17 (Skill Migration) is complete — all 15 skills at `skills/{name}/SKILL.md`.
-Phase 18 (Command Migration) is next — run `/gsd:plan-phase 18` to plan. Depends on Phase 16 (done) and Phase 17 (done).
+Phase 18 complete. Next up is Phase 19 (Registry Integration).
+Run `/gsd:plan-phase 19` to plan the next phase.
