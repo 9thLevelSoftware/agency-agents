@@ -1,7 +1,7 @@
 {
-  "name": "agency-workflows",
-  "version": "2.0.0",
-  "description": "Orchestrate 51 AI specialist personalities as coordinated teams — project initialization, phase planning, parallel execution, quality review, and portfolio management",
+  "name": "legion",
+  "version": "3.0.0",
+  "description": "Orchestrate 51 AI specialist personalities as a coordinated legion — \"My name is Legion, for we are many.\" Project initialization, phase planning, parallel execution, quality review, and portfolio management.",
   "author": {
     "name": "9thLevelSoftware",
     "url": "https://github.com/9thLevelSoftware"
@@ -14,7 +14,7 @@
     "team-coordination",
     "project-management",
     "multi-agent",
-    "code-review",
+    "legion",
     "parallel-execution"
   ]
 }
