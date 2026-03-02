@@ -11,7 +11,7 @@
 - [ ] **Phase 16: Agent Migration** - Move all 51 agent files to plugin `agents/` directory with updated frontmatter (name, description, division fields)
 - [x] **Phase 17: Skill Migration** - Convert all 15 skills to `skills/{name}/SKILL.md` directory structure with supporting files alongside
 - [ ] **Phase 18: Command Migration and Path Updates** - Move 9 commands to plugin `commands/` directory and update all cross-references throughout the codebase
-- [ ] **Phase 19: Registry Integration** - Update agent-registry skill to reference new plugin-relative agent paths so lookup and recommendation work correctly
+- [x] **Phase 19: Registry Integration** - Update agent-registry skill to reference new plugin-relative agent paths so lookup and recommendation work correctly (completed 2026-03-02)
 - [ ] **Phase 20: Distribution** - Produce marketplace entry, README, CHANGELOG, and developer testing docs so the plugin can be installed and shared
 - [ ] **Phase 21: Strategic Advisors** - Add `/agency:advise` command for read-only consultation using Agency's 51 agent personalities as domain experts
 - [ ] **Phase 22: Dynamic Review Panels** - Compose context-aware multi-perspective review teams with domain-weighted scoring rubrics
@@ -131,7 +131,7 @@
 | 16. Agent Migration | 1/1 | Complete | 2026-03-02 |
 | 17. Skill Migration | 1/1 | Complete    | 2026-03-02 |
 | 18. Command Migration and Path Updates | 1/1 | Complete | 2026-03-02 |
-| 19. Registry Integration | 1/1 | Complete | 2026-03-02 |
+| 19. Registry Integration | 1/1 | Complete   | 2026-03-02 |
 | 20. Distribution | 0/? | Not started | - |
 | 21. Strategic Advisors | 0/? | Not started | - |
 | 22. Dynamic Review Panels | 0/? | Not started | - |
