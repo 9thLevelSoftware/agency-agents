@@ -88,4 +88,4 @@ Plans:
 | 25. Commands | 1/1 | Complete    | 2026-03-02 |
 | 26. Skills | 1/1 | Complete    | 2026-03-02 |
 | 27. Plugin Manifest | 1/1 | Complete    | 2026-03-02 |
-| 28. Documentation | 2/2 | Complete   | 2026-03-02 |
+| 28. Documentation | 2/2 | Complete    | 2026-03-02 |
