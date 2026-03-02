@@ -89,7 +89,7 @@ Best Practice's agent frontmatter schema (YAML with name, description, color, di
 
 **Left behind:** Best Practice's RPI workflow (too domain-specific) and custom hooks infrastructure. We kept the architecture patterns and dropped the opinionated workflows.
 
-#### From [Daem0n-MCP](https://github.com/UnderdogProtocol/daem0n-MCP)
+#### From [Daem0n-MCP](https://github.com/9thLevelSoftware/Daem0n-MCP)
 
 **Took: The semantic memory architecture.**
 
