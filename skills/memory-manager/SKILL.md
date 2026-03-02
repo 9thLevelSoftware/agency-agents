@@ -50,10 +50,10 @@ Managed by memory-manager skill. Do not edit manually unless pruning old records
 
 ## Records
 
-| ID | Date | Phase | Plan | Agent | Task Type | Outcome | Importance | Tags | Summary |
-|----|------|-------|------|-------|-----------|---------|------------|------|---------|
-| O-001 | 2026-03-01 | 5 | 05-01 | testing-reality-checker | quality-review | success | 3 | review, testing, workflow | Review-loop skill approved in 2 cycles |
-| O-002 | 2026-03-01 | 5 | 05-02 | autonomous | workflow | success | 2 | review, command, status | /legion:review command implemented |
+| ID | Date | Branch | Phase | Plan | Agent | Task Type | Outcome | Importance | Tags | Summary |
+|----|------|--------|-------|------|-------|-----------|---------|------------|------|---------|
+| O-001 | 2026-03-01 | main | 5 | 05-01 | testing-reality-checker | quality-review | success | 3 | review, testing, workflow | Review-loop skill approved in 2 cycles |
+| O-002 | 2026-03-01 | main | 5 | 05-02 | autonomous | workflow | success | 2 | review, command, status | /legion:review command implemented |
 ```
 
 **Field definitions**:
@@ -62,6 +62,7 @@ Managed by memory-manager skill. Do not edit manually unless pruning old records
 |-------|--------|-------------|
 | ID | `O-{NNN}` | Sequential, zero-padded to 3 digits. Next ID = count of existing records + 1 |
 | Date | `YYYY-MM-DD` | When the outcome was recorded |
+| Branch | Git branch name | Current branch at record time (via `git branch --show-current`). Existing records without Branch are treated as default branch |
 | Phase | Integer | Phase number where the outcome occurred |
 | Plan | `NN-PP` | Plan ID (e.g., `05-01`) |
 | Agent | Agent ID or `autonomous` | The agent that executed the work |
@@ -372,9 +373,9 @@ Managed by memory-manager skill. Do not edit manually unless curating entries.
 
 ## Patterns
 
-| ID | Date | Pattern | Context | Reuse Criteria | Source | Tags |
-|----|------|---------|---------|----------------|--------|------|
-| P-001 | 2026-03-01 | Wave-parallel testing with dedicated QA agent | Phase 5 review — QA agent found 3 issues that parallel execution missed | Use when phase has 3+ plans in a wave AND includes test-adjacent tasks | O-001 | testing, wave-execution, quality |
+| ID | Date | Branch | Pattern | Context | Reuse Criteria | Source | Tags |
+|----|------|--------|---------|---------|----------------|--------|------|
+| P-001 | 2026-03-01 | main | Wave-parallel testing with dedicated QA agent | Phase 5 review — QA agent found 3 issues that parallel execution missed | Use when phase has 3+ plans in a wave AND includes test-adjacent tasks | O-001 | testing, wave-execution, quality |
 ```
 
 **Field definitions:**
@@ -383,6 +384,7 @@ Managed by memory-manager skill. Do not edit manually unless curating entries.
 |-------|--------|-------------|
 | ID | `P-{NNN}` | Sequential, zero-padded to 3 digits |
 | Date | `YYYY-MM-DD` | When the pattern was captured |
+| Branch | Git branch name | Current branch at record time (via `git branch --show-current`) |
 | Pattern | Free text | Brief description of the successful approach (what was done) |
 | Context | Free text | The situation where this pattern proved effective (when/why it worked) |
 | Reuse Criteria | Free text | Conditions under which this pattern should be applied again |
@@ -471,9 +473,9 @@ Managed by memory-manager skill. Do not edit manually unless curating entries.
 
 ## Errors
 
-| ID | Date | Error Signature | Fix | Agent | Resolved | Tags |
-|----|------|-----------------|-----|-------|----------|------|
-| E-001 | 2026-03-01 | `TypeError: Cannot read property 'map' of undefined` in component render | Check for null/undefined data before mapping — add optional chaining or default empty array | engineering-senior-developer | true | frontend, react, null-safety |
+| ID | Date | Branch | Error Signature | Fix | Agent | Resolved | Tags |
+|----|------|--------|-----------------|-----|-------|----------|------|
+| E-001 | 2026-03-01 | main | `TypeError: Cannot read property 'map' of undefined` in component render | Check for null/undefined data before mapping — add optional chaining or default empty array | engineering-senior-developer | true | frontend, react, null-safety |
 ```
 
 **Field definitions:**
@@ -482,6 +484,7 @@ Managed by memory-manager skill. Do not edit manually unless curating entries.
 |-------|--------|-------------|
 | ID | `E-{NNN}` | Sequential, zero-padded to 3 digits |
 | Date | `YYYY-MM-DD` | When the error was first encountered |
+| Branch | Git branch name | Current branch at record time (via `git branch --show-current`) |
 | Error Signature | Free text | The error message or pattern (enough to match, not full stack trace) |
 | Fix | Free text | What resolved the error (actionable, specific) |
 | Agent | Agent ID | The agent that resolved it |
