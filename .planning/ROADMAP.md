@@ -15,7 +15,7 @@
 - [x] **Phase 24: Foundation** — Update workflow-common with Legion constants; everything else depends on this
 - [x] **Phase 25: Commands** — Rename all 10 command files to `/legion:` namespace
 - [x] **Phase 26: Skills** — Update remaining 16 skill files with `/legion:` references
-- [ ] **Phase 27: Plugin Manifest** — Update plugin.json and marketplace.json to Legion identity
+- [x] **Phase 27: Plugin Manifest** — Update plugin.json and marketplace.json to Legion identity (completed 2026-03-02)
 - [ ] **Phase 28: Documentation** — Rewrite README, update CLAUDE.md, CONTRIBUTING.md, CHANGELOG.md, add attribution
 
 ### Phase Details
@@ -59,7 +59,7 @@
 1. `plugin.json` has `"name": "legion"` and a description that matches the Legion identity
 2. `marketplace.json` has `"name": "legion"`, updated description, and correct repository URL
 3. Neither manifest file contains "agency" or "Agency Workflows" in any field
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 27-01-PLAN.md — Update plugin.json and marketplace.json to Legion identity (PLG-01, PLG-02)
@@ -83,5 +83,5 @@ Plans:
 | 24. Foundation | 1/1 | Complete    | 2026-03-02 |
 | 25. Commands | 1/1 | Complete    | 2026-03-02 |
 | 26. Skills | 1/1 | Complete    | 2026-03-02 |
-| 27. Plugin Manifest | 0/1 | Not started | — |
+| 27. Plugin Manifest | 1/1 | Complete   | 2026-03-02 |
 | 28. Documentation | 0/? | Not started | — |

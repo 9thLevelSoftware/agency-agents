@@ -21,8 +21,8 @@ Requirements for the Legion rebrand. Each maps to roadmap phases.
 
 ### Plugin Identity (PLG)
 
-- [ ] **PLG-01**: Plugin manifest (`.claude-plugin/plugin.json`) has name `legion`, updated description, and correct repository URL
-- [ ] **PLG-02**: Marketplace entry (`.claude-plugin/marketplace.json`) updated with `legion` name, description, and URLs
+- [x] **PLG-01**: Plugin manifest (`.claude-plugin/plugin.json`) has name `legion`, updated description, and correct repository URL
+- [x] **PLG-02**: Marketplace entry (`.claude-plugin/marketplace.json`) updated with `legion` name, description, and URLs
 
 ### Documentation (DOC)
 
@@ -61,8 +61,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CMD-03 | Phase 25 | Pending |
 | SKL-02 | Phase 26 | Pending |
 | SKL-03 | Phase 26 | Pending |
-| PLG-01 | Phase 27 | Pending |
-| PLG-02 | Phase 27 | Pending |
+| PLG-01 | Phase 27 | Complete |
+| PLG-02 | Phase 27 | Complete |
 | DOC-01 | Phase 28 | Pending |
 | DOC-02 | Phase 28 | Pending |
 | DOC-03 | Phase 28 | Pending |
