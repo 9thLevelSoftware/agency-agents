@@ -1,11 +1,11 @@
 ---
-name: agency:execution-tracker
+name: legion:execution-tracker
 description: Tracks execution progress with STATE.md updates, ROADMAP.md progress, and atomic git commits per plan
 ---
 
-# Agency Execution Tracker
+# Legion Execution Tracker
 
-Progress tracking and git commit engine for /agency:build. This skill governs how state files are updated, how progress is calculated, and how atomic commits are created after each plan completes.
+Progress tracking and git commit engine for /legion:build. This skill governs how state files are updated, how progress is calculated, and how atomic commits are created after each plan completes.
 
 References:
 - State Update Pattern from `workflow-common.md` (Read → Update → Write STATE.md)
@@ -24,7 +24,7 @@ Core rules that govern all execution tracking:
 - STATE.md is updated after EVERY plan completion — whether the plan succeeded, partially completed, or failed
 - ROADMAP.md progress table is updated after each wave completes, not after individual plans
 - One git commit per completed plan — not per task, not per wave
-- Commit messages use Conventional Commits: `feat(agency): execute plan {NN}-{PP} — {plan_name}`
+- Commit messages use Conventional Commits: `feat(legion): execute plan {NN}-{PP} — {plan_name}`
 - Progress percentage counts completed plans across ALL phases, not just the current phase
 - Failed plans are tracked in state files but do NOT increment the completed count
 - The tracker never modifies plan output files — it only touches STATE.md, ROADMAP.md, and git history
@@ -74,7 +74,7 @@ Step 2.5: Record outcome in memory (optional)
 Step 3: Create atomic git commit (success only)
   Only commit if the plan succeeded:
   git add -A
-  git commit -m "feat(agency): execute plan {NN}-{PP} — {plan_name}
+  git commit -m "feat(legion): execute plan {NN}-{PP} — {plan_name}
 
   Phase {N}: {phase_name}
   Wave: {W}
@@ -138,8 +138,8 @@ Step 2: Update STATE.md
     OR: "Phase {N} partial — {count} plan(s) failed, review needed"
   - Last Activity: "Phase {N} execution ({date})"
   - Next Action:
-    - If all passed: "Run `/agency:review` to verify Phase {N}: {phase_name}"
-    - If some failed: "Run `/agency:review` to diagnose failures in Phase {N}"
+    - If all passed: "Run `/legion:review` to verify Phase {N}: {phase_name}"
+    - If some failed: "Run `/legion:review` to diagnose failures in Phase {N}"
   Write updated STATE.md
 
 Step 3: Update ROADMAP.md progress table
@@ -155,7 +155,7 @@ Step 4: Final progress display
   | {NN}-{PP} | {W} | Pass/Fail | {one-line summary} |
   ...
 
-  Next: Run `/agency:review` to verify Phase {N}
+  Next: Run `/legion:review` to verify Phase {N}
 ```
 
 ---
@@ -196,7 +196,7 @@ Exact format for all git commits produced by the execution tracker. Three commit
 
 ```
 Plan completion commit (one per successful plan):
-  feat(agency): execute plan {NN}-{PP} — {brief plan name}
+  feat(legion): execute plan {NN}-{PP} — {brief plan name}
 
   Phase {N}: {phase_name}
   Wave: {W}
@@ -205,7 +205,7 @@ Plan completion commit (one per successful plan):
   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 
 Wave completion state update (one per wave):
-  chore(agency): update state after wave {W} of phase {N}
+  chore(legion): update state after wave {W} of phase {N}
 
   {succeeded}/{total} plans completed
   Progress: {completed}/{total_plans} ({pct}%)
@@ -213,7 +213,7 @@ Wave completion state update (one per wave):
   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 
 Phase completion state update (one per phase):
-  chore(agency): complete phase {N} execution — {phase_name}
+  chore(legion): complete phase {N} execution — {phase_name}
 
   All plans executed. {succeeded}/{total} passed.
   Overall progress: {completed}/{total_plans} ({pct}%)
@@ -221,7 +221,7 @@ Phase completion state update (one per phase):
   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 
 Milestone completion commit (one per completed milestone):
-  chore(agency): complete milestone {N} — {milestone_name}
+  chore(legion): complete milestone {N} — {milestone_name}
 
   Phases {start}-{end}: {phase_count} phases, {plans_completed} plans
   Requirements: {requirement_count} satisfied
@@ -230,7 +230,7 @@ Milestone completion commit (one per completed milestone):
   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 
 Milestone archive commit (one per archived milestone):
-  chore(agency): archive milestone {N} — {milestone_name}
+  chore(legion): archive milestone {N} — {milestone_name}
 
   Phases moved to .planning/archive/milestone-{N}/
   STATE.md and ROADMAP.md updated
@@ -238,7 +238,7 @@ Milestone archive commit (one per archived milestone):
   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 
 PR creation state update (one per phase PR):
-  chore(agency): create PR for phase {N} — {phase_name}
+  chore(legion): create PR for phase {N} — {phase_name}
 
   PR #{pr_number}: {pr_url}
   Branch: {branch_name}
@@ -247,7 +247,7 @@ PR creation state update (one per phase PR):
   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ```
 
-Scope `(agency)` is always used — never use plan-specific scopes in state commits. The brief plan name in plan completion commits comes from the `name` field in the plan's YAML frontmatter.
+Scope `(legion)` is always used — never use plan-specific scopes in state commits. The brief plan name in plan completion commits comes from the `name` field in the plan's YAML frontmatter.
 
 ---
 
@@ -266,7 +266,7 @@ How to record failures in STATE.md and ROADMAP.md without corrupting existing pr
 
 3. Recovery guidance
    After recording a failure, include in Next Action:
-   "Review {NN}-{PP}-SUMMARY.md for error details, then re-run /agency:build --plan {PP}"
+   "Review {NN}-{PP}-SUMMARY.md for error details, then re-run /legion:build --plan {PP}"
 
 4. Never lose data
    - Always read before writing state files (follows State Update Pattern from workflow-common.md)

@@ -1,5 +1,5 @@
 ---
-name: agency:review-panel
+name: legion:review-panel
 description: Dynamic multi-perspective review panel composition with domain-weighted rubrics and synthesis
 ---
 
@@ -7,7 +7,7 @@ description: Dynamic multi-perspective review panel composition with domain-weig
 
 Composes context-aware multi-perspective review teams from the 51-agent pool. Each reviewer evaluates through domain-specific weighted rubrics with non-overlapping criteria. Produces a synthesized consolidated report.
 
-Used by `/agency:review` when panel mode is selected. Replaces the static phase-type-to-agent mapping with dynamic selection via agent-registry recommendation algorithm.
+Used by `/legion:review` when panel mode is selected. Replaces the static phase-type-to-agent mapping with dynamic selection via agent-registry recommendation algorithm.
 
 ---
 

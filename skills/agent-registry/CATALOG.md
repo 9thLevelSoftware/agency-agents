@@ -1,6 +1,6 @@
 # Agent Catalog
 
-Complete catalog of all 51 built-in agents across 9 divisions, plus any custom agents created via `/agency:agent`. Also contains the Task Type Index (reverse mapping from project need to recommended agents).
+Complete catalog of all 51 built-in agents across 9 divisions, plus any custom agents created via `/legion:agent`. Also contains the Task Type Index (reverse mapping from project need to recommended agents).
 
 The recommendation algorithm and team assembly patterns are in `SKILL.md` in this directory.
 
@@ -106,12 +106,12 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 
 ### Custom Division
 
-Custom agents created via `/agency:agent` appear here. This section is populated automatically by the agent-creator skill.
+Custom agents created via `/legion:agent` appear here. This section is populated automatically by the agent-creator skill.
 
 | ID | File | Specialty | Task Types |
 |----|------|-----------|------------|
 
-*No custom agents yet. Run `/agency:agent` to create one.*
+*No custom agents yet. Run `/legion:agent` to create one.*
 
 ---
 

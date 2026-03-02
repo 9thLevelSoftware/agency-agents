@@ -1,5 +1,5 @@
 ---
-name: agency:agent-creator
+name: legion:agent-creator
 description: Guided agent personality creation with schema validation and registry integration
 ---
 
@@ -335,7 +335,7 @@ Locate the division table heading in Section 1:
 
 **For custom division:**
 - Find the `### Custom Division` table
-- If the table has the placeholder text `*No custom agents yet. Run /agency:agent to create one.*`:
+- If the table has the placeholder text `*No custom agents yet. Run /legion:agent to create one.*`:
   - Remove the placeholder line
 - Insert the new row in the table
 - The heading count is not shown for Custom Division (it's dynamic)
@@ -400,12 +400,12 @@ Agent created successfully!
 - **Registry**: Row added to agent-registry.md Section 1
 
 Your new agent '{agent-name}' is ready. It will appear in
-`/agency:plan` recommendations for tasks matching: {tags}.
+`/legion:plan` recommendations for tasks matching: {tags}.
 ```
 
 ### Commit Handling
 
-Do NOT automatically commit. The calling command (`/agency:agent`) handles git commit in its Step 8. This skill focuses on file creation and registry update only.
+Do NOT automatically commit. The calling command (`/legion:agent`) handles git commit in its Step 8. This skill focuses on file creation and registry update only.
 
 ---
 
@@ -415,6 +415,6 @@ This skill is consumed by:
 
 | Consumer | Purpose | Integration Point |
 |----------|---------|-------------------|
-| `/agency:agent` command | Entry point for agent creation | Wires all 7 sections into an 8-step process |
+| `/legion:agent` command | Entry point for agent creation | Wires all 7 sections into an 8-step process |
 | `agent-registry.md` | New agents added to catalog | Section 5 inserts rows into Section 1 tables |
 | `workflow-common.md` | Division paths and custom agent convention | Section 1 schema references division constants |

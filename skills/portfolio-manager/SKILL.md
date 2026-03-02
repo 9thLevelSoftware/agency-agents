@@ -1,5 +1,5 @@
 ---
-name: agency:portfolio-manager
+name: legion:portfolio-manager
 description: Multi-project portfolio management — registry, state aggregation, dependencies, agent allocation
 ---
 
@@ -8,7 +8,7 @@ description: Multi-project portfolio management — registry, state aggregation,
 Core skill for multi-project portfolio management. Defines the global portfolio registry format, CRUD operations, state aggregation, cross-project dependency tracking, and agent allocation visibility.
 
 References:
-- State File Locations from `workflow-common.md` (portfolio path at `~/.claude/agency/portfolio.md`)
+- State File Locations from `workflow-common.md` (portfolio path at `~/.claude/legion/portfolio.md`)
 - State Update Pattern from `workflow-common.md` (Read -> Update -> Write)
 - Agent Registry from `agent-registry.md` (agent metadata for allocation tracking)
 - Execution Tracker Section 5 from `execution-tracker.md` (progress calculation formula)
@@ -17,10 +17,10 @@ References:
 
 ## Section 1: Portfolio Registry Format
 
-The global portfolio registry lives at `~/.claude/agency/portfolio.md` — outside any project directory, accessible from any working directory.
+The global portfolio registry lives at `~/.claude/legion/portfolio.md` — outside any project directory, accessible from any working directory.
 
 ```markdown
-# Agency Portfolio
+# Legion Portfolio
 
 ## Projects
 
@@ -72,9 +72,9 @@ Instructions for commands to follow when managing the portfolio registry. These 
 ### Register Project
 
 ```
-1. Read ~/.claude/agency/portfolio.md
-   - If file doesn't exist: create ~/.claude/agency/ directory and initialize with empty structure:
-     # Agency Portfolio
+1. Read ~/.claude/legion/portfolio.md
+   - If file doesn't exist: create ~/.claude/legion/ directory and initialize with empty structure:
+     # Legion Portfolio
      ## Projects
      ## Cross-Project Dependencies
      | ID | From | To | Type | Status | Notes |
@@ -104,13 +104,13 @@ Instructions for commands to follow when managing the portfolio registry. These 
    - Total Projects: count all ### headings under ## Projects
    - Active Projects: count entries where Status is Active
 
-6. Write the updated ~/.claude/agency/portfolio.md
+6. Write the updated ~/.claude/legion/portfolio.md
 ```
 
 ### Unregister Project
 
 ```
-1. Read ~/.claude/agency/portfolio.md
+1. Read ~/.claude/legion/portfolio.md
    - If not found: display "No portfolio registry found. Nothing to unregister."
 
 2. Find the project entry matching the current working directory path
@@ -122,13 +122,13 @@ Instructions for commands to follow when managing the portfolio registry. These 
 
 5. Update Metadata section (counts and Last Updated)
 
-6. Write the updated ~/.claude/agency/portfolio.md
+6. Write the updated ~/.claude/legion/portfolio.md
 ```
 
 ### List Projects (for dashboard assembly)
 
 ```
-1. Read ~/.claude/agency/portfolio.md
+1. Read ~/.claude/legion/portfolio.md
    - If not found: return empty list
 
 2. Parse each ### {project-name} section under ## Projects
@@ -206,7 +206,7 @@ Operations for managing dependencies between projects in the portfolio.
 ### Add Dependency
 
 ```
-1. Read ~/.claude/agency/portfolio.md
+1. Read ~/.claude/legion/portfolio.md
 
 2. Validate both projects exist in the registry
    - If either project is not found: report error and abort
@@ -218,25 +218,25 @@ Operations for managing dependencies between projects in the portfolio.
 4. Add a new row to the Cross-Project Dependencies table:
    | DEP-{NN} | {source-project}:Phase {N} | {target-project}:Phase {M} | {type} | Active | {notes} |
 
-5. Write the updated ~/.claude/agency/portfolio.md
+5. Write the updated ~/.claude/legion/portfolio.md
 ```
 
 ### Remove Dependency
 
 ```
-1. Read ~/.claude/agency/portfolio.md
+1. Read ~/.claude/legion/portfolio.md
 
 2. Find the dependency row by ID (e.g., DEP-03) or by from/to match
 
 3. Remove the row from the Cross-Project Dependencies table
 
-4. Write the updated ~/.claude/agency/portfolio.md
+4. Write the updated ~/.claude/legion/portfolio.md
 ```
 
 ### Check Dependencies
 
 ```
-1. Read ~/.claude/agency/portfolio.md
+1. Read ~/.claude/legion/portfolio.md
    - Parse the Cross-Project Dependencies table
 
 2. For each active dependency:
@@ -311,18 +311,18 @@ specialized        — 3 agents
 
 How to handle failures and edge cases in portfolio operations.
 
-- **Missing PORTFOLIO.md**: Create with empty structure on first register operation. For read operations (list, dashboard), return empty results with guidance: "No projects registered. Run `/agency:start` in a project to add it."
+- **Missing PORTFOLIO.md**: Create with empty structure on first register operation. For read operations (list, dashboard), return empty results with guidance: "No projects registered. Run `/legion:start` in a project to add it."
 
 - **Missing project directory**: Mark the project as Stale in the registry. Do not remove it automatically — the user may want to update the path or the directory may be temporarily unavailable. Display: "Project directory not found at {path}. Status set to Stale."
 
 - **Corrupted STATE.md or ROADMAP.md**: If a project's state files cannot be parsed, skip that project in aggregation. Report: "Unable to read state for {project-name} — skipping in dashboard."
 
-- **Permission errors on ~/.claude/**: Report clearly: "Cannot create portfolio registry at ~/.claude/agency/. Check directory permissions."
+- **Permission errors on ~/.claude/**: Report clearly: "Cannot create portfolio registry at ~/.claude/legion/. Check directory permissions."
 
 - **Name collisions**: When two projects have the same name (from their PROJECT.md headings), append the directory basename in parentheses to disambiguate: `### My App (project-v2)`.
 
-- **Empty portfolio**: Dashboard shows: "No projects registered. Run `/agency:start` in a project to add it."
+- **Empty portfolio**: Dashboard shows: "No projects registered. Run `/legion:start` in a project to add it."
 
 - **Stale path recovery**: If a project is marked Stale, the user can:
-  1. Navigate to the correct project directory and run `/agency:start` (re-registers with correct path)
-  2. Manually edit `~/.claude/agency/portfolio.md` to update the Path field
+  1. Navigate to the correct project directory and run `/legion:start` (re-registers with correct path)
+  2. Manually edit `~/.claude/legion/portfolio.md` to update the Path field

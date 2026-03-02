@@ -1,11 +1,11 @@
 ---
-name: agency:review-loop
-description: Dev-QA loop engine with structured feedback, fix routing, and user escalation for /agency:review
+name: legion:review-loop
+description: Dev-QA loop engine with structured feedback, fix routing, and user escalation for /legion:review
 ---
 
 # Review Loop
 
-Engine for `/agency:review`. Takes the output of a completed `/agency:build` phase and drives it through a structured dev-QA cycle: personality-injected review agents evaluate artifacts, findings are triaged by severity, fix agents resolve issues, and the cycle repeats up to 3 times. A phase is never marked complete by exhaustion — only by reviewer approval.
+Engine for `/legion:review`. Takes the output of a completed `/legion:build` phase and drives it through a structured dev-QA cycle: personality-injected review agents evaluate artifacts, findings are triaged by severity, fix agents resolve issues, and the cycle repeats up to 3 times. A phase is never marked complete by exhaustion — only by reviewer approval.
 
 ---
 
@@ -13,7 +13,7 @@ Engine for `/agency:review`. Takes the output of a completed `/agency:build` pha
 
 These rules govern all review decisions. Do not deviate from them.
 
-1. **Review the output, not the plan** — review agents evaluate files created/modified during `/agency:build`, not the plan documents themselves. The plan is the specification; the output is what gets reviewed.
+1. **Review the output, not the plan** — review agents evaluate files created/modified during `/legion:build`, not the plan documents themselves. The plan is the specification; the output is what gets reviewed.
 2. **Full personality injection** — each review agent receives the ENTIRE contents of its assigned `.md` file as system instructions. No summaries, no excerpts, no paraphrasing.
 3. **Structured feedback only** — review agents must use the exact Finding format defined in Section 3. Vague assessments like "looks good" or letter grades are rejected.
 4. **Max 3 cycles total** — the loop is: review → collect findings → fix → re-review. If blockers remain after 3 full cycles, escalate to the user (Section 8).
@@ -125,7 +125,7 @@ Step 3: Construct the review prompt
 
   # Review Task
 
-  You are reviewing the output of Phase {N}: {phase_name} for The Agency Workflows.
+  You are reviewing the output of Phase {N}: {phase_name} for Legion.
 
   ## Phase Goal
   {goal from CONTEXT.md}
@@ -374,7 +374,7 @@ Step 5: Collect fix results
   - Create an atomic git commit for the cycle's fixes:
 
   git add {only the files that were actually modified by fix agents}
-  git commit -m "fix(agency): review cycle {C} fixes for phase {N}
+  git commit -m "fix(legion): review cycle {C} fixes for phase {N}
 
   Phase {N}: {phase_name}
   Fixed {count} issues: {brief comma-separated issue descriptions}
@@ -493,7 +493,7 @@ Step 2: Mark phase complete in state files
   - Status: "Phase {N} complete — review passed in {cycles} cycle(s)"
   - Last Activity: "Phase {N} review passed ({date})"
   - Next Action:
-    - If more phases remain: "Run `/agency:plan {N+1}` to plan the next phase"
+    - If more phases remain: "Run `/legion:plan {N+1}` to plan the next phase"
     - If this was the last phase: "All phases complete — project review finished!"
   Write updated STATE.md
 
@@ -506,7 +506,7 @@ Step 3: Create review completion commit
   git add .planning/phases/{NN}-{slug}/{NN}-REVIEW.md
   git add .planning/STATE.md
   git add .planning/ROADMAP.md
-  git commit -m "chore(agency): phase {N} review passed — {phase_name}
+  git commit -m "chore(legion): phase {N} review passed — {phase_name}
 
   Review passed after {cycles} cycle(s).
   {blocker_count} blocker(s) fixed, {warning_count} warning(s) fixed.
@@ -526,7 +526,7 @@ Step 5: Route to next action
   Review approved after {cycles} cycle(s). {count} issues found and resolved.
 
   {If more phases remain:}
-  Next: Run `/agency:plan {N+1}` to plan Phase {N+1}: {next_phase_name}
+  Next: Run `/legion:plan {N+1}` to plan Phase {N+1}: {next_phase_name}
 
   {If this was the last phase:}
   All phases complete! The project has been built and reviewed. Congratulations.
@@ -572,7 +572,7 @@ Step 2: Update STATE.md
   - Status: "Phase {N} review escalated — {count} unresolved blocker(s) after 3 cycles"
   - Last Activity: "Phase {N} review escalated ({date})"
   - Next Action: "Review .planning/phases/{NN}-{slug}/{NN}-REVIEW.md for full details.
-    Options: fix manually then re-run /agency:review, or accept as-is and proceed."
+    Options: fix manually then re-run /legion:review, or accept as-is and proceed."
   Write updated STATE.md
 
 Step 3: Shutdown the review Team
@@ -592,9 +592,9 @@ Step 4: Present escalation report to user
   | 2 | path/other.md | brief issue           | {2 attempts} |
 
   ### Options
-  1. **Fix manually** — address the remaining findings directly, then re-run `/agency:review`
-  2. **Re-run review** — try `/agency:review` again if you believe fixes were applied correctly
-  3. **Accept as-is** — acknowledge the issues and proceed to `/agency:plan {N+1}` anyway
+  1. **Fix manually** — address the remaining findings directly, then re-run `/legion:review`
+  2. **Re-run review** — try `/legion:review` again if you believe fixes were applied correctly
+  3. **Accept as-is** — acknowledge the issues and proceed to `/legion:plan {N+1}` anyway
   4. **Investigate root cause** — examine the phase plan and fix agent outputs to understand
      why the fixes failed to resolve the blockers
 

@@ -1,19 +1,19 @@
 ---
-name: agency:design-workflows
+name: legion:design-workflows
 description: Design system creation, UX research workflows, and three-lens design review cycles for design-focused phases
 ---
 
 # Design Workflows
 
-Structured design workflow engine for The Agency Workflows. Provides domain-specific decomposition for design-focused phases -- design system creation, UX research planning and synthesis, and three-lens design review (brand, accessibility, usability). All operations produce human-readable markdown artifacts at `.planning/designs/`.
+Structured design workflow engine for Legion. Provides domain-specific decomposition for design-focused phases -- design system creation, UX research planning and synthesis, and three-lens design review (brand, accessibility, usability). All operations produce human-readable markdown artifacts at `.planning/designs/`.
 
 References:
 - State File Locations from `workflow-common.md` (state paths, degradation pattern)
 - Design Workflow Conventions from `workflow-common.md` (lifecycle, paths, wave pattern)
 - Design Sprint team assembly from `agent-registry.md` Section 4 (Research + Architecture + Visual Design + Brand Review + Feedback)
 - Phase decomposition from `phase-decomposer.md` (design domain detection trigger)
-- `/agency:plan` in `plan.md` (design questioning and document generation entry point)
-- `/agency:build` in `build.md` (design wave execution with research-to-design handoff)
+- `/legion:plan` in `plan.md` (design questioning and document generation entry point)
+- `/legion:build` in `build.md` (design wave execution with research-to-design handoff)
 
 ---
 
@@ -24,7 +24,7 @@ Core rules governing design workflows and the detection heuristic that determine
 ### Principles
 
 1. **Research-informed design** -- design decisions should be grounded in user research when available. Wave 1 (research) produces insights that inform Wave 2 (creation). When research is unavailable or out of scope, designers proceed using established heuristics and domain expertise.
-2. **Human-readable artifacts** -- design documents follow the same structured markdown convention as all other Agency state files. No JSON, no binary, no databases. Design tokens and component specs are documented in markdown tables, not design tool files.
+2. **Human-readable artifacts** -- design documents follow the same structured markdown convention as all other Legion state files. No JSON, no binary, no databases. Design tokens and component specs are documented in markdown tables, not design tool files.
 3. **Graceful degradation** -- every consumer checks for design phase signals before applying design patterns. Non-design phases see zero impact. Design documents are never required for non-design workflow completion.
 4. **Discipline-driven team assembly** -- the project's design scope drives which agents are assigned. Not all 6 design agents are needed for every project. A brand refresh may need 2-3 agents; a full design system may need 5-6.
 5. **Three-lens review** -- design review uses three specialized lenses (brand, accessibility, usability) running in parallel, not a single generic reviewer. Each lens has specific criteria and a dedicated agent.
@@ -75,11 +75,11 @@ TOKEN_CATEGORIES = ['color', 'typography', 'spacing', 'elevation', 'border-radiu
 
 ## Section 2: Design System Workflow (DSN-01)
 
-Structured design system creation with guided questioning, document generation, agent team assembly, token taxonomy, component architecture, and lifecycle management. This section drives the design system flow triggered by `/agency:plan` when a design phase is detected.
+Structured design system creation with guided questioning, document generation, agent team assembly, token taxonomy, component architecture, and lifecycle management. This section drives the design system flow triggered by `/legion:plan` when a design phase is detected.
 
 ### 2.1: Design Brief Questioning
 
-When a design phase is detected during `/agency:plan`, gather design parameters using AskUserQuestion. This replaces the generic decomposition questioning for design phases.
+When a design phase is detected during `/legion:plan`, gather design parameters using AskUserQuestion. This replaces the generic decomposition questioning for design phases.
 
 Key questions (adapt based on responses -- do not ask all if answers imply others):
 
@@ -211,7 +211,7 @@ Unplanned --> Research --> Designing --> Review --> Complete
 - **Unplanned**: Phase not yet planned. Standard decomposition applies.
 - **Research**: UX research underway, brand audit in progress (Wave 1). Status in design doc: `Research`
 - **Designing**: Design system creation, component development (Wave 2). Status: `Designing`
-- **Review**: Brand/accessibility/usability review cycle (Wave 3 or /agency:review). Status: `Review`
+- **Review**: Brand/accessibility/usability review cycle (Wave 3 or /legion:review). Status: `Review`
 - **Complete**: Design system documented, handoff ready, outcomes recorded to memory (if active). Status: `Complete`
 
 Design project status is tracked in the design document header, not in STATE.md.
@@ -363,7 +363,7 @@ Design review findings use these categories (extending the standard review-loop 
 
 ### 4.4: Integration with review-loop.md
 
-When `/agency:review` runs for a design phase:
+When `/legion:review` runs for a design phase:
 
 1. Phase type classification detects "design" (existing review-loop Section 2 mapping)
 2. If design-workflows skill is active (design documents exist at `.planning/designs/`):
@@ -389,7 +389,7 @@ Before Wave 2 (design creation) begins, the Design Lead verifies:
 - [ ] Platform-specific requirements are documented per target platform
 - [ ] Research findings (if available) are included in each agent's execution context
 
-During `/agency:review` for design phases, the review agents check this list against produced artifacts.
+During `/legion:review` for design phases, the review agents check this list against produced artifacts.
 
 ---
 
@@ -566,14 +566,14 @@ Full format specifications for design documents produced at `.planning/designs/`
 |--------|---------|----------|
 | Research | UX research and brand audit underway | During Wave 1 execution |
 | Designing | Design system creation in progress | During Wave 2 execution |
-| Review | Three-lens review cycle active | During /agency:review |
+| Review | Three-lens review cycle active | During /legion:review |
 | Complete | Design system documented, handoff ready | After review passes and outcomes recorded |
 
 **Research report statuses:**
 
 | Status | Meaning | Set When |
 |--------|---------|----------|
-| Planning | Research plan being defined | During /agency:plan research scoping |
+| Planning | Research plan being defined | During /legion:plan research scoping |
 | In Progress | Data collection and analysis underway | During Wave 1 execution |
 | Complete | Findings synthesized, recommendations produced | After research synthesis |
 
@@ -592,7 +592,7 @@ The phase plan references all design documents in its `@context` block.
 
 How callers consume this skill. Each integration point follows the same contract: detect design phase, use design patterns if detected, skip silently if not.
 
-### 6.1: /agency:plan Integration (Design Phase Detection)
+### 6.1: /legion:plan Integration (Design Phase Detection)
 
 In phase-decomposer, after reading ROADMAP phase details:
 
@@ -630,7 +630,7 @@ In phase-decomposer, after reading ROADMAP phase details:
    Standard decomposition proceeds (no impact from this skill)
 ```
 
-### 6.2: /agency:build Integration (Design Execution)
+### 6.2: /legion:build Integration (Design Execution)
 
 During wave-executor for design phases:
 
@@ -656,7 +656,7 @@ During wave-executor for design phases:
    - Focus is on enhancement and validation, not creation
 ```
 
-### 6.3: /agency:review Integration (Three-Lens Design Review)
+### 6.3: /legion:review Integration (Three-Lens Design Review)
 
 During review-loop for design phases:
 

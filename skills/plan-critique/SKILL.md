@@ -1,5 +1,5 @@
 ---
-name: agency:plan-critique
+name: legion:plan-critique
 description: Pre-mortem analysis and assumption hunting for stress-testing plans before execution
 ---
 
@@ -7,7 +7,7 @@ description: Pre-mortem analysis and assumption hunting for stress-testing plans
 
 Stress-tests plans before execution using two complementary analysis passes: pre-mortem inversion ("assume it failed — why?") and assumption hunting ("what are we taking for granted?"). Each finding maps to a specific plan section or requirement with actionable next steps.
 
-Used by `/agency:plan` as an optional validation step after plan generation. Can also be invoked standalone on any plan file.
+Used by `/legion:plan` as an optional validation step after plan generation. Can also be invoked standalone on any plan file.
 
 ---
 
@@ -244,7 +244,7 @@ Step 4: Route based on verdict
     "Plan critique found {N} critical issues needing revision. What next?"
     - "Revise the plan" (Recommended) — return to plan editing
     - "Proceed anyway" — execute despite warnings (user takes responsibility)
-    - "Re-plan from scratch" — delete plans, restart /agency:plan
+    - "Re-plan from scratch" — delete plans, restart /legion:plan
 
   User choice determines next action. Critique does NOT automatically
   modify plans — the user decides.

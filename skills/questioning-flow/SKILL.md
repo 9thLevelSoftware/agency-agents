@@ -1,11 +1,11 @@
 ---
-name: agency:questioning-flow
+name: legion:questioning-flow
 description: Adaptive project initialization questioning that captures vision, requirements, and preferences
 ---
 
 # Questioning Flow
 
-Adaptive conversation engine for `/agency:start`. Captures everything needed to populate PROJECT.md, ROADMAP.md, and STATE.md templates through a 3-stage dialogue.
+Adaptive conversation engine for `/legion:start`. Captures everything needed to populate PROJECT.md, ROADMAP.md, and STATE.md templates through a 3-stage dialogue.
 
 ---
 
@@ -77,8 +77,8 @@ Wait for confirmation before proceeding.
 Present three structured choices. Use clear descriptions so the user can choose quickly.
 
 **Question 1 — Execution Mode**:
-- **Guided** (Recommended): Agency recommends actions, you approve before each step. Best for first-time use or high-stakes projects.
-- **Autonomous**: Agency plans and executes, you review at checkpoints. Best for trusted workflows or time pressure.
+- **Guided** (Recommended): Legion recommends actions, you approve before each step. Best for first-time use or high-stakes projects.
+- **Autonomous**: Legion plans and executes, you review at checkpoints. Best for trusted workflows or time pressure.
 - **Collaborative**: Work alongside agents with high interaction. Best when you want to stay hands-on.
 
 **Question 2 — Planning Depth**:
@@ -138,7 +138,7 @@ Record choices as decisions in `{decisions_table}`:
 **Decisions** — each decision is a table row:
 ```markdown
 | Tech stack | Team familiarity and ecosystem maturity | Next.js + PostgreSQL |
-| Execution mode | First project with Agency | Guided |
+| Execution mode | First project with Legion | Guided |
 ```
 
 **Out of scope / Constraints** — plain bullet lists:
@@ -242,7 +242,7 @@ Push for specificity. Use:
 If the user remains vague after two attempts, scope to what's concrete and note "Scope requires further refinement" in `{constraints}`.
 
 ### Non-code project
-Agency supports marketing, design, content, and research projects. If the project has no code component:
+Legion supports marketing, design, content, and research projects. If the project has no code component:
 - Skip all technical stack questions in Stage 2
 - Skip `{architecture_notes}` — omit the section
 - Focus phase decomposition on deliverables (content pieces, design assets, campaign milestones)

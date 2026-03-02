@@ -1,11 +1,11 @@
 ---
-name: agency:agent-registry
-description: Maps all 51 Agency agents by division, capability, and task type for intelligent team assembly
+name: legion:agent-registry
+description: Maps all 51 Legion agents by division, capability, and task type for intelligent team assembly
 ---
 
-# Agency Agent Registry
+# Legion Agent Registry
 
-Complete catalog of all agent personalities. Includes 51 built-in agents across 9 divisions plus any custom agents created via `/agency:agent`. Use this registry to assemble the right team for any project task.
+Complete catalog of all agent personalities. Includes 51 built-in agents across 9 divisions plus any custom agents created via `/legion:agent`. Use this registry to assemble the right team for any project task.
 
 > Agent catalog and task-type index are in `CATALOG.md` in this directory.
 
@@ -18,7 +18,7 @@ When assembling a team for a task, follow this decision process:
 ### Step 1: Parse Task Description
 Extract key terms from the task description. Match terms against the `task_types` tags in the Agent Catalog above.
 
-**Custom agents:** Custom agents added to the Section 1 catalog via `/agency:agent` are automatically eligible for recommendation. Their task type tags are matched identically to built-in agents. No changes to the scoring algorithm are needed.
+**Custom agents:** Custom agents added to the Section 1 catalog via `/legion:agent` are automatically eligible for recommendation. Their task type tags are matched identically to built-in agents. No changes to the scoring algorithm are needed.
 
 ### Step 2: Match Agents to Task Types
 For each extracted term, find all agents whose task types contain a match. Weight matches:

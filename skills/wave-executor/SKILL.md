@@ -1,11 +1,11 @@
 ---
-name: agency:wave-executor
+name: legion:wave-executor
 description: Executes wave-structured plans with parallel personality-injected agents via Claude Code Teams
 ---
 
 # Wave Executor
 
-Engine for `/agency:build`. Takes the plan files in a phase directory and executes them in wave order — spawning personality-injected agents in parallel within each wave, waiting for completion before advancing to the next wave. The full flow: discover plans, validate structure, inject personalities, spawn parallel agents, collect results, write summaries, report.
+Engine for `/legion:build`. Takes the plan files in a phase directory and executes them in wave order — spawning personality-injected agents in parallel within each wave, waiting for completion before advancing to the next wave. The full flow: discover plans, validate structure, inject personalities, spawn parallel agents, collect results, write summaries, report.
 
 ---
 
@@ -18,7 +18,7 @@ These rules govern all execution decisions. Do not deviate from them.
 3. **Sonnet for execution** — all spawned agents use `model: "sonnet"`. This matches the Cost Profile Convention from `workflow-common.md`.
 4. **No automatic retries** — if an agent fails, capture the error output and stop the wave. Report to the user. Do not re-spawn the failed agent. See Error Handling Pattern in `workflow-common.md`.
 5. **Each plan produces a summary** — after an agent completes, write a `{NN}-{PP}-SUMMARY.md` file to the phase directory, whether the result is success or failure.
-6. **Orchestrator stays in main context** — the `/agency:build` command itself does not execute plan work. It reads, validates, dispatches, and collects. Agents get fresh contexts.
+6. **Orchestrator stays in main context** — the `/legion:build` command itself does not execute plan work. It reads, validates, dispatches, and collects. Agents get fresh contexts.
 7. **Failed wave blocks subsequent waves** — if any plan in a wave fails, do not proceed to the next wave. Report wave status and pause for user decision.
 8. **Files isolation per wave** — plans within the same wave must not share files_modified entries. This is guaranteed by plan authoring (see phase-decomposer.md), but flag a warning if a conflict is detected.
 9. **One Team per phase** — create a single Claude Code Team for the entire phase execution. Do not create separate Teams per wave. This minimizes TeamCreate/TeamDelete overhead.
@@ -64,11 +64,11 @@ Step 4: Build the wave map
 Step 5: Validate the plan structure
   Check all of the following before proceeding:
   a) At least one plan file exists. If not: error "No plans found for Phase {N}.
-     Run /agency:plan {N} first."
+     Run /legion:plan {N} first."
   b) All depends_on references point to plans in earlier (lower) waves. If a plan
      in wave 2 depends on another wave 2 plan: error "Circular wave dependency
      detected in plan {NN}-{PP}. Plans within the same wave cannot depend on
-     each other. Re-run /agency:plan {N} to fix the plan structure."
+     each other. Re-run /legion:plan {N} to fix the plan structure."
   c) Each wave number is a positive integer with no gaps above wave 1 (wave 1
      always present; wave 3 allowed only if wave 2 exists).
   d) All files_modified lists are disjoint within each wave (no two plans in the
@@ -120,7 +120,7 @@ Step 4: Construct the agent execution prompt
 
   # Execution Task
 
-  You are executing a plan as part of The Agency Workflows. Follow the tasks below precisely.
+  You are executing a plan as part of Legion. Follow the tasks below precisely.
 
   {PLAN_CONTENT}
 
@@ -166,7 +166,7 @@ For autonomous plans (autonomous: true):
   """
   # Execution Task
 
-  You are executing a plan as part of The Agency Workflows. No specialist agent
+  You are executing a plan as part of Legion. No specialist agent
   personality is needed for this plan — execute the tasks directly.
 
   {PLAN_CONTENT}
@@ -293,12 +293,12 @@ Step 7: Post-wave decision
     - Report wave failure with the full list of failed plans and errors
     - STOP — do not proceed to subsequent waves
     - Instruct the user: "Wave {N} had {count} failure(s). Fix the issue and
-      re-run /agency:build, or run /agency:review for diagnosis."
+      re-run /legion:build, or run /legion:review for diagnosis."
 
 Step 8: After all waves complete
   - Report full execution summary: total plans, total waves, files modified
   - Update .planning/STATE.md: mark phase as complete, record completion timestamp
-  - Suggest next action: "/agency:review to validate the phase output"
+  - Suggest next action: "/legion:review to validate the phase output"
 
 Step 9: Shutdown the Team
   - Send shutdown_request via SendMessage to every agent spawned during the phase:
@@ -426,7 +426,7 @@ Step 3: Generate the plan summary file
 
   ## Error Details
   {Full error output from the agent. Do not truncate — this is used for diagnosis
-   in /agency:review. Include: error messages, stack traces if available, which
+   in /legion:review. Include: error messages, stack traces if available, which
    task failed, what the state of the filesystem is (what was partially completed).}
 
 Step 4: Confirm summary file was written
@@ -487,7 +487,7 @@ How to handle common failure modes without retrying or hiding problems.
    - Status: Complete with Warnings
    - Include the failing verify outputs in the Verification Results section
    - Note in Issues Encountered: "Verify step N returned unexpected result: {output}"
-   - The plan is not retried; /agency:review will assess whether it's acceptable
+   - The plan is not retried; /legion:review will assess whether it's acceptable
 
 4. FILE MODIFICATION CONFLICT (same-wave file collision)
    Symptom: Two plans in the same wave have overlapping files_modified entries
@@ -513,7 +513,7 @@ How to handle common failure modes without retrying or hiding problems.
    Action:
    - Error immediately — do not attempt execution
    - Message: "No plans found for Phase {N} in .planning/phases/{NN}-{slug}/.
-     Run /agency:plan {N} first to generate plan files."
+     Run /legion:plan {N} first to generate plan files."
    - Suggest: check if the phase directory name matches STATE.md's current phase
 
 7. PARTIAL WAVE FAILURE (some plans succeed, some fail)

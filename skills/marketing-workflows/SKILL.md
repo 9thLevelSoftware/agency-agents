@@ -1,19 +1,19 @@
 ---
-name: agency:marketing-workflows
+name: legion:marketing-workflows
 description: Marketing campaign planning — campaign documents, content calendars, cross-channel coordination, and marketing-specific phase decomposition
 ---
 
 # Marketing Workflows
 
-Structured marketing campaign engine for The Agency Workflows. Provides domain-specific decomposition for marketing-focused phases — campaign planning with guided questioning, content calendar generation, and cross-channel coordination across 8 marketing specialist agents. All operations produce human-readable markdown artifacts at `.planning/campaigns/`.
+Structured marketing campaign engine for Legion. Provides domain-specific decomposition for marketing-focused phases — campaign planning with guided questioning, content calendar generation, and cross-channel coordination across 8 marketing specialist agents. All operations produce human-readable markdown artifacts at `.planning/campaigns/`.
 
 References:
 - State File Locations from `workflow-common.md` (state paths, degradation pattern)
 - Marketing Workflow Conventions from `workflow-common.md` (lifecycle, paths, wave pattern)
 - Marketing Campaign team assembly from `agent-registry.md` Section 4 (Strategy + Content + Channel specialists)
 - Phase decomposition from `phase-decomposer.md` (marketing domain detection trigger)
-- `/agency:plan` in `plan.md` (campaign questioning and document generation entry point)
-- `/agency:build` in `build.md` (marketing wave execution with core messaging handoff)
+- `/legion:plan` in `plan.md` (campaign questioning and document generation entry point)
+- `/legion:build` in `build.md` (marketing wave execution with core messaging handoff)
 
 ---
 
@@ -24,7 +24,7 @@ Core rules governing marketing workflows and the detection heuristic that determ
 ### Principles
 
 1. **Marketing-first decomposition** -- when a marketing phase is detected, use marketing-specific wave patterns (Strategy, Creation, Distribution) rather than generic engineering patterns (Build, Test, Deploy). Marketing tasks are not code tasks.
-2. **Human-readable artifacts** -- campaign documents follow the same structured markdown convention as STATE.md, ROADMAP.md, and all other Agency state files. No JSON, no binary, no databases.
+2. **Human-readable artifacts** -- campaign documents follow the same structured markdown convention as STATE.md, ROADMAP.md, and all other Legion state files. No JSON, no binary, no databases.
 3. **Graceful degradation** -- every consumer checks for marketing phase signals before applying marketing patterns. Non-marketing phases see zero impact. Campaign documents are never required for non-marketing workflow completion.
 4. **Channel-driven team assembly** -- the user's channel selection drives which agents are assigned. Not all 8 marketing agents are needed for every campaign. A 2-channel campaign gets 3-4 agents; a 5-channel campaign gets 6-7.
 5. **Core message consistency** -- all channel agents work from a single core messaging brief produced in Wave 1. Consistency is structural (shared input), not manual (per-channel review).
@@ -75,11 +75,11 @@ CONTENT_TYPES = ['social-post', 'thread', 'reel', 'story', 'blog-post', 'email',
 
 ## Section 2: Campaign Planning Workflow (MKT-01)
 
-Structured campaign creation with guided questioning, document generation, agent team assembly, and lifecycle management. This section drives the campaign planning flow triggered by `/agency:plan` when a marketing phase is detected.
+Structured campaign creation with guided questioning, document generation, agent team assembly, and lifecycle management. This section drives the campaign planning flow triggered by `/legion:plan` when a marketing phase is detected.
 
 ### 2.1: Campaign Brief Questioning
 
-When a marketing phase is detected during `/agency:plan`, gather campaign parameters using AskUserQuestion. This replaces the generic decomposition questioning for marketing phases.
+When a marketing phase is detected during `/legion:plan`, gather campaign parameters using AskUserQuestion. This replaces the generic decomposition questioning for marketing phases.
 
 Key questions (adapt based on responses -- do not ask all if answers imply others):
 
@@ -296,7 +296,7 @@ Before Wave 2 (content creation) begins, the Strategy Lead verifies:
 - [ ] Launch timing is coordinated (stagger by 2-4 hours across channels for maximum reach)
 - [ ] Channel adaptation guidelines (Section 4.2) are included in each agent's execution context
 
-During `/agency:review` for marketing phases, the review agent checks this list against produced content.
+During `/legion:review` for marketing phases, the review agent checks this list against produced content.
 
 ### 4.4: Cross-Channel Handoff Pattern
 
@@ -320,13 +320,13 @@ The handoff between waves ensures all agents work from shared context:
 
 ### 4.5: Coordination During Execution
 
-During `/agency:build` for marketing phases:
+During `/legion:build` for marketing phases:
 
 1. Wave 1 agent (Strategy Lead) produces the core messaging brief as part of their SUMMARY.md
 2. Wave 2 agents receive Wave 1 output as context (SUMMARY.md from Wave 1 is injected into Wave 2 prompts)
 3. All Wave 2 agents get the SAME core messaging brief plus their channel-specific instructions
 4. If Wave 3 exists (distribution phase): agents receive all prior summaries as context
-5. `/agency:review` for marketing phases uses the Consistency Validation Checklist (Section 4.3) as a review criterion
+5. `/legion:review` for marketing phases uses the Consistency Validation Checklist (Section 4.3) as a review criterion
 
 ---
 
@@ -414,8 +414,8 @@ Full format specification for campaign documents produced at `.planning/campaign
 
 | Status | Meaning | Set When |
 |--------|---------|----------|
-| Planning | Campaign document being drafted, not yet approved | During `/agency:plan` campaign questioning |
-| Active | Campaign is live, content being produced/distributed | When `/agency:build` begins marketing phase execution |
+| Planning | Campaign document being drafted, not yet approved | During `/legion:plan` campaign questioning |
+| Active | Campaign is live, content being produced/distributed | When `/legion:build` begins marketing phase execution |
 | Measuring | Campaign ended, collecting results | After all content waves complete |
 | Complete | Final learnings captured, campaign archived | After review and outcome recording |
 
@@ -433,7 +433,7 @@ The phase plan references all campaign documents in its `@context` block.
 
 How callers consume this skill. Each integration point follows the same contract: detect marketing phase, use marketing patterns if detected, skip silently if not.
 
-### 6.1: /agency:plan Integration (Marketing Phase Detection)
+### 6.1: /legion:plan Integration (Marketing Phase Detection)
 
 In phase-decomposer, after reading ROADMAP phase details:
 
@@ -468,7 +468,7 @@ In phase-decomposer, after reading ROADMAP phase details:
    Standard decomposition proceeds (no impact from this skill)
 ```
 
-### 6.2: /agency:build Integration (Marketing Execution)
+### 6.2: /legion:build Integration (Marketing Execution)
 
 During wave-executor for marketing phases:
 
@@ -492,7 +492,7 @@ During wave-executor for marketing phases:
    - Focus is on publishing and engagement, not content creation
 ```
 
-### 6.3: /agency:review Integration (Marketing Quality)
+### 6.3: /legion:review Integration (Marketing Quality)
 
 During review-loop for marketing phases, review agents check:
 

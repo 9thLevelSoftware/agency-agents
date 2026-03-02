@@ -1,11 +1,11 @@
 ---
-name: agency:github-sync
+name: legion:github-sync
 description: GitHub integration — issue tracking, PR creation, milestone sync, and status readback via gh CLI
 ---
 
 # GitHub Sync
 
-GitHub operations engine for The Agency Workflows. Provides issue creation linked to phases, PR creation after phase execution, milestone synchronization with ROADMAP.md, and live status readback for the dashboard. All operations require the `gh` CLI and a GitHub remote, and all operations degrade gracefully when unavailable.
+GitHub operations engine for Legion. Provides issue creation linked to phases, PR creation after phase execution, milestone synchronization with ROADMAP.md, and live status readback for the dashboard. All operations require the `gh` CLI and a GitHub remote, and all operations degrade gracefully when unavailable.
 
 References:
 - State File Locations from `workflow-common.md` (state paths, degradation pattern)
@@ -47,13 +47,13 @@ If github_available is false, the calling workflow skips the GitHub section enti
 These values are used throughout all GitHub operations:
 
 ```
-AGENCY_LABEL = "agency"
-AGENCY_LABEL_COLOR = "7B68EE"
-AGENCY_LABEL_DESCRIPTION = "Created by Agency Workflows"
-BRANCH_PREFIX = "agency/phase-"
+LEGION_LABEL = "legion"
+LEGION_LABEL_COLOR = "7B68EE"
+LEGION_LABEL_DESCRIPTION = "Created by Legion"
+BRANCH_PREFIX = "legion/phase-"
 ```
 
-The label color `7B68EE` (medium slate blue) provides a distinct visual marker in the GitHub issue tracker, making Agency-created issues easy to identify at a glance.
+The label color `7B68EE` (medium slate blue) provides a distinct visual marker in the GitHub issue tracker, making Legion-created issues easy to identify at a glance.
 
 ### Session Caching
 
@@ -62,7 +62,7 @@ Once the prerequisites check passes, cache the following values for the duration
 | Cached Value | Source | Example |
 |--------------|--------|---------|
 | `github_available` | Steps 1-2 result | `true` |
-| `REPO_SLUG` | Step 3 first token | `user/agency-agents` |
+| `REPO_SLUG` | Step 3 first token | `user/legion` |
 | `DEFAULT_BRANCH` | Step 3 second token | `main` |
 
 Do NOT re-run the prerequisites check within the same command invocation. The cached values are valid for the entire session.
@@ -71,14 +71,14 @@ Do NOT re-run the prerequisites check within the same command invocation. The ca
 
 ## Section 2: Issue Management (GH-01)
 
-Creating and managing GitHub issues linked to Agency phases. Each phase gets one tracking issue with a checklist of its plans.
+Creating and managing GitHub issues linked to Legion phases. Each phase gets one tracking issue with a checklist of its plans.
 
 ### 2.1: Ensure Label Exists
 
-Before the first issue creation in a session, ensure the "agency" label exists on the repository:
+Before the first issue creation in a session, ensure the "legion" label exists on the repository:
 
 ```
-Command: gh label create agency --description "Created by Agency Workflows" --color 7B68EE 2>/dev/null
+Command: gh label create legion --description "Created by Legion" --color 7B68EE 2>/dev/null
 ```
 
 This command is idempotent — if the label already exists, `gh` returns a non-zero exit code but creates nothing. The `2>/dev/null` suppresses the "already exists" error message. Do not check for the label's existence first; the create command handles both cases.
@@ -97,7 +97,7 @@ Command:
   gh issue create \
     --title "Phase {phase_number}: {phase_name}" \
     --body "{ISSUE_BODY}" \
-    --label "agency" \
+    --label "legion" \
     {--milestone "MILESTONE_TITLE" if a GitHub milestone exists for the current ROADMAP milestone}
 
 ISSUE_BODY format:
@@ -116,12 +116,12 @@ ISSUE_BODY format:
   {success_criteria as bullet list}
 
   ---
-  *Created by Agency Workflows*
+  *Created by Legion*
 
 Capture issue number:
   Parse the URL returned by gh issue create — the last path segment is the issue number.
   Example: https://github.com/user/repo/issues/42 → issue_number = 42
-  Fallback: gh issue list --label agency --state open --json number,title -q '.[0].number'
+  Fallback: gh issue list --label legion --state open --json number,title -q '.[0].number'
 ```
 
 The `--milestone` flag is only included if a GitHub milestone has already been created for the corresponding ROADMAP milestone (see Section 4). If no milestone exists on GitHub, omit the flag entirely — do not create the milestone as a side effect of issue creation.
@@ -149,7 +149,7 @@ If the issue is already closed (e.g., closed manually by the user), `gh issue cl
 
 ### 2.4: Update Issue Checklist
 
-After a plan completes during `/agency:build`, update the phase issue's checklist to reflect progress.
+After a plan completes during `/legion:build`, update the phase issue's checklist to reflect progress.
 
 ```
 Step 1: Read current issue body
@@ -185,7 +185,7 @@ Step 1: Check current branch
   Command: git branch --show-current
   - If result equals DEFAULT_BRANCH (from Section 1):
     Create feature branch: git checkout -b {BRANCH_PREFIX}{NN}-{slug}
-    Example: git checkout -b agency/phase-03-phase-planning
+    Example: git checkout -b legion/phase-03-phase-planning
     The slug is the phase name in kebab-case, truncated to 40 characters.
   - If result is NOT the default branch:
     Use the current branch as-is (the user or a previous workflow created it)
@@ -245,7 +245,7 @@ PR_BODY format:
   {If issue_number exists: "Closes #{issue_number}"}
 
   ---
-  *Created by Agency Workflows*
+  *Created by Legion*
 
 Capture PR number:
   Parse from the gh pr create output URL.
@@ -256,13 +256,13 @@ The `Closes #{issue_number}` line uses GitHub's automatic issue closing — when
 
 ### 3.3: PR Creation Timing
 
-PRs are created at specific points in the Agency workflow:
+PRs are created at specific points in the Legion workflow:
 
 | Trigger | When | Condition |
 |---------|------|-----------|
-| After `/agency:build` | All plans in phase executed | At least one plan succeeded |
-| After `/agency:review` | Review cycle passes | PR not already created for this phase |
-| Manual via `/agency:quick` | User requests PR | Current branch has unpushed commits |
+| After `/legion:build` | All plans in phase executed | At least one plan succeeded |
+| After `/legion:review` | Review cycle passes | PR not already created for this phase |
+| Manual via `/legion:quick` | User requests PR | Current branch has unpushed commits |
 
 Do NOT create a PR if all plans in the phase failed. A PR with only failed work is not useful. Instead, log a note and let the user decide.
 
@@ -312,7 +312,7 @@ Input: github_milestone_number
 Step 1: Verify all issues in milestone are closed
   Command: gh api "repos/{REPO_SLUG}/milestones/{github_milestone_number}" --jq '.open_issues'
   - If open_issues > 0: log warning "Milestone has {N} open issues" but proceed with close
-    (The user may have added non-Agency issues to the milestone)
+    (The user may have added non-Legion issues to the milestone)
 
 Step 2: Close the milestone
   Command:
@@ -347,10 +347,10 @@ Step 3: Include --milestone flag in issue creation
 
 ## Section 5: Status Readback (GH-03)
 
-Fetching live GitHub status for the `/agency:status` dashboard. This section provides real-time data that supplements the static STATE.md information.
+Fetching live GitHub status for the `/legion:status` dashboard. This section provides real-time data that supplements the static STATE.md information.
 
 ```
-Purpose: Used by /agency:status to display current GitHub state.
+Purpose: Used by /legion:status to display current GitHub state.
 Do NOT rely on STATE.md values for status — always fetch live from GitHub.
 STATE.md stores the LINKING information (which issue/PR belongs to which phase).
 
@@ -359,7 +359,7 @@ Step 1: Read STATE.md ## GitHub section to get issue/PR numbers per phase
   - If ## GitHub section doesn't exist: return empty data (GitHub not yet used)
 
 Step 2: Batch-fetch issue status
-  Command: gh issue list --label agency --state all --json number,title,state --limit 100
+  Command: gh issue list --label legion --state all --json number,title,state --limit 100
   Parse into a map: {number: {title, state}}
   - state values: "OPEN" or "CLOSED"
 
@@ -482,7 +482,7 @@ The ## GitHub section is always the LAST section in STATE.md. If STATE.md is upd
 
 ## Section 7: Error Handling
 
-Comprehensive error handling for all GitHub operations. The core principle: GitHub integration is always optional. No GitHub error should ever block an Agency workflow.
+Comprehensive error handling for all GitHub operations. The core principle: GitHub integration is always optional. No GitHub error should ever block a Legion workflow.
 
 ### e1: gh CLI not installed
 
@@ -637,25 +637,25 @@ The system operates at one of three levels during any session:
 To verify a workflow degrades gracefully:
 
 1. Remove GitHub remote: `git remote remove origin`
-2. Run the workflow (`/agency:plan`, `/agency:build`, `/agency:status`, `/agency:review`)
+2. Run the workflow (`/legion:plan`, `/legion:build`, `/legion:status`, `/legion:review`)
 3. Confirm it completes successfully with no errors or warnings about GitHub
 4. Re-add the remote: `git remote add origin {url}`
 5. Confirm GitHub operations resume on the next workflow run
 
 Alternatively, test with an unauthenticated gh:
 1. Run `gh auth logout`
-2. Run any Agency workflow
+2. Run any Legion workflow
 3. Confirm it completes without GitHub-related errors
 4. Run `gh auth login` to restore access
 
 ### Integration Contract
 
-Every Agency command that integrates with GitHub MUST follow this contract:
+Every Legion command that integrates with GitHub MUST follow this contract:
 
 1. **Check before use** — call the prerequisites check (Section 1) once at the start
 2. **Wrap each operation** — every `gh` command is wrapped in an availability check
 3. **Handle partial failure** — if one operation fails, others may still succeed
-4. **No cascading failures** — a GitHub error in `/agency:build` does not affect plan execution
+4. **No cascading failures** — a GitHub error in `/legion:build` does not affect plan execution
 5. **No required outputs** — no downstream step depends on a GitHub issue number or PR URL existing
 
 ---

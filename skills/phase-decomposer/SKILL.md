@@ -1,11 +1,11 @@
 ---
-name: agency:phase-decomposer
+name: legion:phase-decomposer
 description: Decomposes roadmap phases into wave-structured plans with agent recommendations and plan file generation
 ---
 
 # Phase Decomposer
 
-Engine for `/agency:plan`. Takes a ROADMAP.md phase entry and transforms it into executable, wave-structured plan files with per-plan agent recommendations. The full flow: analyze phase, decompose into plans, recommend agents, present for confirmation, generate plan files.
+Engine for `/legion:plan`. Takes a ROADMAP.md phase entry and transforms it into executable, wave-structured plan files with per-plan agent recommendations. The full flow: analyze phase, decompose into plans, recommend agents, present for confirmation, generate plan files.
 
 ---
 
@@ -594,7 +594,7 @@ Auto-detect the next unplanned phase:
 3. Use that phase number
 4. Tell the user: "Auto-detected Phase {N}: {name} as the next phase to plan."
 
-If all phases are either complete or already have plan files, inform the user: "All phases are either complete or already planned. Use `/agency:plan N` with a specific phase number to re-plan."
+If all phases are either complete or already have plan files, inform the user: "All phases are either complete or already planned. Use `/legion:plan N` with a specific phase number to re-plan."
 
 ### Phase Does Not Exist
 
@@ -605,7 +605,7 @@ Error: "Phase {N} doesn't exist in ROADMAP.md. The roadmap has {count} phases.
         Available phases: {list phase numbers and names}."
 ```
 
-Do not attempt to create a new phase — that requires updating the ROADMAP.md, which is outside `/agency:plan`'s scope.
+Do not attempt to create a new phase — that requires updating the ROADMAP.md, which is outside `/legion:plan`'s scope.
 
 ### Phase Already Complete
 

@@ -1,11 +1,11 @@
 ---
-name: agency:memory-manager
-description: Cross-session memory — outcome tracking, pattern recall with decay, and graceful degradation for Agency workflows
+name: legion:memory-manager
+description: Cross-session memory — outcome tracking, pattern recall with decay, and graceful degradation for Legion workflows
 ---
 
 # Memory Manager
 
-Cross-session memory layer for The Agency Workflows. Tracks agent performance and task outcomes, provides pattern recall with recency-based decay, and degrades gracefully when memory is not present. All memory operations are explicit calls from workflows — no hooks, no background processes.
+Cross-session memory layer for Legion. Tracks agent performance and task outcomes, provides pattern recall with recency-based decay, and degrades gracefully when memory is not present. All memory operations are explicit calls from workflows — no hooks, no background processes.
 
 References:
 - State File Locations from `workflow-common.md` (memory paths at `.planning/memory/`)
@@ -20,7 +20,7 @@ References:
 Core rules governing all memory operations:
 
 1. **Passive and opt-in** — memory operations are called explicitly by workflows. No hooks, no background processes, no automatic triggers. A workflow must choose to store or recall.
-2. **Human-readable markdown** — all memory is stored as structured markdown tables, consistent with PROJECT.md, STATE.md, and all other Agency state files. No JSON, no binary, no databases.
+2. **Human-readable markdown** — all memory is stored as structured markdown tables, consistent with PROJECT.md, STATE.md, and all other Legion state files. No JSON, no binary, no databases.
 3. **Graceful degradation** — every caller checks for memory availability before using it. If memory files don't exist, the workflow proceeds identically to how it worked before Phase 9. Memory is an enhancement, never a requirement.
 4. **Append-only records** — outcome records are added, never modified or deleted automatically. Decay happens at recall time through scoring, not through deletion.
 5. **Supplement, not override** — memory boosts agent recommendations but cannot override mandatory roles, division alignment, or the core recommendation algorithm in agent-registry.md.
@@ -50,7 +50,7 @@ Managed by memory-manager skill. Do not edit manually unless pruning old records
 | ID | Date | Phase | Plan | Agent | Task Type | Outcome | Importance | Tags | Summary |
 |----|------|-------|------|-------|-----------|---------|------------|------|---------|
 | O-001 | 2026-03-01 | 5 | 05-01 | testing-reality-checker | quality-review | success | 3 | review, testing, workflow | Review-loop skill approved in 2 cycles |
-| O-002 | 2026-03-01 | 5 | 05-02 | autonomous | workflow | success | 2 | review, command, status | /agency:review command implemented |
+| O-002 | 2026-03-01 | 5 | 05-02 | autonomous | workflow | success | 2 | review, command, status | /legion:review command implemented |
 ```
 
 **Field definitions**:
@@ -186,7 +186,7 @@ Step 6: Sort and limit
 Step 7: Pruning suggestion (informational only)
   - If total record count exceeds 200:
     Output note: "Memory has {count} records. Consider pruning old entries with
-    `/agency:quick prune memory records older than 90 days`."
+    `/legion:quick prune memory records older than 90 days`."
   - Never auto-prune. User decides.
 ```
 
@@ -330,7 +330,7 @@ To verify a workflow degrades gracefully:
 - **Malformed OUTCOMES.md**: If the table cannot be parsed (missing columns, corrupted rows), log a one-line warning: "Warning: OUTCOMES.md could not be parsed. Proceeding without memory." Return empty results. Do NOT attempt to repair — the user should inspect manually.
 - **Write failure during store**: Output the intended record as text to the user. Include all fields so the user can manually add it. Continue the workflow — memory loss is not a blocking error.
 - **Excessive records (200+)**: On recall, output an informational note suggesting pruning. Never auto-prune. The note appears once per recall, not per record.
-- **Concurrent writes**: Not a concern in Agency workflows — only one build/review runs at a time per project. If somehow two writes conflict, the second write wins (last-write-wins, consistent with all other Agency state files).
+- **Concurrent writes**: Not a concern in Legion workflows — only one build/review runs at a time per project. If somehow two writes conflict, the second write wins (last-write-wins, consistent with all other Legion state files).
 - **Date parsing failure**: If a record's date cannot be parsed, treat its recency_weight as 0.4 (middle of the range). Do not exclude records with unparseable dates.
 
 ---

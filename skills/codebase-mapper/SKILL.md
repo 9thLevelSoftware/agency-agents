@@ -1,19 +1,19 @@
 ---
-name: agency:codebase-mapper
+name: legion:codebase-mapper
 description: Brownfield codebase analysis — file mapping, framework detection, risk assessment, and CODEBASE.md generation
 ---
 
 # Codebase Mapper
 
-Brownfield codebase analysis engine for The Agency Workflows. Analyzes existing codebases before planning to produce a structured map of architecture, patterns, frameworks, and risk areas. The output artifact is `.planning/CODEBASE.md`, consumed by `/agency:start` (brownfield detection branch) and `/agency:plan` (context injection into phase decomposition).
+Brownfield codebase analysis engine for Legion. Analyzes existing codebases before planning to produce a structured map of architecture, patterns, frameworks, and risk areas. The output artifact is `.planning/CODEBASE.md`, consumed by `/legion:start` (brownfield detection branch) and `/legion:plan` (context injection into phase decomposition).
 
 All operations use Read, Bash, Glob, and Grep -- no external dependencies, no custom scripts, no MCP servers. The analysis is Claude reading and reasoning over files using a structured protocol.
 
 References:
 - State File Locations from `workflow-common.md` (state paths, degradation pattern)
 - Brownfield Conventions from `workflow-common.md` (lifecycle, paths, integration points)
-- `/agency:start` in `start.md` (brownfield detection trigger, user opt-in)
-- `/agency:plan` in `plan.md` (CODEBASE.md context injection during phase decomposition)
+- `/legion:start` in `start.md` (brownfield detection trigger, user opt-in)
+- `/legion:plan` in `plan.md` (CODEBASE.md context injection during phase decomposition)
 
 ---
 
@@ -24,7 +24,7 @@ Core rules governing brownfield analysis and the detection heuristic that determ
 ### Principles
 
 1. **Opt-in only** -- brownfield analysis is never automatic. The user is always asked via AskUserQuestion before any analysis begins. No background scanning, no silent analysis.
-2. **Human-readable markdown** -- the output artifact (`.planning/CODEBASE.md`) follows the same structured markdown convention as STATE.md, ROADMAP.md, and all other Agency state files. No JSON, no binary, no databases.
+2. **Human-readable markdown** -- the output artifact (`.planning/CODEBASE.md`) follows the same structured markdown convention as STATE.md, ROADMAP.md, and all other Legion state files. No JSON, no binary, no databases.
 3. **Graceful degradation** -- every consumer checks for CODEBASE.md existence before using it. If absent, the workflow proceeds identically to greenfield mode. Brownfield analysis is an enhancement, never a requirement.
 4. **Heuristic-based** -- all detection uses file presence and content grep, not AST parsing or LSP analysis. Simple, auditable, and sufficient for planning-time orientation.
 5. **Depth-limited** -- analysis constrains itself to avoid consuming the context window on large codebases. Work with counts and samples, never full enumeration.
@@ -32,7 +32,7 @@ Core rules governing brownfield analysis and the detection heuristic that determ
 
 ### When to Run
 
-- Triggered by `/agency:start` when existing source code is detected in the project directory
+- Triggered by `/legion:start` when existing source code is detected in the project directory
 - Can be re-triggered manually if the codebase has changed significantly
 - NEVER runs automatically -- always prompted via AskUserQuestion
 - If `.planning/CODEBASE.md` already exists and is <30 days old, skip and inform the user
@@ -40,7 +40,7 @@ Core rules governing brownfield analysis and the detection heuristic that determ
 
 ### Source Code Detection Heuristic
 
-Check for non-Agency files in the current directory. Run these checks in order:
+Check for non-Legion files in the current directory. Run these checks in order:
 
 ```
 1. Any source files outside .planning/ and .claude/?
@@ -537,7 +537,7 @@ The overall confidence level in the CODEBASE.md header reflects the quality of d
 
 How callers consume this skill. Each integration point follows the same contract: check existence, use if present, skip if absent.
 
-### 6.1: /agency:start Integration (Brownfield Branch)
+### 6.1: /legion:start Integration (Brownfield Branch)
 
 After the pre-flight check (Step 1) and before the questioning flow (Step 3):
 
@@ -562,7 +562,7 @@ After the pre-flight check (Step 1) and before the questioning flow (Step 3):
        -> Proceed directly to questioning (greenfield mode)
        -> No CODEBASE.md created
 
-     Option 3: "I'll run /agency:plan directly"
+     Option 3: "I'll run /legion:plan directly"
        -> Abort start, let user plan manually
        -> No CODEBASE.md created
 
@@ -571,7 +571,7 @@ After the pre-flight check (Step 1) and before the questioning flow (Step 3):
    Do not mention brownfield analysis to the user
 ```
 
-### 6.2: /agency:plan Integration (Context Injection)
+### 6.2: /legion:plan Integration (Context Injection)
 
 In `plan.md` step 3 (READ PHASE DETAILS), after reading existing state:
 
@@ -581,7 +581,7 @@ In `plan.md` step 3 (READ PHASE DETAILS), after reading existing state:
    a. Read .planning/CODEBASE.md
    b. Check the "Analyzed" date in the header
       - If >30 days old: warn user:
-        "CODEBASE.md is {N} days old. Consider re-analyzing with /agency:start."
+        "CODEBASE.md is {N} days old. Consider re-analyzing with /legion:start."
       - Do NOT auto-re-analyze — let the user decide
       - Do NOT block planning — proceed with existing data
    c. Extract these sections for phase-decomposer context:
@@ -618,5 +618,5 @@ This is identical to the Memory Conventions and GitHub Conventions degradation p
 
 | Consumer | File | Integration Point |
 |----------|------|------------------|
-| `/agency:start` | `commands/start.md` | Brownfield detection branch after pre-flight (Step 1b) |
-| `/agency:plan` | `commands/plan.md` | Context injection during phase decomposition (Step 3) |
+| `/legion:start` | `commands/start.md` | Brownfield detection branch after pre-flight (Step 1b) |
+| `/legion:plan` | `commands/plan.md` | Context injection during phase decomposition (Step 3) |

@@ -1,11 +1,11 @@
 ---
-name: agency:milestone-tracker
+name: legion:milestone-tracker
 description: Milestone management — definition, completion with metrics, archiving, summary generation
 ---
 
 # Milestone Tracker
 
-Core skill for milestone management within The Agency workflow. Defines the milestone format in ROADMAP.md, the definition flow for proposing and writing milestones, completion logic with pre-flight checks and summary generation, archiving operations with state condensation, metrics formulas, and error handling for all edge cases.
+Core skill for milestone management within The Legion workflow. Defines the milestone format in ROADMAP.md, the definition flow for proposing and writing milestones, completion logic with pre-flight checks and summary generation, archiving operations with state condensation, metrics formulas, and error handling for all edge cases.
 
 References:
 - State File Locations from `workflow-common.md` (milestone paths at `.planning/milestones/` and `.planning/archive/`)
@@ -351,7 +351,7 @@ Milestone summary updates:
 
 ## Section 5: Milestone Metrics
 
-Formulas for computing milestone-level metrics. These are used by both the completion summary and the `/agency:milestone` status display.
+Formulas for computing milestone-level metrics. These are used by both the completion summary and the `/legion:milestone` status display.
 
 ### Phase Progress
 
@@ -397,7 +397,7 @@ Example: 12/15 requirements satisfied
 
 ### Aggregated Milestone Display
 
-When showing multiple milestones (e.g., in `/agency:milestone` status), render each as:
+When showing multiple milestones (e.g., in `/legion:milestone` status), render each as:
 
 ```
 Milestone 1: Core Workflow (Phases 1-7) — Complete
@@ -431,4 +431,4 @@ How to handle failures and edge cases across all milestone operations.
 
 - **No phases in range exist in ROADMAP.md**: If the milestone references phases that don't appear in the Phase Details section: "Milestone {N} references Phases {start}-{end}, but only Phases 1-{max} exist in ROADMAP.md. Adjust the milestone range."
 
-- **Empty Progress table**: If the Progress table has no rows or is malformed: "Cannot calculate milestone status — ROADMAP.md Progress table is empty or malformed. Run `/agency:plan` to populate phases first."
+- **Empty Progress table**: If the Progress table has no rows or is malformed: "Cannot calculate milestone status — ROADMAP.md Progress table is empty or malformed. Run `/legion:plan` to populate phases first."
