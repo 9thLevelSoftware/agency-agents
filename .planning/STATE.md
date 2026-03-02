@@ -33,10 +33,10 @@ progress:
 ## Current Position
 
 Milestone: v4.0 — Inspiration Audit Adoption
-Status: Active — Phase 34 executing (Plan 1/2 complete)
-Last activity: 2026-03-02 — Phase 34 Plan 01 complete (execution resilience conventions: Auto-Remediation + Output Redirection added to workflow-common and build command)
+Status: Active — Phase 34 complete (both plans executed, pending review)
+Last activity: 2026-03-02 — Phase 34 Plan 02 complete (DPO preference pair capture: PREFERENCES.md memory file, Section 13 in memory-manager, 4 capture points in review command, manual edit detection in build command)
 
-Progress: [========..] 83% (5/6 phases complete, Phase 34 in progress)
+Progress: [==========] 100% (6/6 phases planned complete, Phase 34 pending review)
 
 ## v4.0 Phase Map
 
@@ -47,7 +47,7 @@ Progress: [========..] 83% (5/6 phases complete, Phase 34 in progress)
 | 31 | Behavioral Guardrails | DSC-01, DSC-02 | — | **Complete** |
 | 32 | Planning Intelligence | PLN-01, PLN-02 | Phase 29 | **Complete** |
 | 33 | Knowledge & Memory | KNW-01, KNW-02, KNW-03 | Phase 31 | **Complete** |
-| 34 | Execution Resilience | EXE-01, EXE-02, EXE-03 | Phase 30, 33 | **Planned** |
+| 34 | Execution Resilience | EXE-01, EXE-02, EXE-03 | Phase 30, 33 | **Executed (pending review)** |
 
 **Parallel wave 1:** Phases 29, 30, 31 (no dependencies — can execute simultaneously)
 **Wave 2:** Phase 32 (needs 29), Phase 33 (needs 31)
@@ -71,8 +71,17 @@ Progress: [========..] 83% (5/6 phases complete, Phase 34 in progress)
 
 ## Next Steps
 
-Phase 34 Plan 01 complete — execution resilience conventions (auto-remediation + output redirection) added to workflow-common and build command.
-Run Phase 34 Plan 02 to complete the phase (EXE-01 checkpoint verification).
+Phase 34 Plans 01 and 02 complete — all 3 requirements (EXE-01, EXE-02, EXE-03) covered.
+Run `/legion:review` to verify Phase 34: Execution Resilience.
+
+### Key Decisions Added (34-02)
+
+- PREFERENCES.md is the fourth memory file with identical graceful degradation contract as OUTCOMES/PATTERNS/ERRORS
+- Preference signals are soft: never exclude an agent solely based on negative preferences (situational context matters)
+- Routing improvement formula: preference_boost = (sum of preference scores) * 0.5, added to base recommendation score from agent-registry
+- Manual edit detection at both build completion (Step 5.a2) and review start (Step 2.5) for maximum coverage
+- D-{NNN} ID format distinguishes preference records from O/P/E records in other memory files
+- "NOT for routine decisions" rule documented explicitly: low-signal decisions like "Execute all plans" are excluded
 
 ### Key Decisions Added (34-01)
 

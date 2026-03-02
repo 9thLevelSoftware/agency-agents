@@ -35,7 +35,7 @@
 
 ### Execution Resilience (EXE)
 
-- [ ] **EXE-01**: Accepted/rejected/edited file proposals generate DPO preference pairs stored for future agent routing improvement
+- [x] **EXE-01**: Accepted/rejected/edited file proposals generate DPO preference pairs stored for future agent routing improvement
 - [x] **EXE-02**: Missing dependencies and environment issues auto-generate setup tasks instead of blocking execution with unactionable errors
 - [x] **EXE-03**: Noisy command output (`npm install`, build logs, etc.) is redirected to temp files with exit code checks, saving context tokens
 
