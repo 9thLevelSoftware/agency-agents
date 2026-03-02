@@ -1,10 +1,12 @@
-# The Agency Workflows
+# Legion
 
-Orchestrate 51 AI specialist personalities as coordinated teams in Claude Code.
+Orchestrate 51 AI specialist personalities as a coordinated legion.
+
+> *"My name is Legion, for we are many."*
 
 ## What It Does
 
-Turn a collection of 51 isolated agent personalities into a functional AI agency. Type `/agency:start`, describe what you want, and the system assembles the right team, plans the work, executes in parallel, and runs quality checks — with each agent operating in full character.
+Turn 51 isolated agent personalities into a coordinated legion. Type `/legion:start`, describe what you want, and the system assembles the right team, plans the work, executes in parallel, and runs quality checks — with each agent operating in full character.
 
 ## Installation
 
@@ -15,13 +17,13 @@ Turn a collection of 51 isolated agent personalities into a functional AI agency
 claude plugin marketplace add 9thLevelSoftware/agency-agents
 
 # Step 2: Install the plugin
-claude plugin install agency-workflows@agency-workflows
+claude plugin install legion
 ```
 
 Or from inside the Claude Code TUI:
 ```
 /plugin marketplace add 9thLevelSoftware/agency-agents
-/plugin install agency-workflows@agency-workflows
+/plugin install legion
 ```
 
 ### Local development
@@ -39,49 +41,49 @@ claude --plugin-dir ./agency-agents
 ## Getting Started
 
 1. Install the plugin (see above)
-2. In any project directory, run `/agency:start`
+2. In any project directory, run `/legion:start`
 3. Answer the guided questions — the system explores your vision before jumping to implementation
 4. Review the generated PROJECT.md and ROADMAP.md
-5. Run `/agency:plan 1` to plan the first phase with agent recommendations
-6. Run `/agency:build` to execute with parallel agent teams
-7. Run `/agency:review` for quality review
-8. Repeat `/agency:plan N` → `/agency:build` → `/agency:review` for each phase
+5. Run `/legion:plan 1` to plan the first phase with agent recommendations
+6. Run `/legion:build` to execute with parallel agent teams
+7. Run `/legion:review` for quality review
+8. Repeat `/legion:plan N` → `/legion:build` → `/legion:review` for each phase
 
 ## Commands
 
 | Command | Description | Usage |
 |---------|-------------|-------|
-| `/agency:start` | Initialize project with guided questioning | Run once at project start |
-| `/agency:plan <N>` | Plan phase N with agent recommendations and wave-structured tasks | After start, or after completing a phase |
-| `/agency:build` | Execute current phase with parallel agent teams | After planning a phase |
-| `/agency:review` | Run QA review cycle with testing/QA agents | After building a phase |
-| `/agency:status` | Show progress dashboard and route to next action | Anytime — routes you to the right command |
-| `/agency:quick <task>` | Run ad-hoc task with intelligent agent selection | Anytime — for one-off tasks |
-| `/agency:advise <topic>` | Get read-only expert consultation from any agent | Anytime — standalone advisory, no phase context needed |
-| `/agency:portfolio` | Multi-project dashboard with dependency tracking | When managing multiple projects |
-| `/agency:milestone` | Milestone completion, archiving, and metrics | At project milestones |
-| `/agency:agent` | Create a new agent personality through guided workflow | When you need a specialist that doesn't exist |
+| `/legion:start` | Initialize project with guided questioning | Run once at project start |
+| `/legion:plan <N>` | Plan phase N with agent recommendations and wave-structured tasks | After start, or after completing a phase |
+| `/legion:build` | Execute current phase with parallel agent teams | After planning a phase |
+| `/legion:review` | Run QA review cycle with testing/QA agents | After building a phase |
+| `/legion:status` | Show progress dashboard and route to next action | Anytime — routes you to the right command |
+| `/legion:quick <task>` | Run ad-hoc task with intelligent agent selection | Anytime — for one-off tasks |
+| `/legion:advise <topic>` | Get read-only expert consultation from any agent | Anytime — standalone advisory, no phase context needed |
+| `/legion:portfolio` | Multi-project dashboard with dependency tracking | When managing multiple projects |
+| `/legion:milestone` | Milestone completion, archiving, and metrics | At project milestones |
+| `/legion:agent` | Create a new agent personality through guided workflow | When you need a specialist that doesn't exist |
 
 ## How It Works
 
 ```
-/agency:start            Guided questioning → PROJECT.md + ROADMAP.md
+/legion:start            Guided questioning → PROJECT.md + ROADMAP.md
        ↓
-/agency:plan 1           Phase decomposition → Wave-structured plans + agent teams
+/legion:plan 1           Phase decomposition → Wave-structured plans + agent teams
        ↓                       ↓ (optional)
        ↓                 Plan critique → Pre-mortem + assumption hunting
        ↓
-/agency:build            Parallel execution → Agents work in character, wave by wave
+/legion:build            Parallel execution → Agents work in character, wave by wave
        ↓
-/agency:review           Quality gate → Review → Fix → Re-review (max 3 cycles)
+/legion:review           Quality gate → Review → Fix → Re-review (max 3 cycles)
        ↓                       ↓ (optional)
        ↓                 Panel mode → 2-4 domain-weighted reviewers with rubrics
        ↓
-/agency:plan 2 → ...     Repeat for each phase until project complete
+/legion:plan 2 → ...     Repeat for each phase until project complete
 
 
-/agency:advise <topic>   Standalone → Read-only expert consultation (any time)
-/agency:quick <task>     Standalone → One-off task with agent selection (any time)
+/legion:advise <topic>   Standalone → Read-only expert consultation (any time)
+/legion:quick <task>     Standalone → One-off task with agent selection (any time)
 ```
 
 ## Workflows
@@ -90,7 +92,7 @@ claude --plugin-dir ./agency-agents
 
 The main loop for any project. Run through these four commands in order, repeating plan → build → review for each phase.
 
-#### `/agency:start` — Project Initialization
+#### `/legion:start` — Project Initialization
 
 Guides you through an adaptive conversation (5-8 exchanges) to capture project vision, requirements, and constraints before generating any plans.
 
@@ -104,7 +106,7 @@ Guides you through an adaptive conversation (5-8 exchanges) to capture project v
 **Produces:** `.planning/PROJECT.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`
 **User interaction:** Guided Q&A throughout; confirms generated documents before finalizing
 
-#### `/agency:plan <N>` — Phase Planning
+#### `/legion:plan <N>` — Phase Planning
 
 Decomposes a roadmap phase into wave-structured plans with max 3 tasks each. Recommends agents from the 51-agent registry for each plan and gets your confirmation.
 
@@ -120,7 +122,7 @@ Decomposes a roadmap phase into wave-structured plans with max 3 tasks each. Rec
 **Produces:** `.planning/phases/{NN}-{slug}/CONTEXT.md` and `{NN}-{PP}-PLAN.md` files
 **User interaction:** Confirms agent recommendations; chooses whether to run plan critique; reviews critique findings if applicable
 
-#### `/agency:build` — Phase Execution
+#### `/legion:build` — Phase Execution
 
 Spawns agents with full personality injection to execute all plans for the current phase. Runs waves in parallel, tracks progress, and commits completed work.
 
@@ -135,7 +137,7 @@ Spawns agents with full personality injection to execute all plans for the curre
 **Produces:** Implementation artifacts (code, config, docs) plus `{NN}-{PP}-SUMMARY.md` files
 **User interaction:** Monitors progress; resolves blockers if agents get stuck
 
-#### `/agency:review` — Quality Review
+#### `/legion:review` — Quality Review
 
 Selects appropriate review agents for the phase, runs a structured dev-QA loop (max 3 cycles), and marks the phase complete only after review passes.
 
@@ -153,7 +155,7 @@ Selects appropriate review agents for the phase, runs a structured dev-QA loop (
 
 ### Navigation
 
-#### `/agency:status` — Progress Dashboard
+#### `/legion:status` — Progress Dashboard
 
 Single command to understand where the project is and what to do next. Reads all project state and displays a clear dashboard with session resume context.
 
@@ -169,7 +171,7 @@ Single command to understand where the project is and what to do next. Reads all
 
 ### Ad-hoc
 
-#### `/agency:quick <task>` — One-off Task Execution
+#### `/legion:quick <task>` — One-off Task Execution
 
 Run any task outside the normal phase workflow with automatic agent selection. No phase planning required.
 
@@ -182,7 +184,7 @@ Run any task outside the normal phase workflow with automatic agent selection. N
 **Produces:** Task output plus optional commit
 **User interaction:** Confirms agent selection; approves commit
 
-#### `/agency:advise <topic>` — Expert Consultation
+#### `/legion:advise <topic>` — Expert Consultation
 
 Get read-only strategic advice from any of the 51 agent personalities. The advisor can explore your codebase and ask clarifying questions but cannot modify any files.
 
@@ -201,12 +203,12 @@ Get read-only strategic advice from any of the 51 agent personalities. The advis
 
 ### Management
 
-#### `/agency:portfolio` — Multi-Project Dashboard
+#### `/legion:portfolio` — Multi-Project Dashboard
 
-Cross-project visibility when managing multiple Agency projects. Shows dependency tracking, agent allocation, and offers strategic coordination from the Studio Producer agent.
+Cross-project visibility when managing multiple Legion projects. Shows dependency tracking, agent allocation, and offers strategic coordination from the Studio Producer agent.
 
 **Key steps:**
-1. Load the global portfolio registry (`~/.claude/agency/portfolio.md`)
+1. Load the global portfolio registry (`~/.claude/legion/portfolio.md`)
 2. Display all registered projects with phase progress and health indicators
 3. Show cross-project dependencies and shared agent allocation
 4. Offer Studio Producer consultation for strategic coordination
@@ -214,7 +216,7 @@ Cross-project visibility when managing multiple Agency projects. Shows dependenc
 **Produces:** Dashboard display; optional portfolio registry updates
 **User interaction:** Reviews dashboard; requests strategic coordination if needed
 
-#### `/agency:milestone` — Milestone Lifecycle
+#### `/legion:milestone` — Milestone Lifecycle
 
 Handles the full milestone lifecycle: define milestone groupings, track status, mark milestones complete with summaries, and archive completed artifacts.
 
@@ -226,7 +228,7 @@ Handles the full milestone lifecycle: define milestone groupings, track status, 
 **Produces:** Updated ROADMAP.md, milestone summaries, archived phase directories
 **User interaction:** Selects milestone operation; confirms completion and archiving
 
-#### `/agency:agent` — Agent Creator
+#### `/legion:agent` — Agent Creator
 
 Create a new specialist agent when the 51 existing personalities don't cover your needs. Guided conversation produces a validated agent .md file and registers it in the catalog.
 
@@ -244,7 +246,7 @@ Create a new specialist agent when the 51 existing personalities don't cover you
 
 Three capabilities shipped in v2.0 that extend the core workflow with read-only analysis and multi-perspective review.
 
-### Strategic Advisors (`/agency:advise`)
+### Strategic Advisors (`/legion:advise`)
 
 Lightweight expert consultation without the overhead of phase workflows or the risk of code changes.
 
@@ -264,7 +266,7 @@ Context-aware multi-perspective review teams that replace static reviewer mappin
 - **No criterion overlap** — rubric design ensures reviewers check different aspects of the work, not the same things from different angles
 - **Diversity enforcement** — max 2 reviewers from the same division; at least one Testing agent on every panel
 - **Cross-cutting synthesis** — findings are deduplicated across reviewers, hot spots identified (files flagged by 2+ reviewers), and an aggregate verdict computed
-- **Panel vs. classic mode** — users choose during `/agency:review`; classic mode uses the original static phase-type-to-agent mapping
+- **Panel vs. classic mode** — users choose during `/legion:review`; classic mode uses the original static phase-type-to-agent mapping
 
 ### Plan Critique
 
@@ -274,14 +276,18 @@ Pre-execution stress testing that catches plan weaknesses before agents start bu
 - **Assumption hunting** — extracts 5-10 implicit assumptions from the plan, rates each by impact and evidence strength, and flags critical ones (high impact + weak evidence)
 - **Three verdicts** — PASS (proceed), CAUTION (addressable risks, review mitigations), REWORK (plan needs revision)
 - **Maps to plan sections** — every finding traces to a specific task in a specific plan file with an actionable mitigation or challenge action
-- **Optional step** — activates when the user selects it during `/agency:plan`; does not run automatically
+- **Optional step** — activates when the user selects it during `/legion:plan`; does not run automatically
 - **Read-only agents** — critique agents are spawned as Explore subagents to prevent plan modification
 
 ## Standing on the Shoulders of Giants
 
-The Agency Workflows didn't invent its patterns from scratch. It cherry-picked the best ideas from four proven Claude Code orchestration systems, combined them into something greater than the sum of its parts, and left behind the complexity that made each system hard to adopt.
+Legion didn't invent its patterns from scratch. It cherry-picked the best ideas from four proven Claude Code orchestration systems, combined them into something greater than the sum of its parts, and left behind the complexity that made each system hard to adopt.
 
 ### What We Took (and What We Left Behind)
+
+#### The 51 Agent Personalities — [msitarzewski/agency-agents](https://github.com/msitarzewski/agency-agents)
+
+The 51 specialist personalities that power Legion originated in the agency-agents repository by msitarzewski. These are not generic role labels — they are 80-350 line character sheets with deep expertise, communication styles, hard rules, and personality quirks across 9 divisions. Legion builds orchestration, planning, and review workflows on top of these personalities, but the personalities themselves are the foundation everything else stands on.
 
 #### From [GSD (Get Shit Done)](https://github.com/StuMason/gsd)
 
@@ -333,17 +339,17 @@ Daem0n-MCP proved that AI agents can learn across sessions through structured ou
 
 The key insight from Daem0n was computing decay at recall time rather than destructively aging stored data. This means the full outcome history is always preserved — you can audit every decision — while relevance scoring adapts naturally as time passes.
 
-**Left behind:** Daem0n's hook-driven architecture (memory operations triggered automatically on every tool call) and MCP server dependency. Our memory layer is called explicitly by Agency workflows and stored as a single markdown table at `.planning/memory/OUTCOMES.md` — no server process, no hooks, no background sync. Everything degrades gracefully if the memory file doesn't exist.
+**Left behind:** Daem0n's hook-driven architecture (memory operations triggered automatically on every tool call) and MCP server dependency. Our memory layer is called explicitly by Legion workflows and stored as a single markdown table at `.planning/memory/OUTCOMES.md` — no server process, no hooks, no background sync. Everything degrades gracefully if the memory file doesn't exist.
 
-### What The Agency Added
+### What Legion Added
 
-Beyond combining these five systems, The Agency Workflows introduced several original patterns:
+Beyond combining these five systems, Legion introduced several original patterns:
 
 - **Personality-first agents**: The 51 agent personalities aren't just role labels — they're 80-350 line character sheets with expertise, communication style, hard rules, and personality quirks, all in a standardized emoji-headed format. When an agent is spawned, it receives its *complete personality* as system instructions, not a generic "you are a backend developer" prompt.
 
 - **Hybrid agent selection**: The workflow recommends agents based on task analysis (keyword matching, division affinity, past performance), but the user always confirms or overrides. No black-box assignment.
 
-- **Domain-specific workflow detection**: When `/agency:plan` encounters marketing requirements (MKT-*) or design requirements (DSN-*), it automatically switches to domain-specific wave patterns and team assembly — campaign planning with content calendars for marketing, design systems with three-lens review for design — instead of forcing engineering patterns onto non-engineering work.
+- **Domain-specific workflow detection**: When `/legion:plan` encounters marketing requirements (MKT-*) or design requirements (DSN-*), it automatically switches to domain-specific wave patterns and team assembly — campaign planning with content calendars for marketing, design systems with three-lens review for design — instead of forcing engineering patterns onto non-engineering work.
 
 - **Graceful degradation everywhere**: GitHub integration, cross-session memory, brownfield analysis, marketing workflows, and design workflows are all opt-in features that activate when their prerequisites exist and skip silently when they don't. The core workflow (start → plan → build → review) works identically with or without any optional feature.
 
@@ -351,7 +357,7 @@ Beyond combining these five systems, The Agency Workflows introduced several ori
 
 ### The Result
 
-| Metric | GSD | Conductor | Shipyard | Best Practice | Daem0n | **Agency** |
+| Metric | GSD | Conductor | Shipyard | Best Practice | Daem0n | **Legion** |
 |--------|-----|-----------|----------|---------------|--------|------------|
 | Commands | 33+ | 15+ | 29 | 5 | N/A | **10** |
 | Workflow files | 33+ | 20+ | 15+ | 8 | 3 | **17 skills** |
@@ -391,7 +397,7 @@ agency-agents/              <- Plugin root
 │   └── marketplace.json    <- Marketplace entry for `claude plugin marketplace add`
 ├── settings.json           <- Plugin settings (empty — multi-agent, not single-agent)
 ├── CLAUDE.md               <- Project instructions (injected into Claude Code context)
-├── commands/               <- 10 /agency: command entry points
+├── commands/               <- 10 /legion: command entry points
 │   ├── start.md
 │   ├── plan.md
 │   ├── build.md
@@ -452,11 +458,11 @@ These activate automatically when their prerequisites are met:
 |---------|---------------|--------------|
 | **GitHub Integration** | `gh` CLI authenticated + git remote exists | Links phases to issues, creates PRs, syncs milestones |
 | **Cross-Session Memory** | `.planning/memory/OUTCOMES.md` exists | Boosts agent recommendations based on past performance |
-| **Brownfield Analysis** | Existing codebase detected during `/agency:start` | Maps architecture, frameworks, risks before planning |
+| **Brownfield Analysis** | Existing codebase detected during `/legion:start` | Maps architecture, frameworks, risks before planning |
 | **Marketing Workflows** | MKT-* requirements or marketing keywords in phase | Campaign planning, content calendars, channel coordination |
 | **Design Workflows** | DSN-* requirements or design keywords in phase | Design systems, UX research, three-lens review (brand + accessibility + usability) |
-| **Plan Critique** | User selects critique during `/agency:plan` | Pre-mortem analysis, assumption hunting, PASS/CAUTION/REWORK verdicts |
-| **Review Panels** | User selects panel mode in `/agency:review` | 2-4 domain-weighted reviewers with non-overlapping rubrics |
+| **Plan Critique** | User selects critique during `/legion:plan` | Pre-mortem analysis, assumption hunting, PASS/CAUTION/REWORK verdicts |
+| **Review Panels** | User selects panel mode in `/legion:review` | 2-4 domain-weighted reviewers with non-overlapping rubrics |
 
 ## Requirements
 

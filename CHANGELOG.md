@@ -18,7 +18,7 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Commit message prefixes updated from `feat(agency):` to `feat(legion):`
 
 ### Added
-- Shoulders of Giants attribution entry crediting 9thLevelSoftware/agency-agents as origin of the 51 agent personalities
+- Shoulders of Giants attribution entry crediting msitarzewski/agency-agents as origin of the 51 agent personalities
 
 ### Unchanged
 - 51 agent personality files (contain zero "agency" references — no changes needed)
