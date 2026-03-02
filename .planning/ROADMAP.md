@@ -95,5 +95,4 @@ Phase 34 depends on 30 + 33.
 | 30. Review & Verification | REV-01, REV-02, REV-03 | **Complete** |
 | 31. Behavioral Guardrails | DSC-01, DSC-02 | **Complete** |
 | 32. Planning Intelligence | PLN-01, PLN-02 | **Complete** |
-| 33. Knowledge & Memory | KNW-01, KNW-02, KNW-03 | **Complete** |
-| 34. Execution Resilience | EXE-01, EXE-02, EXE-03 | Pending |
+| 33. Knowledge & Memory | KNW-01, KNW-02, KNW-03 | Complete    | 2026-03-02 | 34. Execution Resilience | EXE-01, EXE-02, EXE-03 | **Planned** |
