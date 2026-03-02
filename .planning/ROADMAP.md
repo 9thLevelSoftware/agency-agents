@@ -13,7 +13,7 @@
 - [x] **Phase 9: Cross-Session Learning** — Pattern memory, rich session context restoration
 - [x] **Phase 10: Custom Agents** — Agent creation workflow, schema validation, registry auto-update
 - [x] **Phase 11: GitHub Integration** — Issue linking, PR creation, status sync
-- [ ] **Phase 12: Brownfield Support** — Codebase mapping, dependency detection, risk assessment
+- [x] **Phase 12: Brownfield Support** — Codebase mapping, dependency detection, risk assessment
 - [ ] **Phase 13: Marketing Workflows** — Campaign planning, content calendars, cross-channel coordination
 - [ ] **Phase 14: Design Workflows** — Design systems, UX research, design-specific review cycles
 
@@ -144,7 +144,10 @@ Plans:
 - Codebase analysis produces a structured map of existing architecture
 - Detected patterns and conventions inform agent instructions
 - Risk areas flagged before agent work begins
-**Plans**: TBD
+**Plans**: 2
+Plans:
+- [x] 12-01-PLAN.md — Codebase-mapper skill with source detection, language analysis, framework detection, risk assessment, and CODEBASE.md output format
+- [x] 12-02-PLAN.md — Workflow integration (start.md brownfield detection, plan.md context injection) + CLAUDE.md/REQUIREMENTS.md updates
 
 ### Phase 13: Marketing Workflows
 **Goal**: Marketing agents have structured workflows for campaign planning, content calendars, and cross-channel coordination — not just ad-hoc quick tasks.
@@ -179,6 +182,6 @@ Plans:
 | 9. Cross-Session Learning | 3 | 3 | Complete |
 | 10. Custom Agents | 2 | 2 | Complete |
 | 11. GitHub Integration | 2 | 2 | Complete |
-| 12. Brownfield Support | TBD | 0 | Pending |
+| 12. Brownfield Support | 2 | 2 | Complete |
 | 13. Marketing Workflows | TBD | 0 | Pending |
 | 14. Design Workflows | TBD | 0 | Pending |

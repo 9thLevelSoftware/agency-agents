@@ -1,13 +1,13 @@
 # Project State
 
 ## Current Position
-- **Phase**: 11 of 14 (executed, pending review)
-- **Status**: Phase 11 complete — all plans executed successfully
-- **Last Activity**: Phase 11 execution (2026-03-01)
+- **Phase**: 12 of 14 (executed)
+- **Status**: Phase 12 complete — 2 plans executed successfully
+- **Last Activity**: Phase 12 execution (2026-03-01)
 
 ## Progress
 ```
-[########################] 100% — 24/24 plans complete (phases 12-14 not yet planned)
+[########################] 100% — 26/26 plans complete (phases 13-14 not yet planned)
 ```
 
 ## Phase 1 Results
@@ -91,6 +91,10 @@
 - Plan 11-01 (Wave 1): github-sync skill (678 lines) — 8-section GitHub operations engine with prerequisites, issue management, PR creation, milestone sync, status readback, state linking, error handling, graceful degradation + workflow-common GitHub Conventions section
 - Plan 11-02 (Wave 2): GitHub integration wired into 5 commands (plan, build, status, review, milestone) + execution-tracker PR convention + CLAUDE.md/REQUIREMENTS.md updates
 
+## Phase 12 Results
+- Plan 12-01 (Wave 1): Codebase-mapper skill (380+ lines) — 6-section brownfield analysis engine with source detection, language analysis, framework detection, risk assessment, CODEBASE.md output format, and plan integration guidance
+- Plan 12-02 (Wave 2): Workflow integration — start.md brownfield detection branch (step 2, 3 user options), plan.md CODEBASE.md context injection (Risk Areas, Agent Guidance, Conventions, Detected Stack) + CLAUDE.md/REQUIREMENTS.md updates
+
 ## Recent Decisions
 - Plugin format: Claude Code .claude/ directory structure
 - Full personality injection for all agent spawns
@@ -126,6 +130,9 @@
 - "agency" label auto-created on first issue — no setup required
 - Branch management: offer agency/phase-{NN}-{slug} if on default branch, respect existing feature branches
 - All GitHub operations use graceful degradation — identical to Memory Conventions pattern
+- Brownfield detection is opt-in via AskUserQuestion — never forced, consistent with Agency's guided workflow pattern
+- All brownfield operations use graceful degradation — skip silently when CODEBASE.md is absent
+- Stale CODEBASE.md (>30 days) warns but does not block — user decides when to re-analyze
 
 ## Next Action
-Run `/agency:review` to verify Phase 11: GitHub Integration.
+Run `/agency:plan 13` to begin Phase 13: Marketing Workflows.
