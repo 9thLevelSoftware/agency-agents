@@ -22,6 +22,7 @@ Shared constants, paths, and patterns used across all /agency: commands.
 | Memory Outcomes | `.planning/memory/OUTCOMES.md` | Agent performance and task outcome records for cross-session learning |
 | Custom Agents | `agency-agents/{division}/{agent-id}.md` | User-created agent personality files (via `/agency:agent`) |
 | Codebase Map | `.planning/CODEBASE.md` | Structured map of existing codebase architecture, patterns, and risks (via codebase-mapper skill) |
+| Campaign Documents | `.planning/campaigns/{campaign-slug}.md` | Structured campaign plans with objectives, messaging, audience, channels, calendar, and agent assignments (via marketing-workflows skill) |
 
 ## Agent Personality Paths
 
@@ -284,3 +285,44 @@ All brownfield integration follows this pattern:
 2. If yes: inject relevant sections into planning context
 3. If no: skip silently -- greenfield project, proceed normally
 4. Never error, never block, never require brownfield analysis for workflow completion
+
+## Marketing Workflow Conventions
+
+### Marketing Purpose
+Structured campaign workflows for marketing-focused phases -- campaign planning, content calendar generation, and cross-channel coordination. Marketing agents (8 specialists) are orchestrated through domain-specific wave patterns rather than generic engineering decomposition.
+
+### Marketing Lifecycle
+```
+Unplanned --> Planning (campaign document created) --> Active (content in production) --> Measuring --> Complete
+```
+- **Unplanned**: Phase not yet planned. Standard decomposition applies.
+- **Planning**: Marketing phase detected during `/agency:plan`. Campaign document generated at `.planning/campaigns/{slug}.md`.
+- **Active**: Campaign content being produced and distributed via `/agency:build`.
+- **Measuring**: Campaign ended, performance data collected.
+- **Complete**: Learnings captured, outcomes recorded to memory (if memory layer active).
+
+### Marketing Paths
+| Artifact | Path | When Created |
+|----------|------|-------------|
+| Campaign documents | `.planning/campaigns/{campaign-slug}.md` | During /agency:plan when marketing phase detected |
+
+### Marketing Wave Pattern
+| Wave | Role | Agents | Produces |
+|------|------|--------|----------|
+| Wave 1 | Strategy & Planning | Social Media Strategist, Growth Hacker | Campaign brief, metrics, audience analysis |
+| Wave 2 | Content Creation | Content Creator + Channel Specialists | Content assets, adapted messaging |
+| Wave 3 (optional) | Distribution | All channel agents | Published content, engagement |
+
+### Marketing Integration Points
+| Workflow | Operation | When |
+|----------|-----------|------|
+| `/agency:plan` | Detect marketing phase, campaign questioning, generate campaign doc | During phase decomposition (if MKT-* requirements or marketing keywords) |
+| `/agency:build` | Marketing wave execution, core messaging handoff | During plan execution (if campaign document exists) |
+| `/agency:review` | Cross-channel consistency check | During quality review (if campaign document exists) |
+
+### Graceful Degradation Rule
+All marketing workflow integration follows this pattern:
+1. Check if phase is marketing (MKT-* requirements or keyword detection)
+2. If yes: use marketing-specific decomposition, wave patterns, and campaign templates
+3. If no: standard decomposition -- no impact whatsoever
+4. Never error, never block, never require marketing workflows for non-marketing phases
