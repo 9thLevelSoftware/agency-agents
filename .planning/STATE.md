@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: — Legion Rebrand
-status: complete
-last_updated: "2026-03-02T20:36:52.540Z"
+status: archived
+last_updated: "2026-03-02"
 progress:
   total_phases: 5
   completed_phases: 5
@@ -19,13 +19,11 @@ progress:
 
 ## Current Position
 
-Milestone: v3.0 — Legion Rebrand
-Phase: 28 — Documentation
-Plan: 28-01 + 28-02 COMPLETE
-Status: Phase 28 fully executed — all 4 docs (README, CLAUDE.md, CONTRIBUTING.md, CHANGELOG.md) rebranded to Legion with correct msitarzewski attribution
-Last activity: 2026-03-02 — Phase 28 plans 01+02 executed (4 files rebranded, attribution credits msitarzewski/agency-agents)
+Milestone: v3.0 — Legion Rebrand (ARCHIVED)
+Status: All 5 phases complete, 13/13 requirements satisfied, audit passed, milestone archived
+Last activity: 2026-03-02 — Milestone archived, git tag v3.0 created
 
-Progress: [##########] 100% (5/5 phases complete)
+Progress: [##########] 100% (5/5 phases complete) — SHIPPED
 
 ## Shipped Milestones
 
@@ -33,24 +31,20 @@ Progress: [##########] 100% (5/5 phases complete)
 |-----------|--------|-------|-------------|---------|
 | v1.0 | 14 | 30 | 54 | 2026-03-01 |
 | v2.0 | 9 | 9 | 26 | 2026-03-02 |
+| v3.0 | 5 | 6 | 13 | 2026-03-02 |
 
 ## What's Deployed
 
 - 10 commands (`/legion:start`, `plan`, `build`, `review`, `status`, `quick`, `portfolio`, `milestone`, `agent`, `advise`)
 - 17 skills (agent-registry, phase-decomposer, wave-executor, review-loop, review-panel, plan-critique, + 11 more)
 - 51 agents across 9 divisions
-- Plugin manifest at `.claude-plugin/plugin.json`
+- Plugin manifest at `.claude-plugin/plugin.json` — name: `legion`, version: `3.0.0`
 - Distribution: marketplace.json, README, CHANGELOG, CONTRIBUTING
+- Repository: `https://github.com/9thLevelSoftware/legion`
 
-## v3.0 Phase Map
+## Next Steps
 
-| Phase | Goal | Requirements | Status |
-|-------|------|--------------|--------|
-| 24 — Foundation | `/legion:` namespace in workflow-common constants | SKL-01 | Complete |
-| 25 — Commands | All 10 commands renamed to `/legion:` | CMD-01, CMD-02, CMD-03 | Complete |
-| 26 — Skills | Remaining 16 skill files updated | SKL-02, SKL-03 | Complete |
-| 27 — Plugin Manifest | plugin.json + marketplace.json to Legion identity | PLG-01, PLG-02 | Complete |
-| 28 — Documentation | README, CLAUDE.md, CONTRIBUTING, CHANGELOG, attribution | DOC-01, DOC-02, DOC-03, DOC-04, ATR-01 | Complete |
+No active milestone. Run `/gsd:new-milestone` or `/legion:start` to begin the next cycle.
 
 ## Session Continuity
 
@@ -67,15 +61,4 @@ Progress: [##########] 100% (5/5 phases complete)
 - Three-layer read-only for advisory: allowed-tools + Explore subagent + prompt
 - Dynamic review panels over fixed board of directors
 - Pre-mortem + assumption hunting for plan critique
-
-### v3.0 Decisions
-
-- Single atomic Write used for namespace substitution — prevents partial state during 47-occurrence bulk replace
-- workflow-common updated first — it is the shared constants layer all skills and commands read from
-- Commands updated before docs — doc success criteria reference final command names
-- Plugin manifest updated before docs — README install instructions depend on final plugin name
-- Agent personality files excluded from rebrand — they contain zero "agency" references
-- .planning/ archive files excluded — preserve history as-is
-- Repository URL in plugin manifests retained as agency-agents — it is the real GitHub repo name, not a branding field
-- Historical changelog entries (v1.0.0, v2.0.0) preserved exactly as-is — they document what actually happened at those versions; v3.0.0 entry documents the rename
-- Legion quote ("My name is Legion, for we are many.") anchors the v3.0.0 changelog entry as the rebrand narrative
+- Repository renamed from agency-agents to legion on GitHub

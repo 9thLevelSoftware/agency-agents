@@ -14,28 +14,20 @@ Turn a collection of 51 isolated agent personalities into a functional AI legion
 - Projects spanning any of the 9 divisions (engineering, design, marketing, product, PM, testing, support, spatial, specialized)
 - Both code and non-code work (marketing campaigns, design systems, content strategies, not just software)
 
-## Current Milestone: v3.0 — Legion Rebrand
-
-**Goal:** Rebrand from "The Agency Workflows" to "Legion" — new identity, `/legion:` command namespace, updated docs, and proper attribution to the original project.
-
-**Target features:**
-- Rename project identity from "The Agency Workflows" / "agency-agents" to "Legion"
-- Change all `/agency:` commands to `/legion:` commands
-- Update plugin manifest, marketplace entry, and all documentation
-- Rewrite README with Legion branding and the quote "My name is Legion, for we are many."
-- Add original agency-agents repo to Shoulders of Giants as the source of the 51 agent personalities
-- Update CLAUDE.md, CONTRIBUTING.md, CHANGELOG.md for new identity
-
 ## Current State
 
-**v2.0 shipped** (2026-03-02) — 10 commands, 17 skills, 51 agents, 26 requirements delivered across 9 phases.
+**v3.0 shipped** (2026-03-02) — Legion rebrand complete. 5 phases, 6 plans, 13 requirements, 334+ substitutions, repo renamed to `9thLevelSoftware/legion`.
 
-All v1.0 workflows operational plus three advisory capabilities:
-- **Strategic Advisors** — `/agency:advise` for read-only expert consultation
-- **Dynamic Review Panels** — 2-4 reviewer composition with domain-weighted rubrics
-- **Plan Critique** — Pre-mortem analysis and assumption hunting
+10 commands (`/legion:start`, `plan`, `build`, `review`, `status`, `quick`, `portfolio`, `milestone`, `agent`, `advise`), 17 skills, 51 agents across 9 divisions. Installable via `claude plugin install legion@9thLevelSoftware-legion`.
 
-See [v2.0 archived requirements](milestones/v2.0-REQUIREMENTS.md) for full details.
+See [v3.0 archived requirements](milestones/v3.0-REQUIREMENTS.md) for full details.
+
+<details>
+<summary>v2.0 (2026-03-02)</summary>
+
+10 commands, 17 skills, 51 agents, 26 requirements delivered across 9 phases. Plugin structure with `.claude-plugin/plugin.json`, distribution artifacts, plus three advisory capabilities: strategic advisors (`/legion:advise`), dynamic review panels, and plan critique. See [v2.0 archived requirements](milestones/v2.0-REQUIREMENTS.md).
+
+</details>
 
 <details>
 <summary>v1.0 (2026-03-01)</summary>
@@ -50,7 +42,7 @@ See [v2.0 archived requirements](milestones/v2.0-REQUIREMENTS.md) for full detai
 - Board of directors / governance model (Conductor-style) — too heavy
 - MCP server requirements — user brings their own
 - Jira / Linear / other issue trackers — GitHub only for now
-- New features beyond the rebrand — v3.0 is identity-only
+- New features beyond current scope — plan in next milestone
 
 ## Constraints
 
@@ -85,4 +77,4 @@ See [v2.0 archived requirements](milestones/v2.0-REQUIREMENTS.md) for full detai
 | **Best Practice** | Skills/commands/agents structure, agent frontmatter, permission patterns | RPI workflow (too specific), custom hooks infrastructure |
 
 ---
-*Last updated: 2026-03-02 — v3.0 milestone started*
+*Last updated: 2026-03-02 — v3.0 milestone complete*

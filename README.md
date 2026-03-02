@@ -17,13 +17,13 @@ Turn 51 isolated agent personalities into a coordinated legion. Type `/legion:st
 claude plugin marketplace add 9thLevelSoftware/legion
 
 # Step 2: Install the plugin
-claude plugin install legion
+claude plugin install legion@9thLevelSoftware-legion
 ```
 
 Or from inside the Claude Code TUI:
 ```
 /plugin marketplace add 9thLevelSoftware/legion
-/plugin install legion
+/plugin install legion@9thLevelSoftware-legion
 ```
 
 ### Local development
@@ -289,7 +289,7 @@ Legion didn't invent its patterns from scratch. It cherry-picked the best ideas 
 
 The 51 specialist personalities that power Legion originated in the agency-agents repository by msitarzewski. These are not generic role labels — they are 80-350 line character sheets with deep expertise, communication styles, hard rules, and personality quirks across 9 divisions. Legion builds orchestration, planning, and review workflows on top of these personalities, but the personalities themselves are the foundation everything else stands on.
 
-#### From [GSD (Get Shit Done)](https://github.com/StuMason/gsd)
+#### From [GSD (Get Shit Done)](https://github.com/gsd-build/get-shit-done)
 
 **Took: The conversation engine and state management philosophy.**
 
@@ -299,7 +299,7 @@ We also adopted GSD's orchestrator/subagent split: a coordinator manages the wor
 
 **Left behind:** GSD's 33+ workflow files, custom CLI tooling (`gsd-tools.cjs`), complex configuration system, and heavyweight milestone management. GSD is powerful but requires significant setup. We wanted the patterns without the infrastructure.
 
-#### From [Conductor](https://github.com/RichardHightworker/conductor)
+#### From [Conductor](https://github.com/Ibrahim-3d/conductor-orchestrator-superpowers)
 
 **Took: The evaluate-loop and quality gate architecture.**
 
@@ -309,7 +309,7 @@ Conductor's parallel dispatch pattern — spawning multiple specialized evaluato
 
 **Left behind:** Conductor's board-of-directors governance model (5 directors debating is overkill for most projects), file-based message bus IPC, 50+ iteration limits, and `metadata.json` state tracking. Conductor optimizes for correctness through redundancy; we optimize for shipping through focused review.
 
-#### From [Shipyard](https://github.com/9thLevelSoftware/shipyard)
+#### From [Shipyard](https://github.com/lgbarn/shipyard)
 
 **Took: Wave-based execution, plan constraints, and atomic commits.**
 
@@ -321,7 +321,7 @@ Atomic commits per completed plan (from Shipyard's `execution-tracker`) means ev
 
 **Left behind:** Shipyard's 29 commands, checkpoint/rollback system, and complex hook infrastructure. Shipyard is a full project management platform; we just wanted its execution discipline.
 
-#### From [Best Practice Config](https://github.com/9thLevelSoftware/best-practice-claude-code-config)
+#### From [Best Practice Config](https://github.com/shanraisshan/claude-code-best-practice)
 
 **Took: The plugin architecture and agent contract.**
 
