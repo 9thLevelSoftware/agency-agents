@@ -14,7 +14,7 @@
 
 - [x] **Phase 24: Foundation** — Update workflow-common with Legion constants; everything else depends on this
 - [x] **Phase 25: Commands** — Rename all 10 command files to `/legion:` namespace
-- [ ] **Phase 26: Skills** — Update remaining 16 skill files with `/legion:` references
+- [x] **Phase 26: Skills** — Update remaining 16 skill files with `/legion:` references
 - [ ] **Phase 27: Plugin Manifest** — Update plugin.json and marketplace.json to Legion identity
 - [ ] **Phase 28: Documentation** — Rewrite README, update CLAUDE.md, CONTRIBUTING.md, CHANGELOG.md, add attribution
 
@@ -49,7 +49,7 @@
 1. Zero `/agency:` command references remain across all 17 skill files (including workflow-common from Phase 24)
 2. execution-tracker and github-sync skills use `feat(legion):` / `chore(legion):` commit format patterns
 3. Any skill that routes a user to a command routes them to `/legion:` equivalents
-**Plans:** TBD
+**Plans:** 1/1 plans complete
 
 #### Phase 27: Plugin Manifest
 **Goal:** The plugin is installable as `claude plugin install legion` with correct identity
@@ -59,7 +59,10 @@
 1. `plugin.json` has `"name": "legion"` and a description that matches the Legion identity
 2. `marketplace.json` has `"name": "legion"`, updated description, and correct repository URL
 3. Neither manifest file contains "agency" or "Agency Workflows" in any field
-**Plans:** TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 27-01-PLAN.md — Update plugin.json and marketplace.json to Legion identity (PLG-01, PLG-02)
 
 #### Phase 28: Documentation
 **Goal:** Every user-facing document presents Legion as the project identity with full attribution
@@ -79,6 +82,6 @@
 |-------|----------------|--------|-----------|
 | 24. Foundation | 1/1 | Complete    | 2026-03-02 |
 | 25. Commands | 1/1 | Complete    | 2026-03-02 |
-| 26. Skills | 0/? | Not started | — |
-| 27. Plugin Manifest | 0/? | Not started | — |
+| 26. Skills | 1/1 | Complete    | 2026-03-02 |
+| 27. Plugin Manifest | 0/1 | Not started | — |
 | 28. Documentation | 0/? | Not started | — |
