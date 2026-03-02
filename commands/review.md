@@ -59,6 +59,26 @@ skills/design-workflows/SKILL.md
       Files to review: {count}
       {file list — one per line}"
 
+   2.5 DETECT MANUAL EDITS (preference capture — optional)
+       Check for user manual edits to build-modified files before review begins:
+       1. Build the files_modified list from plan YAML frontmatter (already done above)
+       2. Run: git diff --name-only HEAD
+          This shows uncommitted changes since the last commit
+       3. Intersect: files in BOTH files_modified AND git diff output
+       4. If intersection is non-empty:
+          Report: "Detected {count} manual edit(s) to build-modified files: {file list}"
+          For each manually-edited file, store a preference (if memory available):
+          - Decision Point: "manual-edit"
+          - Context: "Phase {N}, pre-review manual edit to {file}"
+          - Proposed: "Agent output for {file} during Phase {N} build"
+          - User Choice: "User manually edited {file} before review ({brief diff summary})"
+          - Signal: "corrective"
+          - Agent: the agent that modified this file (from plan agent assignment)
+          - Tags: "manual-edit", "pre-review", file extension, phase slug
+       5. If no manual edits: skip silently
+       6. If git diff fails or memory not available: skip silently
+       This is informational — manual edit detection never blocks review.
+
 3. SELECT REVIEW AGENTS
 
    **3.0 Choose Review Mode**
@@ -356,6 +376,20 @@ skills/design-workflows/SKILL.md
          NOTE: Memory write is included in the review completion git commit via git add.
        If memory is not available: skip silently.
 
+   c3. CAPTURE PREFERENCE — review verdict (optional — follows memory-manager Section 13)
+       If .planning/memory/ exists or can be created:
+         Follow memory-manager Section 13 (Store Preference):
+         - Decision Point: "review-verdict"
+         - Context: "Phase {N} review passed in {cycles} cycle(s). Reviewers: {reviewer list}"
+         - Proposed: "Review findings: {blocker_count} blockers, {warning_count} warnings — all resolved by fix agents"
+         - User Choice: "Accepted — review passed, proceeding to next phase"
+         - Signal: "positive"
+         - Agent: comma-separated list of reviewer agent IDs
+         - Tags: "review-verdict", "review-passed", phase slug, reviewer agent divisions
+       If memory not available: skip silently.
+       NOTE: This captures a positive signal — the review process and its agents produced
+       accepted results. Especially valuable when review passes on cycle 1 (clean execution).
+
    d. Display pass result:
       "Phase {N}: {phase_name} — Review PASSED ({cycles} cycle(s))
        {count} issues found and resolved."
@@ -411,10 +445,36 @@ skills/design-workflows/SKILL.md
       - Note in REVIEW.md under a new section:
         "## User Override
          Accepted with {count} unresolved blocker(s) by user decision on {date}."
+      - CAPTURE PREFERENCE — review override (optional — follows memory-manager Section 13)
+        If .planning/memory/ exists or can be created:
+          Follow memory-manager Section 13 (Store Preference):
+          - Decision Point: "review-override"
+          - Context: "Phase {N} review escalated — {count} unresolved blockers. User accepted as-is."
+          - Proposed: "Review found {count} unresolved blockers after 3 cycles: {brief blocker descriptions}"
+          - User Choice: "Accepted as-is despite unresolved blockers — user override"
+          - Signal: "corrective"
+          - Agent: comma-separated list of reviewer agent IDs
+          - Tags: "review-override", "accepted-with-issues", phase slug
+        If memory not available: skip silently.
+        NOTE: This captures a corrective signal — the user accepted despite review failures,
+        suggesting the blockers may not be as critical as the reviewers assessed.
       - Create review completion commit (same message as Path A but append "with overrides")
 
-   f. If user selects "Fix manually" or "Investigate further": exit immediately with no further
-      state changes
+   f. If user selects "Fix manually" or "Investigate further":
+      CAPTURE PREFERENCE — review rejection (optional — follows memory-manager Section 13)
+      If .planning/memory/ exists or can be created:
+        Follow memory-manager Section 13 (Store Preference):
+        - Decision Point: "fix-acceptance"
+        - Context: "Phase {N} review escalated — user chose to fix manually or investigate"
+        - Proposed: "Automated fix agents attempted 3 cycles but {count} blockers remain"
+        - User Choice: "Rejected automated fixes — user will {fix manually | investigate further}"
+        - Signal: "negative"
+        - Agent: comma-separated list of fix agent IDs from the 3 cycles
+        - Tags: "fix-rejection", "manual-intervention", phase slug, unresolved blocker files
+      If memory not available: skip silently.
+      NOTE: This captures a negative signal — the automated fix process was insufficient,
+      indicating these types of issues may need human expertise for this task type.
+      Exit immediately with no further state changes (existing behavior preserved).
 
 6. ROUTE TO NEXT ACTION
    - If review passed (Path A) or user accepted as-is (Path B override):
