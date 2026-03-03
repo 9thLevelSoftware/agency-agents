@@ -43,7 +43,7 @@ agents/{agent-id}.md
 
 Agent IDs include their division as a prefix (e.g., `engineering-senior-developer`, `testing-reality-checker`). Exceptions: Spatial Computing agents use descriptive prefixes (xr-, visionos-, macos-, terminal-) and Specialized agents use domain prefixes (agents-, data-, lsp-) for shorter, more readable filenames.
 
-**Divisions**: engineering, design, marketing, product, project-management, testing, support, spatial-computing, specialized, custom
+**Divisions**: Engineering, Design, Marketing, Product, Project Management, Testing, Support, Spatial Computing, Specialized, Custom
 
 Custom agents created via `/legion:agent` follow the same path pattern.
 
@@ -90,6 +90,51 @@ Plans declare a `wave` number in frontmatter. Execution uses a Claude Code Team 
 8. **Shutdown + TeamDelete** — send `shutdown_request` to all agents, then TeamDelete to clean up
 
 Within a wave, plans have no dependencies on each other. Between waves, later waves may depend on earlier wave outputs. Agents send lightweight structured summaries (~200 tokens) via SendMessage instead of returning full execution traces, preserving the coordinator's context window.
+
+## Agent Team Conventions
+
+### Agent Teams Requirement
+
+All agent spawning in Legion MUST use Claude Code Agent Teams. Bare subagents (Agent tool without `team_name`) are prohibited. This ensures coordination, result collection, and lifecycle management work correctly across all commands.
+
+**Prerequisite**: The `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` setting must be enabled. If Teams are unavailable, commands MUST stop and instruct the user to enable the flag — they MUST NOT silently fall back to bare subagents.
+
+### Teams Lifecycle
+
+Every command that spawns agents follows this lifecycle:
+
+| Step | Tool | When | Purpose |
+|------|------|------|---------|
+| 1 | `TeamCreate` | Once per phase/review | Create a named team (e.g., `"phase-04-execution"`, `"phase-05-review"`) |
+| 2 | `TaskCreate` | Once per plan/finding | Create shared tasks with `addBlockedBy` for cross-wave dependencies |
+| 3 | `Agent` with `team_name` | Per agent spawn | Spawn agent as a teammate — MUST include `team_name` parameter |
+| 4 | `SendMessage` | Agent completion | Agent reports structured summary to coordinator (~200 tokens vs ~2000+ from Agent return) |
+| 5 | `SendMessage(type: "shutdown_request")` | Phase/review end | Graceful shutdown of all spawned agents |
+| 6 | `TeamDelete` | After all agents shut down | Clean up Team configuration |
+
+### Key Constraints
+
+- **One Team per phase** (`/legion:build`) or **one Team per review lifecycle** (`/legion:review`). Not per wave, not per cycle.
+- **No nested teams** — teammates cannot spawn their own Teams. Only the lead session (the command itself) creates and manages the Team.
+- **team_name is mandatory** — every `Agent` tool call MUST include the `team_name` parameter. This is enforced in `wave-executor` Section 1 and `review-loop` Section 1.
+- **Agents report via SendMessage, not Agent return** — keeps the coordinator's context window small by receiving lightweight summaries instead of full execution traces.
+- **Shutdown runs on ALL paths** — success, failure, and escalation. Never leave orphaned agents or stale Team configurations.
+- **Recommended team size**: 3-5 teammates per Team, 5-6 tasks per teammate. Larger teams increase coordination overhead.
+
+### Command-to-Team Mapping
+
+| Command | Team Name Pattern | Agent Count | Team Lead |
+|---------|------------------|-------------|-----------|
+| `/legion:build` | `phase-{NN}-execution` | 1 per plan in wave (parallel within wave) | Build command orchestrator |
+| `/legion:review` | `phase-{NN}-review` | 2-4 reviewers + fix agents per cycle | Review command orchestrator |
+
+### Implementation References
+
+The Agent Teams lifecycle is fully implemented in:
+- `wave-executor` SKILL.md — Section 1 (enforcement block), Section 4 (wave execution with Teams)
+- `review-loop` SKILL.md — Section 1 (enforcement block), Section 3 (review spawning with Teams)
+- `build` command — Step 4 (Team setup + wave execution)
+- `review` command — Step 4 (Team setup + review cycle)
 
 ## State Update Pattern
 
@@ -296,15 +341,15 @@ fi
 
 ```
 DIVISIONS = [
-  "engineering",        # 7 agents — code, architecture, DevOps
-  "design",             # 6 agents — UI/UX, branding, visual
-  "marketing",          # 8 agents — content, social, growth
-  "product",            # 3 agents — sprints, feedback, trends
-  "project-management", # 5 agents — coordination, portfolio
-  "testing",            # 7 agents — QA, evidence, performance
-  "support",            # 6 agents — analytics, finance, legal
-  "spatial-computing",  # 6 agents — XR, VisionOS, Metal
-  "specialized"         # 3 agents — orchestration, data, LSP
+  "Engineering",        # 7 agents — code, architecture, DevOps
+  "Design",             # 6 agents — UI/UX, branding, visual
+  "Marketing",          # 8 agents — content, social, growth
+  "Product",            # 3 agents — sprints, feedback, trends
+  "Project Management", # 5 agents — coordination, portfolio
+  "Testing",            # 7 agents — QA, evidence, performance
+  "Support",            # 6 agents — analytics, finance, legal
+  "Spatial Computing",  # 6 agents — XR, VisionOS, Metal
+  "Specialized"         # 3 agents — orchestration, data, LSP
 ]
 
 TOTAL_AGENTS = 51
@@ -413,6 +458,23 @@ Completed phases can be compacted into condensed summaries that preserve reasoni
 - Original SUMMARY files are never deleted or overwritten
 - Compaction is always opt-in — never automatic
 - When recalling phase context, prefer COMPACTED.md over individual SUMMARY files if available
+
+### Claude Code Memory Integration
+
+Claude Code has its own built-in memory system at `~/.claude/projects/{project}/memory/MEMORY.md`. This is platform-level, auto-managed memory that stores user preferences, project patterns, and cross-session context.
+
+**Relationship to Legion Memory:**
+- **Claude Code memory** = platform-level, auto-managed, general context (user preferences, project conventions)
+- **Legion memory** = project-local, explicit, agent orchestration-specific, git-tracked (outcomes, patterns, errors, preferences)
+- These systems are **complementary, not competing** — they serve different audiences and purposes
+
+**Integration rules:**
+1. Legion MAY read from Claude Code memory when available (user preferences may inform agent selection)
+2. Legion MUST NOT write to Claude Code memory (different audience: platform vs agent routing)
+3. Legion MUST NOT duplicate its data into Claude Code memory
+4. If Claude Code memory is absent: skip silently (same degradation pattern as all Legion memory)
+
+See `memory-manager` SKILL.md Section 14 for the full alignment documentation.
 
 ## GitHub Conventions
 
