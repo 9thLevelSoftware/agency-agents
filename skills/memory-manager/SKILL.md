@@ -945,3 +945,98 @@ During /legion:plan approach suggestion:
 3. Surface as a note: "Previous preference signals suggest {pattern} for {task type}"
 4. This is advisory — never auto-select an approach based on preferences
 ```
+
+---
+
+## Section 14: Claude Code Memory Alignment
+
+Documents how Legion's memory system relates to Claude Code's built-in memory, defines the boundary between them, and specifies integration rules.
+
+### Two Memory Systems
+
+Legion projects operate with two complementary memory systems:
+
+| Property | Claude Code Memory | Legion Memory |
+|----------|-------------------|---------------|
+| **Location** | `~/.claude/projects/{project}/memory/MEMORY.md` | `.planning/memory/` (OUTCOMES, PATTERNS, ERRORS, PREFERENCES) |
+| **Managed by** | Claude Code platform (auto-managed) | Legion workflows (explicit store/recall calls) |
+| **Scope** | Platform-level — user preferences, project conventions, cross-session context | Agent orchestration-specific — performance data, error fixes, decision signals |
+| **Audience** | Claude Code itself (informs Claude's responses across all tools) | Legion commands (informs agent selection, pattern recall, error lookup) |
+| **Lifecycle** | Auto-populated by platform; persists across sessions | Created on first Legion store operation; grows via build/review cycles |
+| **Git-tracked** | No (lives outside project directory) | Yes (lives in `.planning/memory/`, committed with project) |
+| **Branch-aware** | No (single global file per project) | Yes (branches and merges with git operations) |
+
+### Why They Coexist
+
+These systems are complementary, not competing:
+
+- **Claude Code memory** captures general user preferences and project patterns that apply across ALL tools and workflows. It is the platform's ambient understanding of the user and project.
+- **Legion memory** captures structured agent orchestration data — which agents performed well on which task types, what error fixes work, what patterns to reuse. This data is specific to Legion's agent routing and has no value to the platform at large.
+
+Merging them would conflate two different audiences. Claude Code memory informs Claude's general responses; Legion memory informs agent selection and workflow decisions. Keeping them separate ensures each system operates with high signal-to-noise ratio.
+
+### Integration Rules
+
+```
+Rule 1: Legion MAY READ from Claude Code memory
+  When: During /legion:plan agent recommendation or /legion:quick task routing
+  How: Check if ~/.claude/projects/{project}/memory/MEMORY.md exists
+       If yes: read it for user preferences that may inform agent selection
+       (e.g., "user prefers minimal code", "user dislikes verbose output")
+       If no: skip silently (standard graceful degradation)
+  Use: As a soft signal — same role as memory_boost in agent-registry scoring
+
+Rule 2: Legion MUST NOT WRITE to Claude Code memory
+  Why: Claude Code memory is platform-managed. Writing to it from Legion
+       would create confusing entries that the platform didn't generate.
+       Let the platform manage its own memory lifecycle.
+
+Rule 3: Legion MUST NOT DUPLICATE into Claude Code memory
+  Why: Legion's four-file structure (OUTCOMES, PATTERNS, ERRORS, PREFERENCES)
+       is optimized for agent routing. Duplicating into a different format
+       adds maintenance burden with no benefit.
+
+Rule 4: Absence of either system is non-blocking
+  Behavior: If Claude Code memory doesn't exist — skip silently.
+            If Legion memory doesn't exist — skip silently.
+            Both systems follow identical graceful degradation (Section 6).
+```
+
+### Reading Claude Code Memory (Optional Enhancement)
+
+When a workflow already reads Legion memory for agent scoring, it may optionally also check Claude Code memory for additional context:
+
+```
+Enhanced Agent Recommendation (during /legion:plan):
+
+Step 1: Standard recall from .planning/memory/ (existing behavior)
+  - Recall agent scores from OUTCOMES.md
+  - Recall patterns from PATTERNS.md
+  - Recall preferences from PREFERENCES.md
+
+Step 2: Optional Claude Code memory read (enhancement)
+  - Check: does ~/.claude/projects/{project}/memory/MEMORY.md exist?
+  - If no: skip to Step 3
+  - If yes: read the file and scan for:
+    a. User coding preferences (style, verbosity, framework preferences)
+    b. Project-specific patterns the user has established
+    c. Any preferences that map to agent capabilities
+  - Extract as: claude_code_context (free text, max ~500 tokens)
+
+Step 3: Combine signals
+  - Legion memory provides: agent scores, pattern matches, preference boosts
+  - Claude Code memory provides: user context that may refine agent selection
+  - Claude Code context is advisory only — it does not modify numeric scores
+  - Present as a note: "Claude Code memory suggests: {relevant preference}"
+```
+
+### Boundaries Summary
+
+| Action | Allowed? | Why |
+|--------|----------|-----|
+| Read Claude Code memory during planning | Yes | Soft signal for agent selection |
+| Write to Claude Code memory from Legion | No | Platform manages its own memory |
+| Duplicate Legion data to Claude Code memory | No | Different format, different audience |
+| Block on Claude Code memory absence | No | Graceful degradation always applies |
+| Read Legion memory (standard behavior) | Yes | Core functionality of this skill |
+| Store to Legion memory (standard behavior) | Yes | Core functionality of this skill |
