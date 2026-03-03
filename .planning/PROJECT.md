@@ -16,11 +16,20 @@ Turn a collection of 51 isolated agent personalities into a functional AI legion
 
 ## Current State
 
-**v4.0 in progress** (2026-03-02) — Inspiration audit adoption. Cherry-picking proven patterns from 10 orchestration tools (Conductor, Feature-dev, code-foundations, beads, Auto-Claude, bjarne, Puzld.ai, GSD, Shipyard, Best Practice) while maintaining Legion's core identity.
+**v4.0 shipped** (2026-03-02) — Inspiration audit adoption complete. Cherry-picked proven patterns from 10 orchestration tools while maintaining Legion's core identity. 7 phases, 13 plans, 18 requirements across 7 categories.
 
-6 phases (29-34), 15 requirements across 6 categories: progressive disclosure, review quality, behavioral guardrails, planning intelligence, knowledge & memory, execution resilience.
+10 commands, 18 skills, 51 agents across 9 divisions. See [roadmap](ROADMAP.md) for milestone history.
 
-See [v4.0 requirements](REQUIREMENTS.md) and [v4.0 roadmap](ROADMAP.md).
+### Next Milestone Goals
+
+To be defined via `/gsd:new-milestone` or `/legion:start`.
+
+<details>
+<summary>v4.0 (2026-03-02)</summary>
+
+Inspiration audit adoption. 7 phases, 13 plans, 18 requirements. Progressive disclosure metadata, confidence-filtered reviews, behavioral guardrails, competing architecture proposals, spec pipeline, knowledge layer (PATTERNS/ERRORS/PREFERENCES), branch-aware memory, semantic compaction, DPO preference capture, auto-remediation, output redirection, consolidation audit. See [v4.0 archived requirements](milestones/v4.0-REQUIREMENTS.md).
+
+</details>
 
 <details>
 <summary>v3.0 (2026-03-02)</summary>
@@ -93,4 +102,4 @@ Legion rebrand complete. 5 phases, 6 plans, 13 requirements, 334+ substitutions,
 | **Puzld.ai** | DPO preference extraction, debate-with-winner-tracking, clean adapter pattern | Near-zero test coverage, 95 releases in 3 months, 11 execution modes |
 
 ---
-*Last updated: 2026-03-02 — v4.0 milestone initialized*
+*Last updated: 2026-03-02 — v4.0 milestone shipped*
