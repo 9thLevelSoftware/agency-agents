@@ -1,6 +1,9 @@
 ---
 name: legion:codebase-mapper
 description: Brownfield codebase analysis — file mapping, framework detection, risk assessment, and CODEBASE.md generation
+triggers: [codebase, analyze, brownfield, architecture, map, existing]
+token_cost: high
+summary: "Parallel codebase analysis producing structured CODEBASE.md. Maps architecture, frameworks, patterns, and risks. Use when starting work on an existing codebase (brownfield)."
 ---
 
 # Codebase Mapper

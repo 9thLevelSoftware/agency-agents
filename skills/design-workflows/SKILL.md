@@ -1,6 +1,9 @@
 ---
 name: legion:design-workflows
 description: Design system creation, UX research workflows, and three-lens design review cycles for design-focused phases
+triggers: [design, ui, ux, brand, visual, component]
+token_cost: high
+summary: "Domain-specific workflows for design phases. Covers design system creation, UX research, three-lens review (brand, accessibility, usability). Activates when DSN-* requirements or design keywords detected."
 ---
 
 # Design Workflows

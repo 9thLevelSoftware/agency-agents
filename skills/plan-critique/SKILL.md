@@ -1,6 +1,9 @@
 ---
 name: legion:plan-critique
 description: Pre-mortem analysis and assumption hunting for stress-testing plans before execution
+triggers: [critique, pre-mortem, assumption, risk, review-plan]
+token_cost: medium
+summary: "Pre-mortem analysis and assumption hunting for generated plans. Identifies risks, blind spots, and over-optimism before execution begins. Use after plan generation to stress-test the approach."
 ---
 
 # Plan Critique

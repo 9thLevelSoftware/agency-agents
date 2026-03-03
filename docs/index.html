@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legion | My Name Is Legion, For We Are Many</title>
+    <meta name="description" content="Orchestrate 51 AI specialist personalities as a coordinated legion. A Claude Code plugin — plan, build, review with personality-first agents across 9 divisions.">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blood: #8b0000;
+            --blood-glow: #ff2222;
+            --crimson: #a01030;
+            --void: #050508;
+            --abyss: #0d0d14;
+            --shadow: #15151e;
+            --bone: #e8e8e2;
+            --ash: #a0a0a0;
+            --gold: #d4af37;
+            --gold-dim: #9a845a;
+            --ember: #cc4422;
+            --glass: rgba(13, 13, 20, 0.7);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--void); }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, transparent, var(--blood), transparent);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--blood-glow); }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Crimson Text', Georgia, serif;
+            background: var(--void);
+            color: var(--bone);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        /* Animated background — many overlapping sigils for the "legion" feel */
+        .sigil-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='3' fill='%238b0000'/%3E%3Ccircle cx='50' cy='50' r='20' stroke='%238b0000' stroke-width='0.3' fill='none'/%3E%3Ccircle cx='50' cy='50' r='40' stroke='%238b0000' stroke-width='0.2' fill='none'/%3E%3Cline x1='50' y1='10' x2='50' y2='90' stroke='%238b0000' stroke-width='0.15'/%3E%3Cline x1='10' y1='50' x2='90' y2='50' stroke='%238b0000' stroke-width='0.15'/%3E%3Cline x1='20' y1='20' x2='80' y2='80' stroke='%238b0000' stroke-width='0.15'/%3E%3Cline x1='80' y1='20' x2='20' y2='80' stroke='%238b0000' stroke-width='0.15'/%3E%3C/svg%3E");
+            background-size: 500px 500px;
+            animation: drift 120s linear infinite;
+        }
+
+        .sigil-bg-2 {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.02;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 100 100'%3E%3Ccircle cx='25' cy='25' r='2' fill='%238b0000'/%3E%3Ccircle cx='75' cy='25' r='2' fill='%238b0000'/%3E%3Ccircle cx='25' cy='75' r='2' fill='%238b0000'/%3E%3Ccircle cx='75' cy='75' r='2' fill='%238b0000'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%238b0000'/%3E%3Cline x1='25' y1='25' x2='75' y2='25' stroke='%238b0000' stroke-width='0.15'/%3E%3Cline x1='75' y1='25' x2='75' y2='75' stroke='%238b0000' stroke-width='0.15'/%3E%3Cline x1='75' y1='75' x2='25' y2='75' stroke='%238b0000' stroke-width='0.15'/%3E%3Cline x1='25' y1='75' x2='25' y2='25' stroke='%238b0000' stroke-width='0.15'/%3E%3Cline x1='25' y1='25' x2='50' y2='50' stroke='%238b0000' stroke-width='0.1'/%3E%3Cline x1='75' y1='25' x2='50' y2='50' stroke='%238b0000' stroke-width='0.1'/%3E%3Cline x1='75' y1='75' x2='50' y2='50' stroke='%238b0000' stroke-width='0.1'/%3E%3Cline x1='25' y1='75' x2='50' y2='50' stroke='%238b0000' stroke-width='0.1'/%3E%3C/svg%3E");
+            background-size: 700px 700px;
+            animation: drift-reverse 180s linear infinite;
+        }
+
+        @keyframes drift {
+            from { background-position: 0 0; }
+            to { background-position: 500px 500px; }
+        }
+        @keyframes drift-reverse {
+            from { background-position: 0 0; }
+            to { background-position: -700px 700px; }
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(ellipse at center, transparent 0%, var(--void) 100%);
+            animation: breathe 10s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .cursor-glow {
+            position: fixed;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle at center, rgba(139, 0, 0, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.5s ease;
+            opacity: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 4rem 0 3rem;
+        }
+
+        .legion-sigil {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 2rem;
+            animation: pulse-glow 4s ease-in-out infinite;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .legion-sigil:hover {
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 40px var(--blood-glow)) !important;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 10px var(--blood)) drop-shadow(0 0 20px rgba(139, 0, 0, 0.3)); }
+            50% { filter: drop-shadow(0 0 25px var(--blood-glow)) drop-shadow(0 0 50px rgba(255, 34, 34, 0.4)); }
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            color: var(--bone);
+            text-shadow: 0 0 30px rgba(139, 0, 0, 0.6);
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: reveal 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+        @keyframes reveal {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 span { color: var(--blood); }
+
+        .tagline {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: var(--ash);
+            letter-spacing: 0.08em;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: reveal 1s cubic-bezier(0.23, 1, 0.32, 1) 0.3s forwards;
+        }
+
+        .sub-tagline {
+            font-size: 1rem;
+            color: var(--gold-dim);
+            margin-top: 0.75rem;
+            letter-spacing: 0.05em;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: reveal 1s cubic-bezier(0.23, 1, 0.32, 1) 0.6s forwards;
+        }
+
+        /* Dividers */
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 3rem 0;
+        }
+        .divider-line {
+            height: 1px;
+            width: 200px;
+            background: linear-gradient(90deg, transparent, var(--blood), transparent);
+        }
+
+        /* Sections */
+        section { margin-bottom: 4rem; }
+
+        h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .intro-text {
+            font-size: 1.25rem;
+            text-align: center;
+            max-width: 750px;
+            margin: 0 auto;
+            color: var(--bone);
+            letter-spacing: 0.02em;
+        }
+
+        .reveal-section {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .reveal-section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Grimoire / Install section */
+        .grimoire-section {
+            background: linear-gradient(180deg, var(--abyss) 0%, rgba(139, 0, 0, 0.15) 50%, var(--abyss) 100%);
+            border: 1px solid rgba(139, 0, 0, 0.4);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .grimoire-section::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 0, 0, 0.1), transparent);
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan {
+            0% { left: -100%; }
+            20%, 100% { left: 200%; }
+        }
+
+        .grimoire-section h2 { margin-bottom: 1rem; }
+        .grimoire-section p { color: var(--ash); margin-bottom: 1.5rem; }
+
+        .grimoire-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .grimoire-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 1.2rem 2.5rem;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            letter-spacing: 0.1em;
+            background: linear-gradient(135deg, var(--blood) 0%, #4a0000 100%);
+            color: var(--bone);
+            border: 1px solid var(--blood-glow);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.4);
+            cursor: pointer;
+        }
+        .grimoire-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 34, 34, 0.3), transparent);
+            transition: 0.5s;
+        }
+        .grimoire-btn:hover::before { left: 100%; }
+        .grimoire-btn:hover {
+            background: linear-gradient(135deg, var(--blood-glow) 0%, var(--blood) 100%);
+            box-shadow: 0 0 40px rgba(255, 34, 34, 0.7);
+            transform: translateY(-5px) scale(1.05);
+            color: #fff;
+        }
+
+        /* Feature cards */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, var(--abyss) 0%, var(--shadow) 100%);
+            border: 1px solid rgba(139, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.75rem;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            transform: rotate(45deg);
+            transition: 0.6s;
+            pointer-events: none;
+        }
+        .feature-card:hover::before { left: 100%; top: 100%; }
+        .feature-card:hover {
+            border-color: var(--blood-glow);
+            box-shadow: 0 10px 40px rgba(139, 0, 0, 0.3);
+            transform: translateY(-8px) scale(1.02);
+            background: linear-gradient(135deg, var(--shadow) 0%, var(--abyss) 100%);
+        }
+        .feature-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        .feature-card p {
+            font-size: 0.95rem;
+            color: var(--ash);
+        }
+
+        /* Division grid — for the 51 agents */
+        .division-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .division-card {
+            padding: 1.25rem;
+            background: var(--abyss);
+            border-radius: 10px;
+            border-left: 4px solid var(--blood);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        .division-card:hover {
+            background: var(--shadow);
+            border-left-color: var(--blood-glow);
+            transform: translateX(8px);
+            box-shadow: -8px 0 20px rgba(139, 0, 0, 0.1);
+        }
+        .division-card h4 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.95rem;
+            color: var(--gold);
+            margin-bottom: 0.25rem;
+        }
+        .division-card .count {
+            font-size: 1.8rem;
+            font-family: 'Cinzel', serif;
+            color: var(--blood-glow);
+            float: right;
+            margin-top: -0.5rem;
+            opacity: 0.7;
+        }
+        .division-card p {
+            font-size: 0.85rem;
+            color: var(--ash);
+        }
+
+        /* Code blocks */
+        .ritual-code {
+            background: var(--abyss);
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        .ritual-code pre {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--bone);
+            line-height: 1.6;
+        }
+        .ritual-code .comment { color: var(--ash); }
+        .ritual-code .command { color: var(--gold); }
+        .ritual-code .string { color: #98c379; }
+        .ritual-code .flag { color: var(--ember); }
+
+        /* Command table */
+        .command-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+        .command-table th {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 2px solid rgba(139, 0, 0, 0.4);
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+        .command-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(139, 0, 0, 0.15);
+            font-size: 0.95rem;
+        }
+        .command-table td:first-child {
+            font-family: 'Courier New', monospace;
+            color: var(--bone);
+            white-space: nowrap;
+            font-size: 0.85rem;
+        }
+        .command-table td:last-child { color: var(--ash); }
+        .command-table tr:hover td { background: rgba(139, 0, 0, 0.05); }
+
+        /* Workflow diagram */
+        .workflow-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            margin: 2rem 0;
+        }
+        .workflow-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--abyss);
+            border: 1px solid rgba(139, 0, 0, 0.25);
+            border-radius: 8px;
+            min-width: 320px;
+            transition: all 0.3s ease;
+        }
+        .workflow-step:hover {
+            border-color: var(--blood-glow);
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.2);
+            transform: scale(1.03);
+        }
+        .workflow-step .step-cmd {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: var(--gold);
+            white-space: nowrap;
+        }
+        .workflow-step .step-desc {
+            font-size: 0.9rem;
+            color: var(--ash);
+        }
+        .workflow-arrow {
+            color: var(--blood);
+            font-size: 1.2rem;
+            opacity: 0.6;
+        }
+
+        /* Inspiration cards */
+        .inspiration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-top: 2rem;
+        }
+
+        .inspiration-card {
+            background: linear-gradient(135deg, var(--abyss) 0%, var(--shadow) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .inspiration-card:hover {
+            border-color: var(--gold);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.15);
+            transform: translateY(-6px);
+        }
+        .inspiration-card h4 {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: var(--gold);
+            margin-bottom: 0.4rem;
+        }
+        .inspiration-card h4 a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .inspiration-card h4 a:hover {
+            color: var(--gold-dim);
+            text-decoration: underline;
+        }
+        .inspiration-card .took {
+            font-size: 0.9rem;
+            color: var(--bone);
+            margin-bottom: 0.4rem;
+        }
+        .inspiration-card .left {
+            font-size: 0.8rem;
+            color: var(--ash);
+            font-style: italic;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat .num {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: var(--blood-glow);
+            line-height: 1;
+            text-shadow: 0 0 20px rgba(139, 0, 0, 0.4);
+        }
+        .stat .label {
+            font-size: 0.85rem;
+            color: var(--ash);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* Tithe / Ko-fi */
+        .tithe-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(180deg, var(--void) 0%, rgba(212, 175, 55, 0.08) 50%, var(--void) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .tithe-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .tithe-sigil {
+            width: 80px; height: 80px;
+            margin: 0 auto 1.5rem;
+            color: var(--gold);
+            opacity: 0.7;
+            animation: pulse-gold 4s ease-in-out infinite;
+        }
+        @keyframes pulse-gold {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.05); }
+        }
+        .tithe-section h2 {
+            color: var(--gold);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        .tithe-text {
+            color: var(--ash);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+        .tithe-text em { color: var(--gold-dim); }
+        .tithe-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem 3rem;
+            font-family: 'Cinzel', serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--gold-dim) 0%, #7a6530 100%);
+            color: var(--void);
+            border: 1px solid var(--gold);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            letter-spacing: 0.1em;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .tithe-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .tithe-btn:hover::before { left: 100%; }
+        .tithe-btn:hover {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+            transform: translateY(-5px) scale(1.05);
+            color: var(--void);
+        }
+        .tithe-icon { font-size: 1.4rem; }
+        .tithe-subtext {
+            margin-top: 1.5rem;
+            color: var(--ash);
+            font-size: 0.9rem;
+            font-style: italic;
+            opacity: 0.7;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            border-top: 1px solid rgba(139, 0, 0, 0.2);
+            margin-top: 4rem;
+        }
+        footer p { color: var(--ash); font-size: 0.9rem; }
+        footer a {
+            color: var(--gold-dim);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        footer a:hover { color: var(--gold); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; letter-spacing: 0.15em; }
+            .tagline { font-size: 1.05rem; }
+            .container { padding: 1rem; }
+            .grimoire-section { padding: 2rem 1rem; }
+            .workflow-step { min-width: auto; flex-direction: column; gap: 0.25rem; text-align: center; }
+            .stats-bar { gap: 1.25rem; }
+            .stat .num { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sigil-bg"></div>
+    <div class="sigil-bg-2"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+    <div class="vignette"></div>
+
+    <div class="container">
+        <!-- ===== HEADER ===== -->
+        <header>
+            <!-- Legion sigil: a central node radiating outward to many — "for we are many" -->
+            <svg class="legion-sigil" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" id="legionSigil">
+                <!-- Outer ring -->
+                <circle cx="100" cy="100" r="90" stroke="#8b0000" stroke-width="1.5" fill="none"/>
+                <circle cx="100" cy="100" r="85" stroke="#8b0000" stroke-width="0.5" fill="none"/>
+                <!-- Inner ring -->
+                <circle cx="100" cy="100" r="50" stroke="#8b0000" stroke-width="0.5" fill="none"/>
+                <!-- Central node — the one who commands -->
+                <circle cx="100" cy="100" r="8" fill="#8b0000" opacity="0.9"/>
+                <circle cx="100" cy="100" r="12" stroke="#8b0000" stroke-width="1" fill="none"/>
+                <!-- The 9 division nodes arranged around the ring -->
+                <circle cx="100" cy="18" r="4" fill="#8b0000" opacity="0.7"/>  <!-- Engineering -->
+                <circle cx="157" cy="35" r="4" fill="#8b0000" opacity="0.7"/>  <!-- Design -->
+                <circle cx="182" cy="85" r="4" fill="#8b0000" opacity="0.7"/>  <!-- Marketing -->
+                <circle cx="170" cy="148" r="4" fill="#8b0000" opacity="0.7"/> <!-- Testing -->
+                <circle cx="125" cy="180" r="4" fill="#8b0000" opacity="0.7"/> <!-- Product -->
+                <circle cx="75" cy="180" r="4" fill="#8b0000" opacity="0.7"/>  <!-- PM -->
+                <circle cx="30" cy="148" r="4" fill="#8b0000" opacity="0.7"/>  <!-- Support -->
+                <circle cx="18" cy="85" r="4" fill="#8b0000" opacity="0.7"/>   <!-- Spatial -->
+                <circle cx="43" cy="35" r="4" fill="#8b0000" opacity="0.7"/>   <!-- Specialized -->
+                <!-- Connection lines from center to each division -->
+                <line x1="100" y1="100" x2="100" y2="22" stroke="#8b0000" stroke-width="0.8" opacity="0.5"/>
+                <line x1="100" y1="100" x2="155" y2="38" stroke="#8b0000" stroke-width="0.8" opacity="0.5"/>
+                <line x1="100" y1="100" x2="179" y2="87" stroke="#8b0000" stroke-width="0.8" opacity="0.5"/>
+                <line x1="100" y1="100" x2="168" y2="146" stroke="#8b0000" stroke-width="0.8" opacity="0.5"/>
+                <line x1="100" y1="100" x2="124" y2="177" stroke="#8b0000" stroke-width="0.8" opacity="0.5"/>
+                <line x1="100" y1="100" x2="76" y2="177" stroke="#8b0000" stroke-width="0.8" opacity="0.5"/>
+                <line x1="100" y1="100" x2="32" y2="146" stroke="#8b0000" stroke-width="0.8" opacity="0.5"/>
+                <line x1="100" y1="100" x2="21" y2="87" stroke="#8b0000" stroke-width="0.8" opacity="0.5"/>
+                <line x1="100" y1="100" x2="45" y2="38" stroke="#8b0000" stroke-width="0.8" opacity="0.5"/>
+                <!-- Interconnection arcs between adjacent divisions -->
+                <path d="M100,18 Q140,22 157,35" stroke="#8b0000" stroke-width="0.3" fill="none" opacity="0.3"/>
+                <path d="M157,35 Q175,55 182,85" stroke="#8b0000" stroke-width="0.3" fill="none" opacity="0.3"/>
+                <path d="M182,85 Q182,120 170,148" stroke="#8b0000" stroke-width="0.3" fill="none" opacity="0.3"/>
+                <path d="M170,148 Q152,170 125,180" stroke="#8b0000" stroke-width="0.3" fill="none" opacity="0.3"/>
+                <path d="M125,180 Q100,188 75,180" stroke="#8b0000" stroke-width="0.3" fill="none" opacity="0.3"/>
+                <path d="M75,180 Q48,170 30,148" stroke="#8b0000" stroke-width="0.3" fill="none" opacity="0.3"/>
+                <path d="M30,148 Q18,120 18,85" stroke="#8b0000" stroke-width="0.3" fill="none" opacity="0.3"/>
+                <path d="M18,85 Q25,55 43,35" stroke="#8b0000" stroke-width="0.3" fill="none" opacity="0.3"/>
+                <path d="M43,35 Q60,22 100,18" stroke="#8b0000" stroke-width="0.3" fill="none" opacity="0.3"/>
+            </svg>
+
+            <h1>LEG<span>I</span>ON</h1>
+            <p class="tagline">"My Name Is Legion, For We Are Many"</p>
+            <p class="sub-tagline">51 AI Specialist Personalities. One Coordinated Force.</p>
+        </header>
+
+        <div class="divider"><div class="divider-line"></div></div>
+
+        <!-- ===== INTRO ===== -->
+        <section class="reveal-section">
+            <p class="intro-text">
+                <strong>Legion</strong> is a Claude Code plugin that binds <em>51 specialist personalities</em>
+                into a single coordinated force. Engineers, designers, marketers, testers, product leads,
+                project managers, and more &mdash; each with deep expertise, distinct voice, and hard-earned opinions.
+                Speak the word, and the many answer as one.
+            </p>
+        </section>
+
+        <!-- ===== STATS ===== -->
+        <section class="reveal-section">
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="num">51</div>
+                    <div class="label">Agents</div>
+                </div>
+                <div class="stat">
+                    <div class="num">9</div>
+                    <div class="label">Divisions</div>
+                </div>
+                <div class="stat">
+                    <div class="num">10</div>
+                    <div class="label">Commands</div>
+                </div>
+                <div class="stat">
+                    <div class="num">17</div>
+                    <div class="label">Skills</div>
+                </div>
+                <div class="stat">
+                    <div class="num">0</div>
+                    <div class="label">Dependencies</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SUMMON THE LEGION ===== -->
+        <section class="grimoire-section reveal-section">
+            <h2>Summon the Legion</h2>
+            <p>
+                Install the plugin, open any project, and speak:
+                <em>/legion:start</em><br>
+                The many will answer.
+            </p>
+            <div class="ritual-code" style="text-align: left; margin-bottom: 1.5rem;">
+<pre><span class="comment"># From the Claude Code TUI</span>
+<span class="command">/plugin marketplace add</span> <span class="string">9thLevelSoftware/legion</span>
+<span class="command">/plugin install</span> <span class="string">legion@9thLevelSoftware-legion</span>
+
+<span class="comment"># Or from the command line</span>
+<span class="command">claude plugin marketplace add</span> <span class="string">9thLevelSoftware/legion</span>
+<span class="command">claude plugin install</span> <span class="string">legion@9thLevelSoftware-legion</span>
+
+<span class="comment"># Then, in any project directory:</span>
+<span class="command">/legion:start</span>            <span class="comment"># And the many awaken</span></pre>
+            </div>
+            <div class="grimoire-buttons">
+                <a href="https://github.com/9thLevelSoftware/legion" class="grimoire-btn" target="_blank" rel="noopener">
+                    View on GitHub
+                </a>
+            </div>
+        </section>
+
+        <div class="divider"><div class="divider-line"></div></div>
+
+        <!-- ===== THE 51 ===== -->
+        <section class="reveal-section">
+            <h2>The Fifty-One</h2>
+            <p class="intro-text" style="margin-bottom: 0.5rem;">
+                Not generic role labels. Each is an 80&ndash;350 line character sheet with deep expertise,
+                communication style, hard rules, and personality quirks. When summoned, each receives
+                its <em>complete personality</em> as instructions.
+            </p>
+            <div class="division-grid">
+                <div class="division-card">
+                    <span class="count">7</span>
+                    <h4>Engineering</h4>
+                    <p>Full-stack, backend, frontend, AI, DevOps, mobile, prototyping</p>
+                </div>
+                <div class="division-card">
+                    <span class="count">6</span>
+                    <h4>Design</h4>
+                    <p>UI/UX, branding, visual storytelling, UX research, whimsy</p>
+                </div>
+                <div class="division-card">
+                    <span class="count">8</span>
+                    <h4>Marketing</h4>
+                    <p>Content, social media, growth, TikTok, Reddit, Instagram, ASO</p>
+                </div>
+                <div class="division-card">
+                    <span class="count">7</span>
+                    <h4>Testing</h4>
+                    <p>QA, evidence collection, performance, API testing, tool evaluation</p>
+                </div>
+                <div class="division-card">
+                    <span class="count">3</span>
+                    <h4>Product</h4>
+                    <p>Sprint planning, feedback synthesis, trend research</p>
+                </div>
+                <div class="division-card">
+                    <span class="count">5</span>
+                    <h4>Project Management</h4>
+                    <p>Coordination, portfolio, operations, experiments, production</p>
+                </div>
+                <div class="division-card">
+                    <span class="count">6</span>
+                    <h4>Support</h4>
+                    <p>Analytics, finance, legal, infrastructure, executive summaries</p>
+                </div>
+                <div class="division-card">
+                    <span class="count">6</span>
+                    <h4>Spatial Computing</h4>
+                    <p>VisionOS, XR, Metal, terminal integration, cockpit UI</p>
+                </div>
+                <div class="division-card">
+                    <span class="count">3</span>
+                    <h4>Specialized</h4>
+                    <p>Orchestration, data analytics, LSP indexing</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"><div class="divider-line"></div></div>
+
+        <!-- ===== THE COMMANDS ===== -->
+        <section class="reveal-section">
+            <h2>The Commands</h2>
+            <p class="intro-text" style="margin-bottom: 1rem;">
+                Ten commands. No more, no less. Each a word of power.
+            </p>
+            <table class="command-table">
+                <thead>
+                    <tr><th>Command</th><th>Purpose</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>/legion:start</td><td>Initialize a new project with guided questioning flow</td></tr>
+                    <tr><td>/legion:plan &lt;N&gt;</td><td>Plan phase N with agent recommendations and wave-structured tasks</td></tr>
+                    <tr><td>/legion:build</td><td>Execute current phase with parallel agent teams</td></tr>
+                    <tr><td>/legion:review</td><td>Run quality review cycle with testing/QA agents</td></tr>
+                    <tr><td>/legion:status</td><td>Show progress dashboard and route to next action</td></tr>
+                    <tr><td>/legion:quick &lt;task&gt;</td><td>Run ad-hoc task with intelligent agent selection</td></tr>
+                    <tr><td>/legion:advise &lt;topic&gt;</td><td>Get read-only expert consultation from any personality</td></tr>
+                    <tr><td>/legion:portfolio</td><td>Multi-project dashboard with dependency tracking</td></tr>
+                    <tr><td>/legion:milestone</td><td>Milestone completion, archiving, and metrics</td></tr>
+                    <tr><td>/legion:agent</td><td>Create a new agent personality through guided workflow</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <div class="divider"><div class="divider-line"></div></div>
+
+        <!-- ===== THE WORKFLOW ===== -->
+        <section class="reveal-section">
+            <h2>The Rite of Execution</h2>
+            <p class="intro-text" style="margin-bottom: 1rem;">
+                Each phase follows the sacred cycle: plan, build, review.
+                Within each wave, agents work in parallel. Between waves, they synchronize.
+            </p>
+            <div class="workflow-visual">
+                <div class="workflow-step">
+                    <span class="step-cmd">/legion:start</span>
+                    <span class="step-desc">Guided questioning &rarr; PROJECT.md + ROADMAP.md</span>
+                </div>
+                <div class="workflow-arrow">&darr;</div>
+                <div class="workflow-step">
+                    <span class="step-cmd">/legion:plan 1</span>
+                    <span class="step-desc">Phase decomposition &rarr; Wave-structured plans + agents</span>
+                </div>
+                <div class="workflow-arrow">&darr;</div>
+                <div class="workflow-step">
+                    <span class="step-cmd">/legion:build</span>
+                    <span class="step-desc">Parallel execution &rarr; Agents work in character, wave by wave</span>
+                </div>
+                <div class="workflow-arrow">&darr;</div>
+                <div class="workflow-step">
+                    <span class="step-cmd">/legion:review</span>
+                    <span class="step-desc">Quality gate &rarr; Review &rarr; Fix &rarr; Re-review (max 3 cycles)</span>
+                </div>
+                <div class="workflow-arrow">&darr;</div>
+                <div class="workflow-step">
+                    <span class="step-cmd">/legion:plan 2</span>
+                    <span class="step-desc">Next phase &rarr; Repeat until the work is done</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"><div class="divider-line"></div></div>
+
+        <!-- ===== SACRED POWERS ===== -->
+        <section class="reveal-section">
+            <h2>The Sacred Powers</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <h3>Personality Injection</h3>
+                    <p>Each of the 51 agents is spawned with its complete 80&ndash;350 line character sheet as system instructions. Not a role label &mdash; an identity.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Wave Execution</h3>
+                    <p>Plans are grouped into dependency waves. Everything within a wave runs in parallel. Between waves, synchronization. Maximum throughput, zero conflicts.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Hybrid Selection</h3>
+                    <p>The system recommends agents based on keyword matching, division affinity, and past performance. You always confirm or override. No black-box assignments.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Domain Detection</h3>
+                    <p>Marketing phase? Campaign planning activates. Design phase? Three-lens review (brand + accessibility + usability). Engineering isn't the only workflow.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Quality Gates</h3>
+                    <p>Structured dev-QA loop: review &rarr; fix &rarr; re-review. Hard cap at 3 cycles. If it still fails, the problem is systemic &mdash; escalate to human.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Review Panels</h3>
+                    <p>2&ndash;4 domain-weighted reviewers with non-overlapping rubrics. Max 2 from any division. At least one tester on every panel. Diversity by design.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Plan Critique</h3>
+                    <p>Pre-mortem analysis assumes the phase has already failed, then works backward. Assumption hunting flags high-impact, weak-evidence beliefs.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Cross-Session Memory</h3>
+                    <p>Outcomes recorded after each cycle. During future planning, past performance boosts agent recommendations &mdash; with time-based decay so the system evolves.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Read-Only Advisory</h3>
+                    <p><code>/legion:advise</code> spawns any personality as a read-only consultant. Full character, full expertise, zero risk. Tool-level enforcement via Explore agents.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Atomic Commits</h3>
+                    <p>Every completed plan produces an independent commit. If Plan 2 breaks something, roll it back without losing Plan 1. Clean revert boundaries.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Graceful Degradation</h3>
+                    <p>GitHub integration, memory, brownfield analysis, marketing workflows, design workflows, panels, critique &mdash; all opt-in. The core loop works without any of them.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Zero Dependencies</h3>
+                    <p>No custom CLI. No MCP server. No Node packages. No shell hooks. Pure Claude Code primitives: skills, commands, agents. Install the plugin and go.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"><div class="divider-line"></div></div>
+
+        <!-- ===== STANDING ON THE SHOULDERS ===== -->
+        <section class="reveal-section">
+            <h2>Standing on the Shoulders of Giants</h2>
+            <p class="intro-text" style="margin-bottom: 1.5rem;">
+                Legion didn't emerge from the void. It cherry-picked the best patterns from
+                proven orchestration systems, combined them into something greater than the sum
+                of its parts, and left behind the complexity that made each hard to adopt.
+            </p>
+            <div class="inspiration-grid">
+                <div class="inspiration-card">
+                    <h4><a href="https://github.com/msitarzewski/agency-agents" target="_blank" rel="noopener">Agency Agents</a></h4>
+                    <p class="took"><strong>Took:</strong> The 51 specialist personalities &mdash; 80&ndash;350 line character sheets with deep expertise, communication styles, hard rules, and personality quirks across 9 divisions. The foundation everything else stands on.</p>
+                    <p class="left">Left behind: Original "Agency" branding and namespace</p>
+                </div>
+                <div class="inspiration-card">
+                    <h4><a href="https://github.com/gsd-build/get-shit-done" target="_blank" rel="noopener">GSD (Get Shit Done)</a></h4>
+                    <p class="took"><strong>Took:</strong> Adaptive questioning flow (vision &rarr; requirements &rarr; constraints), orchestrator/subagent split, human-readable .planning/ state management.</p>
+                    <p class="left">Left behind: 33+ workflow files, custom CLI tooling, complex config</p>
+                </div>
+                <div class="inspiration-card">
+                    <h4><a href="https://github.com/Ibrahim-3d/conductor-orchestrator-superpowers" target="_blank" rel="noopener">Conductor</a></h4>
+                    <p class="took"><strong>Took:</strong> Build &rarr; review &rarr; fix evaluate-loop, quality gates, parallel dispatch pattern, typed evaluators for different work.</p>
+                    <p class="left">Left behind: Board-of-directors governance, message bus IPC, 50+ iteration limits</p>
+                </div>
+                <div class="inspiration-card">
+                    <h4><a href="https://github.com/lgbarn/shipyard" target="_blank" rel="noopener">Shipyard</a></h4>
+                    <p class="took"><strong>Took:</strong> Wave-based execution, max 3 tasks per plan constraint, atomic commits per completed plan.</p>
+                    <p class="left">Left behind: 29 commands, checkpoint/rollback system, complex hook infrastructure</p>
+                </div>
+                <div class="inspiration-card">
+                    <h4><a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">Best Practice Config</a></h4>
+                    <p class="took"><strong>Took:</strong> Plugin architecture (commands &rarr; skills &rarr; agents), agent frontmatter schema, structured metadata for programmatic catalog.</p>
+                    <p class="left">Left behind: RPI workflow, custom hooks infrastructure</p>
+                </div>
+                <div class="inspiration-card">
+                    <h4><a href="https://github.com/9thLevelSoftware/Daem0n-MCP" target="_blank" rel="noopener">Daem0n-MCP</a></h4>
+                    <p class="took"><strong>Took:</strong> Semantic memory architecture &mdash; store, recall, decay primitives. Compute decay at recall time, not destructively. Full history always preserved.</p>
+                    <p class="left">Left behind: Hook-driven architecture, MCP server dependency</p>
+                </div>
+                <div class="inspiration-card">
+                    <h4><a href="https://github.com/Ibrahim-3d/conductor-orchestrator-superpowers" target="_blank" rel="noopener">Feature-dev</a></h4>
+                    <p class="took"><strong>Took:</strong> Confidence-based review filtering (80%+), competing architecture designs (2&ndash;3 approaches), 3-agent model.</p>
+                    <p class="left">Left behind: No state persistence, no memory, no quick mode</p>
+                </div>
+                <div class="inspiration-card">
+                    <h4><a href="https://github.com/ryanthedev/code-foundations" target="_blank" rel="noopener">code-foundations</a></h4>
+                    <p class="took"><strong>Took:</strong> Anti-rationalization tables, evidence-backed checklists, scope discipline.</p>
+                    <p class="left">Left behind: 614-check pipeline, heavy token consumption</p>
+                </div>
+                <div class="inspiration-card">
+                    <h4><a href="https://github.com/steveyegge/beads" target="_blank" rel="noopener">beads</a></h4>
+                    <p class="took"><strong>Took:</strong> Git-native state, <code>ready</code> primitive, semantic compaction, actor-based audit trails.</p>
+                    <p class="left">Left behind: Scope creep, MEOW naming, $100+/hour cost</p>
+                </div>
+                <div class="inspiration-card">
+                    <h4><a href="https://github.com/AndyMik90/Auto-Claude" target="_blank" rel="noopener">Auto-Claude</a></h4>
+                    <p class="took"><strong>Took:</strong> Worktree isolation, multi-stage spec pipeline, semantic merge, dynamic security profiles.</p>
+                    <p class="left">Left behind: 1,751 files, Python-Electron split, 50-iteration QA</p>
+                </div>
+                <div class="inspiration-card">
+                    <h4><a href="https://github.com/Dekadinious/bjarne" target="_blank" rel="noopener">bjarne</a></h4>
+                    <p class="took"><strong>Took:</strong> Verification points, stale loop detection, environment auto-remediation, verbose output redirection.</p>
+                    <p class="left">Left behind: 2,500 lines of Bash, zero tests</p>
+                </div>
+                <div class="inspiration-card">
+                    <h4><a href="https://github.com/MedChaouch/Puzld.ai" target="_blank" rel="noopener">Puzld.ai</a></h4>
+                    <p class="took"><strong>Took:</strong> DPO preference extraction, debate-with-winner-tracking, clean adapter pattern.</p>
+                    <p class="left">Left behind: Near-zero test coverage, 95 releases in 3 months</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"><div class="divider-line"></div></div>
+
+        <!-- ===== THE TITHE ===== -->
+        <section class="tithe-section reveal-section">
+            <div class="tithe-sigil">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="1" fill="none"/>
+                    <circle cx="50" cy="50" r="38" stroke="currentColor" stroke-width="0.5" fill="none"/>
+                    <path d="M50,12 L50,88 M12,50 L88,50" stroke="currentColor" stroke-width="0.5"/>
+                    <circle cx="50" cy="50" r="8" stroke="currentColor" stroke-width="1" fill="none"/>
+                    <circle cx="50" cy="50" r="3" fill="currentColor"/>
+                </svg>
+            </div>
+            <h2>The Tithe</h2>
+            <p class="tithe-text">
+                The Legion asks not for blood, but for <em>sustenance</em>.<br>
+                Those who have commanded the many and found them worthy<br>
+                may offer tribute, that the voices may continue to serve.
+            </p>
+            <a href="https://ko-fi.com/vitruvianredux" class="tithe-btn" target="_blank" rel="noopener">
+                <span class="tithe-icon">&#9765;</span>
+                Make an Offering
+            </a>
+            <p class="tithe-subtext">Your sacrifice sustains the many.</p>
+        </section>
+
+        <!-- ===== FOOTER ===== -->
+        <footer>
+            <p>
+                Legion &middot; A Claude Code Plugin by <a href="https://github.com/9thLevelSoftware">9th Level Software</a><br>
+                <a href="https://github.com/9thLevelSoftware/legion">GitHub Repository</a> &middot;
+                <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a>
+            </p>
+            <p style="margin-top: 1rem; font-style: italic; color: #555;">
+                "My name is Legion, for we are many."
+            </p>
+            <p style="margin-top: 0.5rem; color: #444; font-size: 0.8rem;">
+                51 agents &middot; 9 divisions &middot; 10 commands &middot; 17 skills &middot; Zero dependencies
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Cursor glow effect
+        const glow = document.getElementById('cursorGlow');
+        document.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+            glow.style.opacity = '1';
+        });
+        document.addEventListener('mouseleave', () => {
+            glow.style.opacity = '0';
+        });
+
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.reveal-section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Legion sigil click — the many awaken
+        const sigil = document.getElementById('legionSigil');
+        sigil.addEventListener('click', function() {
+            this.style.transition = 'all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            this.style.transform = 'scale(1.4)';
+            this.style.filter = 'drop-shadow(0 0 50px var(--blood-glow))';
+
+            // Pulse the outer nodes
+            const nodes = this.querySelectorAll('circle[opacity="0.7"]');
+            nodes.forEach((node, i) => {
+                setTimeout(() => {
+                    node.setAttribute('r', '6');
+                    node.setAttribute('opacity', '1');
+                    setTimeout(() => {
+                        node.setAttribute('r', '4');
+                        node.setAttribute('opacity', '0.7');
+                    }, 400);
+                }, i * 80);
+            });
+
+            setTimeout(() => {
+                this.style.transform = '';
+                this.style.filter = '';
+            }, 1200);
+        });
+
+        // Agent count counter animation
+        const countObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const nums = entry.target.querySelectorAll('.num');
+                    nums.forEach(num => {
+                        const target = parseInt(num.textContent);
+                        let current = 0;
+                        const increment = Math.max(1, Math.floor(target / 20));
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= target) {
+                                current = target;
+                                clearInterval(timer);
+                            }
+                            num.textContent = current;
+                        }, 40);
+                    });
+                    countObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsBar = document.querySelector('.stats-bar');
+        if (statsBar) countObserver.observe(statsBar);
+    </script>
+</body>
+</html>

@@ -1,6 +1,9 @@
 ---
 name: legion:github-sync
 description: GitHub integration — issue tracking, PR creation, milestone sync, and status readback via gh CLI
+triggers: [github, issue, pr, milestone, sync, remote]
+token_cost: high
+summary: "Optional GitHub integration via gh CLI. Creates issues from plans, PRs from builds, syncs milestones. Checks prerequisites (gh installed, authenticated, remote exists) and degrades gracefully."
 ---
 
 # GitHub Sync

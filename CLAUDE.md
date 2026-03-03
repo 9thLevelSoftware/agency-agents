@@ -61,6 +61,42 @@ Marketing workflows activate when `/legion:plan` detects a marketing-focused pha
 
 Design workflows activate when `/legion:plan` detects a design-focused phase (DSN-* requirements or design keywords). Design system creation produces structured documents at `.planning/designs/`, with component specifications and three-lens review (brand, accessibility, usability) across the 6 design agents.
 
+## Authority Matrix
+
+Explicit boundaries for what agents decide autonomously vs. what requires human approval.
+
+### Autonomous (agents proceed without asking)
+
+| Decision | Scope |
+|----------|-------|
+| File edits within assigned task scope | Only files listed in the plan's `files_modified` |
+| Writing and running tests | Test files for code the agent is implementing |
+| Installing declared dependencies | Dependencies explicitly listed in task instructions |
+| Code formatting and linting fixes | Auto-fixable issues within modified files |
+| Creating files specified in the plan | Only paths listed in plan artifacts |
+| Committing completed work | Atomic commits per completed plan task |
+
+### Human Approval Required
+
+| Decision | Why |
+|----------|-----|
+| Architecture changes (new patterns, new abstractions) | Architectural choices compound — wrong abstractions are expensive to undo |
+| Adding unplanned dependencies | Dependencies are permanent weight; every `npm install` is a maintenance commitment |
+| Modifying files outside task scope | Scope creep is the #1 agent failure mode; stay in your lane |
+| Database schema changes | Schema migrations are irreversible in production |
+| API contract changes (endpoints, request/response shapes) | Consumers depend on stability; breaking changes cascade |
+| Deleting existing functionality | Deletion is irreversible; what looks unused might be depended on elsewhere |
+| Changing CI/CD or deployment configuration | Infrastructure changes affect the entire team |
+| Overriding review findings or skipping quality gates | Quality gates exist for a reason; agents don't get to decide they're optional |
+
+### Escalation Protocol
+
+When an agent encounters a decision that falls outside its autonomous scope:
+1. **Stop** — do not proceed with the out-of-scope action
+2. **Document** — note what decision is needed and why in the task output
+3. **Continue** — work on other in-scope items while waiting for human input
+4. **Never rationalize** — "it's a small change" or "it's obviously fine" are not valid reasons to skip approval
+
 ## Memory Layer (Optional)
 
 After build/review cycles, outcomes are recorded to `.planning/memory/OUTCOMES.md`. During planning, past outcomes boost agent recommendations. During status, recent outcomes enrich the session briefing. All memory features degrade gracefully — the system works identically without them.

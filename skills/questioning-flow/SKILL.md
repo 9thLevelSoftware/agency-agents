@@ -1,6 +1,9 @@
 ---
 name: legion:questioning-flow
 description: Adaptive project initialization questioning that captures vision, requirements, and preferences
+triggers: [start, initialize, project, question, discovery, setup]
+token_cost: low
+summary: "Guided questioning flow for new project initialization. Extracts vision, requirements, constraints, and architecture preferences through structured conversation. Generates PROJECT.md, ROADMAP.md, STATE.md."
 ---
 
 # Questioning Flow

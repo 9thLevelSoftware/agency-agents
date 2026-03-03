@@ -114,6 +114,128 @@ If no signals:
 
 ---
 
+## Section 2.5: Competing Architecture Proposals
+
+Before decomposing into plans, optionally generate competing architecture proposals. This ensures the planning approach isn't biased by a single perspective. Adapted from Feature-dev's 2-3 competing designs pattern.
+
+### When to Generate Proposals
+
+```
+Complexity check:
+- If phase has ≤2 requirements AND only modifies existing markdown files → Skip (too simple)
+- If phase has 3+ requirements AND involves architectural choices (new abstractions,
+  new patterns, structural decisions) → Offer proposals
+- If user explicitly requests → Always generate
+- Default is skip — proposals are opt-in, not opt-out
+- The orchestrator presents the option; user can always decline
+```
+
+### Philosophy Archetypes
+
+Define 3 labeled approaches that agents adopt:
+
+| Philosophy | Bias | Strengths | Risks |
+|-----------|------|-----------|-------|
+| **Minimal** | Least changes, smallest footprint | Low risk, easy to review, fast execution | May miss optimization opportunities, can accumulate tech debt |
+| **Clean Architecture** | Proper patterns, separation of concerns, future-proof | Maintainable, extensible, well-structured | Over-engineering risk, more files to modify, longer execution |
+| **Pragmatic** | Balanced trade-offs, ship fast but don't cut corners | Good enough for now, adaptable later | May not satisfy purists in either direction |
+
+### Proposal Generation Process
+
+```
+Step 1: Read phase context
+  Use the phase analysis output from Section 2: phase goal, requirements,
+  success criteria, existing assets, and constraints.
+
+Step 2: Spawn proposal agents
+  Spawn 2-3 agents using the read-only Explore subagent type (same pattern
+  as plan-critique Section 4). Each agent receives:
+  - The full phase context from Step 1
+  - Their assigned philosophy (Minimal, Clean, or Pragmatic)
+  - Instructions to produce a structured proposal
+
+  Agent selection:
+  - Use agent-registry to match agents with architectural or strategic expertise
+  - Preferred: engineering-senior-developer (Clean), engineering-rapid-prototyper (Minimal),
+    product-sprint-prioritizer (Pragmatic)
+  - For non-engineering phases: match to domain-appropriate agents with similar traits
+  - Each agent operates in full personality (personality injection pattern from workflow-common)
+
+  Prompt template for each agent:
+  "You are analyzing Phase {N}: {phase_name} from the perspective of the
+   {philosophy} philosophy. Given the requirements and context below,
+   propose how you would structure the implementation.
+
+   Your proposal must include:
+   1. Approach summary (2-3 sentences)
+   2. Key decisions and why (3-5 bullet points)
+   3. Files you would modify/create (list)
+   4. Estimated wave structure (how many waves, what in each)
+   5. Trade-offs (what this approach gains and what it sacrifices)
+   6. Risk assessment (1-2 main risks of this approach)"
+
+Step 3: Collect and format proposals
+  Wait for all agents to return. Format proposals side-by-side:
+
+  ## Architecture Proposals — Phase {N}: {phase_name}
+
+  ### Proposal A: Minimal ({agent_name})
+  **Approach:** {summary}
+  **Key decisions:**
+  - {decision 1}
+  - {decision 2}
+  **Files:** {list}
+  **Waves:** {wave structure}
+  **Trade-offs:** {gains vs sacrifices}
+  **Risk:** {main risk}
+
+  ### Proposal B: Clean Architecture ({agent_name})
+  {same structure}
+
+  ### Proposal C: Pragmatic ({agent_name})
+  {same structure}
+
+  ### Comparison
+  | Dimension | Minimal | Clean | Pragmatic |
+  |-----------|---------|-------|-----------|
+  | Files modified | {N} | {N} | {N} |
+  | Estimated waves | {N} | {N} | {N} |
+  | Risk level | {Low/Med/High} | {Low/Med/High} | {Low/Med/High} |
+  | Best for | {scenario} | {scenario} | {scenario} |
+
+Step 4: User selection
+  Use AskUserQuestion:
+
+  "Which architecture approach for Phase {N}?"
+  Options:
+  - "Proposal A: Minimal" — {1-line summary}
+  - "Proposal B: Clean Architecture" — {1-line summary}
+  - "Proposal C: Pragmatic" — {1-line summary}
+  - "Hybrid" — "I want to combine elements from multiple proposals"
+
+  If "Hybrid": ask user which elements from which proposals to combine,
+  then synthesize a merged approach.
+
+Step 5: Feed into decomposition
+  The selected approach (or hybrid) becomes the architectural direction
+  for Section 3 (Task Decomposition). Record the selection in the phase
+  CONTEXT.md under "Key Design Decisions":
+
+  "Architecture approach: {selected philosophy} — {rationale}"
+
+  If proposals were skipped, note: "Architecture proposals: skipped (simple phase)"
+```
+
+### Cost Profile
+
+Proposal agents use the Explore subagent type (read-only, no file modifications). Cost: 2-3 Sonnet-tier agent calls. For budget-conscious users, offer 2 proposals instead of 3, or skip entirely.
+
+### Relationship to Spec Pipeline
+
+If the spec pipeline (PLN-02) was run before planning, proposal agents receive the spec document as additional context. This produces better-informed proposals since requirements are already clarified.
+
+---
+
 ## Section 3: Task Decomposition
 
 How to break a phase's requirements into plans and tasks.

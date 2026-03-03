@@ -1,6 +1,9 @@
 ---
 name: legion:portfolio-manager
 description: Multi-project portfolio management — registry, state aggregation, dependencies, agent allocation
+triggers: [portfolio, project, multi-project, dashboard, cross-project]
+token_cost: medium
+summary: "Multi-project dashboard reading each project's STATE.md and ROADMAP.md. Shows cross-project dependencies, health status, and Studio Producer insights. Use for /legion:portfolio."
 ---
 
 # Portfolio Manager

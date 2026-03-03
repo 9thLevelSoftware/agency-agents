@@ -1,6 +1,9 @@
 ---
 name: legion:milestone-tracker
 description: Milestone management — definition, completion with metrics, archiving, summary generation
+triggers: [milestone, complete, archive, version, release, ship]
+token_cost: medium
+summary: "Manages milestone lifecycle: status checking, completion validation, summary generation, phase archiving, and next milestone creation. Use during /legion:milestone for version transitions."
 ---
 
 # Milestone Tracker

@@ -1,6 +1,9 @@
 ---
 name: legion:agent-registry
 description: Maps all 51 Legion agents by division, capability, and task type for intelligent team assembly
+triggers: [agent, recommend, team, catalog, assign, match]
+token_cost: low
+summary: "Maps all 51 agents by division, capability, and task type. Recommendation algorithm scores agents against task descriptions. Use when assembling teams or selecting agents for plans."
 ---
 
 # Legion Agent Registry

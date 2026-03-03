@@ -20,6 +20,7 @@ skills/codebase-mapper/SKILL.md
 skills/marketing-workflows/SKILL.md
 skills/design-workflows/SKILL.md
 skills/plan-critique/SKILL.md
+skills/spec-pipeline/SKILL.md
 </execution_context>
 
 <context>
@@ -122,9 +123,77 @@ skills/plan-critique/SKILL.md
    - If not design phase:
      Skip silently (standard decomposition applies)
 
+3.5. ARCHITECTURE PROPOSALS (optional)
+   Follow phase-decomposer skill Section 2.5 (Competing Architecture Proposals):
+
+   a. Run complexity check:
+      - If phase has ≤2 requirements AND only modifies existing markdown files: skip to step 3.6
+      - Otherwise: offer proposals
+
+   b. Use AskUserQuestion:
+      "Phase {N} has enough complexity to benefit from competing architecture proposals. Generate them?"
+      Options:
+      - "Yes, generate 2-3 proposals (Recommended for complex phases)"
+        Description: "Spawn agents with Minimal, Clean, and Pragmatic philosophies to present trade-offs"
+      - "Skip, I know the approach I want"
+        Description: "Proceed directly to plan decomposition"
+
+   c. If user selects "Yes":
+      - CONTEXT BUDGET NOTE: Proposal agents are spawned as Explore sub-agents
+        with their own context windows. The orchestrator passes phase context
+        to them and receives only structured proposal summaries back (~200 tokens
+        each). This does NOT consume the orchestrator's context budget.
+      - Spawn 2-3 read-only (Explore) agents per phase-decomposer Section 2.5
+      - Include CODEBASE.md context in agent prompts if it exists (brownfield support)
+      - If a spec document exists at .planning/specs/{NN}-{phase-slug}-spec.md,
+        include it as additional context for richer proposals
+      - Collect and present proposals side-by-side
+      - User selects an approach (or requests hybrid)
+      - Record selection in CONTEXT.md
+      - Pass selected approach to step 4 as architectural direction
+
+   d. If user selects "Skip":
+      - Proceed to step 3.6 with no architectural constraint
+      - Note in CONTEXT.md: "Architecture proposals: skipped by user"
+
+3.6. SPEC PIPELINE (optional)
+   Offer the spec creation pipeline for phases that would benefit from
+   pre-coding specification. Follows spec-pipeline skill.
+
+   a. Check if a spec already exists:
+      - Look for `.planning/specs/{NN}-{phase-slug}-spec.md`
+      - If exists: inform user "Spec document already exists for Phase {N}."
+        Use AskUserQuestion:
+        "Use existing spec or regenerate?"
+        - "Use existing" — read spec, pass to step 4 as additional context
+        - "Regenerate" — run spec pipeline, overwrite existing
+      - If not exists: continue to step b
+
+   b. Offer spec pipeline:
+      Use AskUserQuestion:
+      "Run spec pipeline before planning Phase {N}?"
+      Options:
+      - "Yes, create a spec first"
+        Description: "5-stage pipeline: gather, research, write, critique, assess. Produces a structured spec document."
+      - "No, proceed to planning (Recommended for straightforward phases)"
+        Description: "Skip spec creation, decompose directly from ROADMAP requirements"
+
+   c. If user selects "Yes":
+      - Read spec-pipeline skill
+      - Execute all 5 stages sequentially
+      - Write output to `.planning/specs/{NN}-{phase-slug}-spec.md`
+      - Pass spec document as additional context to step 4
+
+   d. If user selects "No":
+      - Proceed to step 4 with no spec document
+
 4. DECOMPOSE INTO PLANS
    Follow phase-decomposer skill Section 3 (Task Decomposition):
    - List all deliverables from phase requirements
+   - If a spec document was generated in step 3.6 or already existed, use it as the
+     primary source for deliverable identification alongside ROADMAP.md requirements
+   - If an architecture approach was selected in step 3.5, use it as the architectural
+     direction for decomposition decisions
    - Identify dependency layers
    - Map layers to waves
    - Group deliverables into plans (max 3 tasks per plan)
