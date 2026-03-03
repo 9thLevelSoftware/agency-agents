@@ -1,6 +1,9 @@
 ---
 name: legion:agent-creator
 description: Guided agent personality creation with schema validation and registry integration
+triggers: [agent, create, custom, personality, new-agent]
+token_cost: medium
+summary: "Guided workflow for creating new agent personalities. Validates uniqueness, generates frontmatter and personality sections, registers in catalog. Use when adding a custom agent to the legion."
 ---
 
 # Agent Creator
@@ -67,9 +70,9 @@ All agents MUST use **Format A** — emoji headings with "Your" pronouns. The re
 The agent must be placed in an existing division directory OR `custom`:
 
 ```
-Valid divisions: engineering, design, marketing, product,
-  project-management, testing, support, spatial-computing,
-  specialized, custom
+Valid divisions: Engineering, Design, Marketing, Product,
+  Project Management, Testing, Support, Spatial Computing,
+  Specialized, Custom
 ```
 
 The `agents/` directory holds all agent files (no division subdirectories). It is created on first use if it doesn't exist.
@@ -185,8 +188,8 @@ Validation Checklist:
    - FAIL: value not in allowed set
 
 5. Division
-   - Check: value is one of: engineering, design, marketing, product,
-     project-management, testing, support, spatial-computing, specialized, custom
+   - Check: value is one of: Engineering, Design, Marketing, Product,
+     Project Management, Testing, Support, Spatial Computing, Specialized, Custom
    - PASS: valid division name
    - FAIL: unknown division
 

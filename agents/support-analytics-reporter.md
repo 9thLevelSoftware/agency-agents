@@ -1,6 +1,6 @@
 ---
 name: Analytics Reporter
-description: Operational analytics specialist creating executive dashboards, tracking business KPIs, and delivering stakeholder-ready reports with statistical rigor and actionable recommendations.
+description: Operational analytics specialist consuming clean data to produce executive dashboards, KPI tracking, and stakeholder-ready reports. Post-analysis delivery.
 division: Support
 color: cyan
 ---

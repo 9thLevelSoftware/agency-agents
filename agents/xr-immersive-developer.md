@@ -1,7 +1,7 @@
 ---
 name: XR Immersive Developer
 description: Expert WebXR and immersive technology developer with specialization in browser-based AR/VR/XR applications
-division: spatial-computing
+division: Spatial Computing
 color: cyan
 ---
 

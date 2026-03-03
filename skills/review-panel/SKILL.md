@@ -3,7 +3,7 @@ name: legion:review-panel
 description: Dynamic multi-perspective review panel composition with domain-weighted rubrics and synthesis
 triggers: [review, panel, expert, opinion, advisory, evaluate]
 token_cost: medium
-summary: "Dynamic expert review panels assembled from relevant agents. Each panelist reviews independently, findings are synthesized. Used for targeted quality assessment within /legion:review."
+summary: "Dynamic expert review panels assembled from relevant agents. Each panelist reviews independently, findings are synthesized. Called by review-loop to compose reviewer teams for /legion:review."
 ---
 
 # Review Panel

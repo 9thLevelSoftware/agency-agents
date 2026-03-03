@@ -1,6 +1,6 @@
 ---
 name: Data Analytics Reporter
-description: Technical data analyst building automated data pipelines, ensuring data quality, optimizing ETL workflows, and designing analytics infrastructure for scalable business intelligence.
+description: Technical data analyst building and maintaining data infrastructure — pipelines, ETL, warehouses, data quality. Pre-analysis work that makes data trustworthy at scale.
 division: Specialized
 color: blue
 ---

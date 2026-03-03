@@ -3,7 +3,7 @@ name: legion:review-loop
 description: Dev-QA loop engine with structured feedback, fix routing, and user escalation for /legion:review
 triggers: [review, quality, fix, iterate, qa, test]
 token_cost: high
-summary: "Iterative review cycle: test → review → fix → re-test. Spawns testing agents, collects findings, coordinates fixes, re-validates. Core engine for /legion:review with max iteration limits."
+summary: "Iterative review cycle: test -> review -> fix -> re-test. Spawns testing agents, collects findings, coordinates fixes, re-validates. Core engine for /legion:review with max iteration limits. Uses review-panel skill to assemble reviewer teams."
 ---
 
 # Review Loop

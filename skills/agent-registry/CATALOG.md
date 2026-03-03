@@ -77,15 +77,15 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 
 | ID | File | Specialty | Task Types |
 |----|------|-----------|------------|
-| agents-orchestrator | `agents/agents-orchestrator.md` | Autonomous pipeline manager that orchestrates the entire development workflow and coordinates specialist agents | orchestration, pipeline-management, workflow-automation, agent-coordination, dev-qa-loops |
-| data-analytics-reporter | `agents/data-analytics-reporter.md` | Technical data analyst building automated data pipelines, ensuring data quality, optimizing ETL workflows, and designing analytics infrastructure for scalable business intelligence | data-pipelines, etl, data-quality, data-warehouse, data-engineering |
+| agents-orchestrator | `agents/agents-orchestrator.md` | Spawnable coordinator agent for cross-division task execution within a build task — coordinates specialist agents through dev-QA loops when multi-agent coordination is needed | orchestration, pipeline-management, workflow-automation, agent-coordination, dev-qa-loops |
+| data-analytics-reporter | `agents/data-analytics-reporter.md` | Technical data analyst building and maintaining data infrastructure — pipelines, ETL, warehouses, data quality. Pre-analysis work. | data-pipelines, etl, data-quality, data-warehouse, data-engineering |
 | lsp-index-engineer | `agents/lsp-index-engineer.md` | Language Server Protocol specialist building unified code intelligence systems through LSP client orchestration and semantic indexing | lsp, code-intelligence, semantic-indexing, language-servers, developer-tooling |
 
 ### Support Division (6 agents)
 
 | ID | File | Specialty | Task Types |
 |----|------|-----------|------------|
-| support-analytics-reporter | `agents/support-analytics-reporter.md` | Operational analytics specialist creating executive dashboards, tracking business KPIs, and delivering stakeholder-ready reports with statistical rigor and actionable recommendations | dashboards, kpi-reporting, business-intelligence, executive-summaries |
+| support-analytics-reporter | `agents/support-analytics-reporter.md` | Operational analytics specialist consuming clean data to produce executive dashboards, KPI tracking, and stakeholder-ready reports. Post-analysis delivery. | dashboards, kpi-reporting, business-intelligence, executive-summaries |
 | support-executive-summary-generator | `agents/support-executive-summary-generator.md` | Consultant-grade AI specialist transforming complex business inputs into concise, actionable executive summaries using McKinsey SCQA, BCG Pyramid, and Bain frameworks | executive-summaries, strategy-consulting, c-suite-reporting, business-communication, frameworks |
 | support-finance-tracker | `agents/support-finance-tracker.md` | Expert financial analyst and controller specializing in financial planning, budget management, and business performance analysis | financial-planning, budget-management, cash-flow, investment-analysis, financial-risk |
 | support-infrastructure-maintainer | `agents/support-infrastructure-maintainer.md` | Expert infrastructure specialist focused on system reliability, performance optimization, and technical operations management | infrastructure, system-reliability, monitoring, cloud-management, cost-optimization |

@@ -1,7 +1,7 @@
 ---
 name: XR Interface Architect
 description: Spatial interaction designer and interface strategist for immersive AR/VR/XR environments
-division: spatial-computing
+division: Spatial Computing
 color: green
 ---
 
