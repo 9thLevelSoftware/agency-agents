@@ -47,6 +47,8 @@ skills/agent-creator/SKILL.md
    - Infer division and suggested name (kebab-case, pattern: {division}-{specialty})
    - Confirm via AskUserQuestion:
      "I'll create a {division} agent — '{suggested-name}'. Specialty: {description}. Correct, or would you like to adjust?"
+   - If answer is empty, unparseable, or does not match any offered option:
+     re-ask as plain text: "Reply with 1 (confirm) or 2 (adjust)." and wait
    - If user adjusts: update inferred values and re-confirm
 
 4. STAGE 2: CAPABILITIES AND PERSONALITY
@@ -57,12 +59,16 @@ skills/agent-creator/SKILL.md
    - Skip questions already answered in Stage 1
    - Capture: capability list, personality traits, critical rules
    - Confirm summary via AskUserQuestion before proceeding
+   - If answer is empty, unparseable, or does not match any offered option:
+     re-ask as plain text with numbered choices matching the presented options and wait
 
 5. STAGE 3: REGISTRY TAGS
    Follow agent-creator.md Section 2, Stage 3 exactly:
    - Generate 3-5 task type tags from capabilities
    - Present suggested tags alongside existing registry tags for alignment
    - Confirm via AskUserQuestion
+   - If answer is empty, unparseable, or does not match any offered option:
+     re-ask as plain text with numbered choices matching the presented tag options and wait
    - Generate and present the full agent file content and registry row for final review
 
 6. VALIDATE SCHEMA

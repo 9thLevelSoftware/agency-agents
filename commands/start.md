@@ -23,12 +23,22 @@ skills/codebase-mapper/SKILL.md
 </context>
 
 <process>
+0. INTERACTION SAFETY RULE (APPLIES TO ALL USER PROMPTS IN THIS COMMAND)
+   - Never treat empty, whitespace-only, or unparseable user input as consent.
+   - For any AskUserQuestion decision point, proceed only on explicit user intent.
+   - If AskUserQuestion returns empty, unparseable, OR does not match any offered option label:
+     - Re-ask the same decision as a plain chat question with numbered choices.
+     - Wait for a valid response before continuing.
+   - Do NOT default to "skip" or "continue" on missing input.
+   - Non-matching answers are phantom responses (platform bug) — treat as no decision.
+
 1. PRE-FLIGHT CHECK
    - Check if `.planning/PROJECT.md` already exists by attempting to read it
    - If it exists: use AskUserQuestion to confirm reinitialize
      - "A project already exists in .planning/. Reinitialize from scratch?"
      - Option 1: "Yes, start fresh" — continue (will overwrite PROJECT.md, ROADMAP.md, STATE.md)
      - Option 2: "No, keep existing" — abort and suggest `/legion:status` instead
+     - If answer is empty, unparseable, or does not match any offered option: ask plain text "Reply with 1 (start fresh) or 2 (keep existing)." and wait
    - If it doesn't exist: proceed directly
 
 2. BROWNFIELD DETECTION
@@ -49,6 +59,7 @@ skills/codebase-mapper/SKILL.md
          → Proceed directly to step 3 (greenfield mode)
        Option 3: "I'll run /legion:plan directly"
          → Abort start, let user plan manually
+      - If answer is empty, unparseable, or does not match any offered option: ask plain text "Reply with 1 (analyze), 2 (skip), or 3 (plan directly)." and wait
    - If no existing source code detected:
      Skip brownfield flow entirely (pure greenfield) — proceed to step 3
 
@@ -79,6 +90,7 @@ skills/codebase-mapper/SKILL.md
      - Execution mode: Guided (Recommended) / Autonomous / Collaborative
      - Planning depth: Standard (Recommended) / Quick Sketch / Deep Analysis
      - Cost profile: Balanced (Recommended) / Economy / Premium
+   - If any preference answer is empty, unparseable, or does not match any offered option: re-ask that specific question in plain text and wait
    - Record choices as decisions
 
 7. GENERATE PROJECT.MD
@@ -154,4 +166,3 @@ skills/codebase-mapper/SKILL.md
    - End with: "Run `/legion:plan 1` to begin Phase 1: {first_phase_name}"
    - Do NOT dump full file contents — summary only
 </process>
-</output>

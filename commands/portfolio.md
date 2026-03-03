@@ -154,11 +154,15 @@ Studio Producer: agents/project-management-studio-producer.md
    - "Add dependency" — "Link phases across projects (e.g., Project A Phase 3 blocks Project B Phase 1)"
    - "Studio Producer analysis" — "Invoke Studio Producer agent for cross-project strategy (uses Opus)"
    - "Done" — "Return to normal operation"
+   - If answer is empty, unparseable, or does not match any offered option:
+     re-ask as plain text: "Reply with 1 (view details), 2 (add dependency), 3 (Studio Producer analysis), or 4 (done)." and wait
 
 7. HANDLE USER CHOICE
 
    **Path A: View project details**
    - If multiple projects: ask user to pick one (AskUserQuestion with project names as options)
+     - If answer is empty, unparseable, or does not match any offered option:
+       re-ask as plain text with numbered choices matching the project names and wait
    - Read the selected project's STATE.md and ROADMAP.md
    - Display detailed project view:
      - Current phase, plans breakdown, phase history
@@ -169,6 +173,8 @@ Studio Producer: agents/project-management-studio-producer.md
    **Path B: Add dependency**
    - Ask user via AskUserQuestion: "Which project is the source (blocker)?"
      Present registered project names as options
+     - If answer is empty, unparseable, or does not match any offered option:
+       re-ask as plain text with numbered choices matching the project names and wait
    - Ask: "Which phase in {source_project} must complete first?"
    - Ask: "Which project depends on this?"
    - Ask: "Which phase in {target_project} is blocked?"

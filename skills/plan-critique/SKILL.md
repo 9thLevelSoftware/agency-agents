@@ -26,6 +26,13 @@ Step 1: Set the scene
   Read ALL plan files for the phase ({NN}-{PP}-PLAN.md).
   Read the CONTEXT.md for phase goal, requirements, and success criteria.
   Read ROADMAP.md for dependencies and the broader milestone context.
+  Read `.planning/CODEBASE.md` if it exists (optional):
+    - Extract the Risk Areas table
+    - Cross-reference each plan's `files_modified` against Risk Areas
+    - If overlap with HIGH or MEDIUM risk areas: pre-seed Step 2 failure headlines
+      with risk-informed scenarios (e.g., "Phase failed because changes to {risky_file}
+      introduced regressions in a high-churn area")
+    - If CODEBASE.md absent: skip, no pre-seeding
 
 Step 2: Generate failure headlines
   Assume the phase has been executed and FAILED. Generate 3-5 failure headlines
@@ -121,6 +128,12 @@ Step 1: Extract assumptions
      - "The executing agent understands {concept}"
      - "The user has {prerequisite} in place"
      - "The codebase follows {convention}"
+
+  e. Codebase assumptions (if .planning/CODEBASE.md exists)
+     - "The detected conventions still apply to the files being modified"
+     - "The risk areas identified in CODEBASE.md are current"
+     - "The detected stack is compatible with the plan's approach"
+     - "No undocumented conventions exist beyond what CODEBASE.md captured"
 
   Aim for 5-10 assumptions. Prioritize assumptions that are:
   - Unstated (not explicitly written in the plan)
@@ -314,3 +327,4 @@ This skill draws from:
 | Review Panel Structure | skills/review-panel/SKILL.md | Section 3 (verdict + routing pattern) |
 | Pre-mortem Technique | Klein (1998), adapted for plan files | Section 1 |
 | Assumption Mapping | Risk management, adapted for plan tasks | Section 2 |
+| Brownfield Risk Cross-Reference | codebase-mapper Section 4, Section 5 | Section 1, Section 2 |

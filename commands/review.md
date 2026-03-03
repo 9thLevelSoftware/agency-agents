@@ -19,6 +19,7 @@ skills/execution-tracker/SKILL.md
 skills/memory-manager/SKILL.md
 skills/github-sync/SKILL.md
 skills/design-workflows/SKILL.md
+skills/codebase-mapper/SKILL.md
 </execution_context>
 
 <context>
@@ -79,6 +80,13 @@ skills/design-workflows/SKILL.md
        6. If git diff fails or memory not available: skip silently
        This is informational — manual edit detection never blocks review.
 
+   2.7 BROWNFIELD CONVENTIONS (optional — follows codebase-mapper Section 6.4):
+       If `.planning/CODEBASE.md` exists, review-loop Section 3, Step 2.5 will automatically
+       load brownfield conventions (Detected Stack, Conventions Detected) and inject them into
+       each review agent's prompt as convention-checking context. Review agents will flag
+       non-conformance with established conventions as WARNING-level findings.
+       If CODEBASE.md is absent: skip silently, no convention checking injected.
+
 3. SELECT REVIEW AGENTS
 
    **3.0 Choose Review Mode**
@@ -89,6 +97,8 @@ skills/design-workflows/SKILL.md
      Description: "Panel composer analyzes what was built and assembles the best reviewers with non-overlapping evaluation criteria"
    - "Classic reviewer selection" — static mapping based on phase type
      Description: "Uses the predefined phase-type-to-agent table (testing-reality-checker + domain secondary)"
+   - If answer is empty, unparseable, or does not match any offered option:
+     re-ask as plain text: "Reply with 1 (dynamic review panel) or 2 (classic reviewer selection)." and wait
 
    If user selects "Dynamic review panel": go to Step 3-PANEL below
    If user selects "Classic reviewer selection": continue with existing Step 3.a-3.e unchanged
@@ -136,6 +146,8 @@ skills/design-workflows/SKILL.md
       - "{primary_agent_name} only" — single reviewer, faster but less thorough
       - "{alternative_agent_name} + {primary_agent_name}" — different reviewer pair
       - "Other" — enter custom agent IDs
+      - If answer is empty, unparseable, or does not match any offered option:
+        re-ask as plain text with numbered choices matching the presented reviewer options and wait
 
    e. If user selects "Other": accept custom agent IDs from user input and validate each one
       exists in agent-registry
@@ -439,6 +451,8 @@ skills/design-workflows/SKILL.md
       - "Fix manually and re-run /legion:review" — exit; let user address the issues
       - "Accept as-is and move to /legion:plan {N+1}" — mark phase complete despite issues
       - "Investigate further" — exit for user to diagnose root cause
+      - If answer is empty, unparseable, or does not match any offered option:
+        re-ask as plain text: "Reply with 1 (fix manually), 2 (accept as-is), or 3 (investigate further)." and wait
 
    e. If user selects "Accept as-is":
       - Mark phase complete using the same STATE.md and ROADMAP.md updates as Path A

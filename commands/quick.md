@@ -16,6 +16,7 @@ Output: Task results with agent summary and optional commit.
 skills/workflow-common/SKILL.md
 skills/agent-registry/SKILL.md
 skills/agent-registry/CATALOG.md
+skills/codebase-mapper/SKILL.md
 </execution_context>
 
 <context>
@@ -44,6 +45,17 @@ skills/agent-registry/CATALOG.md
    - Attempt to read .planning/STATE.md
    - If found: note current phase for awareness (but quick tasks don't modify phase state)
 
+2.5. CODEBASE ANALYSIS ROUTING (optional)
+   - Check if the task description matches codebase analysis keywords:
+     "analyze codebase", "refresh codebase", "map codebase", "re-analyze",
+     "codebase map", "update CODEBASE.md"
+   - If matched:
+     Route to codebase-mapper Section 7 (Standalone Re-Analysis) directly.
+     This is an orchestrator-level operation — no agent spawn needed.
+     Execute the re-analysis protocol and display results.
+     Skip steps 3-7 (no agent selection, spawning, or commit needed).
+   - If not matched: continue to step 3 as normal
+
 3. SELECT AGENT
    Follow agent-registry Section 3 (Recommendation Algorithm) at single-task scope:
 
@@ -71,6 +83,8 @@ skills/agent-registry/CATALOG.md
         Description: "{brief rationale for alternative}"
       - "No agent — run autonomously"
         Description: "Execute without personality injection (faster, generic)"
+      - If answer is empty, unparseable, or does not match any offered option:
+        re-ask as plain text with numbered choices matching the presented agent options and wait
 
    e. If user selects "Other": accept a custom agent ID from user input
       - Validate the ID exists in agent-registry Section 1
@@ -161,6 +175,8 @@ skills/agent-registry/CATALOG.md
        Description: "Creates a feat/fix/chore commit for the work done"
      - "No — leave uncommitted"
        Description: "Keep changes in working directory for further review"
+     - If answer is empty, unparseable, or does not match any offered option:
+       re-ask as plain text: "Reply with 1 (commit) or 2 (leave uncommitted)." and wait
    - If user chooses to commit:
      - Determine commit type from task description:
        - Task mentions "fix", "bug", "repair" -> fix(legion)

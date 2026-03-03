@@ -133,6 +133,28 @@ Step 2: Read the reviewer's personality file
   - Read the ENTIRE personality .md file — do not truncate or summarize
   - Capture this as: PERSONALITY_CONTENT
 
+Step 2.5: Load brownfield conventions (optional)
+  - Check if .planning/CODEBASE.md exists
+  - If yes:
+    a. Read .planning/CODEBASE.md
+    b. Extract these sections:
+       - "## Conventions Detected" → all convention bullet points
+       - "## Detected Stack" → technology table
+    c. Compose a CODEBASE_CONVENTIONS block:
+
+       ## Codebase Conventions (from CODEBASE.md)
+
+       ### Detected Stack
+       {Detected Stack table from CODEBASE.md}
+
+       ### Conventions
+       {bullet list from Conventions Detected}
+
+       Non-conformance with established conventions is a WARNING-level finding
+       unless the plan explicitly calls for a different pattern.
+
+  - If CODEBASE.md does not exist: set CODEBASE_CONVENTIONS = "" (empty string, skip silently)
+
 Step 3: Construct the review prompt
   Combine personality and review task using this exact format:
 
@@ -156,6 +178,8 @@ Step 3: Construct the review prompt
 
   ## Files to Review
   {Complete deduplicated list of files from all plan files_modified frontmatter fields}
+
+  {CODEBASE_CONVENTIONS}
 
   ## Your Review Instructions
 

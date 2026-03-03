@@ -57,6 +57,8 @@ skills/github-sync/SKILL.md
      Options:
      - "Define milestones" — "Analyze phases and propose logical milestone groupings"
      - "Skip for now" — "Return without defining milestones"
+     - If answer is empty, unparseable, or does not match any offered option:
+       re-ask as plain text: "Reply with 1 (define milestones) or 2 (skip for now)." and wait
 
      If "Define milestones": Go to Step 7 (DEFINE MILESTONES)
      If "Skip for now": Display "Run `/legion:milestone` anytime to set up milestones." → Exit
@@ -121,11 +123,15 @@ skills/github-sync/SKILL.md
 
    Present options via AskUserQuestion:
    "What would you like to do?"
+   - If answer is empty, unparseable, or does not match any offered option:
+     re-ask as plain text with numbered choices matching the presented options and wait
 
 6. HANDLE USER CHOICE
 
    **Path A: View milestone details**
    - If multiple milestones: ask which one (AskUserQuestion with milestone names)
+     - If answer is empty, unparseable, or does not match any offered option:
+       re-ask as plain text with numbered choices matching the milestone names and wait
    - Display full details for the selected milestone:
      - Goal, phase range
      - Per-phase breakdown: plan count, key deliverables from SUMMARY.md files
@@ -226,6 +232,8 @@ skills/github-sync/SKILL.md
       Options:
       - "Accept" — "Use these milestone definitions"
       - "Modify" — "Let me adjust the groupings"
+      - If answer is empty, unparseable, or does not match any offered option:
+        re-ask as plain text: "Reply with 1 (accept) or 2 (modify)." and wait
 
    e. If "Modify": Ask for specific changes (which phases to regroup, new names, etc.)
    f. If "Accept" or after modifications:

@@ -48,6 +48,8 @@ skills/spec-pipeline/SKILL.md
      - "Phase {N} already has {count} plan(s). What would you like to do?"
      - Option 1: "Re-plan from scratch" -- delete existing plans, proceed
      - Option 2: "Keep existing plans" -- abort, suggest /legion:build instead
+     - If answer is empty, unparseable, or does not match any offered option:
+       re-ask as plain text: "Reply with 1 (re-plan from scratch) or 2 (keep existing plans)." and wait
    - If no plans exist: proceed directly
 
 3. READ PHASE DETAILS
@@ -137,6 +139,8 @@ skills/spec-pipeline/SKILL.md
         Description: "Spawn agents with Minimal, Clean, and Pragmatic philosophies to present trade-offs"
       - "Skip, I know the approach I want"
         Description: "Proceed directly to plan decomposition"
+      - If answer is empty, unparseable, or does not match any offered option:
+        re-ask as plain text: "Reply with 1 (generate proposals) or 2 (skip)." and wait
 
    c. If user selects "Yes":
       - CONTEXT BUDGET NOTE: Proposal agents are spawned as Explore sub-agents
@@ -167,6 +171,8 @@ skills/spec-pipeline/SKILL.md
         "Use existing spec or regenerate?"
         - "Use existing" — read spec, pass to step 4 as additional context
         - "Regenerate" — run spec pipeline, overwrite existing
+        - If answer is empty, unparseable, or does not match any offered option:
+          re-ask as plain text: "Reply with 1 (use existing spec) or 2 (regenerate)." and wait
       - If not exists: continue to step b
 
    b. Offer spec pipeline:
@@ -177,6 +183,8 @@ skills/spec-pipeline/SKILL.md
         Description: "5-stage pipeline: gather, research, write, critique, assess. Produces a structured spec document."
       - "No, proceed to planning (Recommended for straightforward phases)"
         Description: "Skip spec creation, decompose directly from ROADMAP requirements"
+      - If answer is empty, unparseable, or does not match any offered option:
+        re-ask as plain text: "Reply with 1 (create spec) or 2 (proceed to planning)." and wait
 
    c. If user selects "Yes":
       - Read spec-pipeline skill
@@ -215,6 +223,8 @@ skills/spec-pipeline/SKILL.md
      - "Looks good, generate the plans" -- proceed
      - "Swap an agent" -- ask which plan, present alternatives, update
      - "Adjust the plan structure" -- discuss changes, revise decomposition
+     - If answer is empty, unparseable, or does not match any offered option:
+       re-ask as plain text: "Reply with 1 (generate plans), 2 (swap an agent), or 3 (adjust plan structure)." and wait
    - Loop until user confirms
 
 7. GENERATE CONTEXT FILE
@@ -240,6 +250,8 @@ skills/spec-pipeline/SKILL.md
      Description: "Two skeptical agents analyze the plan for failure modes and unexamined assumptions"
    - "Skip critique, proceed to execution" — skip directly to state update
      Description: "Plans look straightforward, no need for extra validation"
+   - If answer is empty, unparseable, or does not match any offered option:
+     re-ask as plain text: "Reply with 1 (run critique) or 2 (skip critique)." and wait
 
    If user selects "Run plan critique":
    a. Select critique agents using plan-critique Section 4 (Agent Selection):

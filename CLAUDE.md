@@ -55,7 +55,7 @@ Advisory: `/legion:advise <topic>` — standalone consultation, no phase context
 
 GitHub integration is opt-in — when a GitHub remote exists, `/legion:plan` creates issues, `/legion:build` creates PRs, and `/legion:status` shows GitHub status.
 
-Brownfield support is automatic — when `/legion:start` detects an existing codebase, it offers to analyze architecture, frameworks, and risks before planning. The analysis produces `.planning/CODEBASE.md`, which `/legion:plan` injects into agent task context.
+Brownfield support is automatic — when `/legion:start` detects an existing codebase, it offers to analyze architecture, frameworks, risks, dependency graphs, test coverage, API surface, config/environment, and code patterns. The analysis produces `.planning/CODEBASE.md`, consumed by 5 commands: `/legion:plan` injects context into phase decomposition, `/legion:build` injects conventions and guidance into agent execution prompts, `/legion:review` injects conventions for conformance checking, `/legion:plan` (critique) cross-references risks during pre-mortem analysis, and `/legion:status` detects staleness. Standalone re-analysis is available via `/legion:quick analyze codebase`.
 
 Marketing workflows activate when `/legion:plan` detects a marketing-focused phase (MKT-* requirements or marketing keywords). Campaign planning produces structured documents at `.planning/campaigns/`, with content calendars and cross-channel coordination across the 8 marketing agents.
 

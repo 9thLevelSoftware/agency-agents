@@ -133,6 +133,31 @@ Step 3: Read the complete plan file
   - Use the Read tool to load the full plan .md file
   - Capture the section starting from <objective> through end of file as: PLAN_CONTENT
 
+Step 3.5: Load brownfield context (optional)
+  - Check if .planning/CODEBASE.md exists
+  - If yes:
+    a. Read .planning/CODEBASE.md
+    b. Extract these sections:
+       - "## Agent Guidance" → Preferred and Avoid directives
+       - "## Conventions Detected" → all convention bullet points
+       - "## Risk Areas" → filter to rows where the Area or file paths overlap
+         with the current plan's files_modified list
+    c. Compose a CODEBASE_CONTEXT block:
+
+       ## Codebase Context
+
+       ### Conventions
+       {bullet list from Conventions Detected}
+
+       ### Agent Guidance
+       - **Preferred**: {from Agent Guidance}
+       - **Avoid**: {from Agent Guidance}
+
+       ### Risk Areas
+       {filtered Risk Areas table rows, or "No risk areas overlap with this plan's files."}
+
+  - If CODEBASE.md does not exist: set CODEBASE_CONTEXT = "" (empty string, no block injected)
+
 Step 4: Construct the agent execution prompt
   Combine personality and plan using this exact format:
 
@@ -144,6 +169,8 @@ Step 4: Construct the agent execution prompt
   # Execution Task
 
   You are executing a plan as part of Legion. Follow the tasks below precisely.
+
+  {CODEBASE_CONTEXT}
 
   {PLAN_CONTENT}
 
@@ -203,6 +230,8 @@ For autonomous plans (autonomous: true):
 
   You are executing a plan as part of Legion. No specialist agent
   personality is needed for this plan — execute the tasks directly.
+
+  {CODEBASE_CONTEXT}
 
   {PLAN_CONTENT}
 

@@ -17,6 +17,7 @@ skills/wave-executor/SKILL.md
 skills/execution-tracker/SKILL.md
 skills/memory-manager/SKILL.md
 skills/github-sync/SKILL.md
+skills/codebase-mapper/SKILL.md
 </execution_context>
 
 <context>
@@ -75,8 +76,18 @@ skills/github-sync/SKILL.md
      - "Execute all plans" — proceed with full wave execution
      - "Execute specific wave only" — ask which wave number, execute only that wave
      - "Cancel" — abort immediately with no changes made
+     - If answer is empty, unparseable, or does not match any offered option:
+       re-ask as plain text: "Reply with 1 (execute all), 2 (specific wave), or 3 (cancel)." and wait
 
 4. EXECUTE WAVES
+
+   **BROWNFIELD CONTEXT** (optional — follows codebase-mapper Section 6.3):
+   If `.planning/CODEBASE.md` exists, wave-executor Section 3, Step 3.5 will automatically
+   load brownfield context (conventions, agent guidance, risk areas) and inject it into each
+   agent's execution prompt as a `## Codebase Context` block. No action needed here — this
+   is handled transparently during prompt construction in the wave executor.
+   If CODEBASE.md is absent: no injection occurs, agents receive standard prompts.
+
    Follow wave-executor skill Section 4 (Wave Execution):
 
    **Team Setup** (once, before wave loop — wave-executor Section 4, Step 0):
@@ -327,6 +338,8 @@ skills/github-sync/SKILL.md
           Options:
           - "Create PR" — proceed with PR creation
           - "Skip PR" — skip, proceed to step 6
+          - If answer is empty, unparseable, or does not match any offered option:
+            re-ask as plain text: "Reply with 1 (create PR) or 2 (skip PR)." and wait
        b. If user chose "Create PR":
           - Check current branch (github-sync Section 3.1)
           - If on default branch: create feature branch legion/phase-{NN}-{slug}

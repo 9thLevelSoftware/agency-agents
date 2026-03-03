@@ -203,10 +203,10 @@ When a command determines it needs a specific skill, load the ENTIRE SKILL.md co
 |---------|-------------|-------------------|
 | `/legion:start` | questioning-flow, workflow-common | codebase-mapper (brownfield) |
 | `/legion:plan` | phase-decomposer, agent-registry, workflow-common | marketing-workflows, design-workflows, plan-critique, spec-pipeline |
-| `/legion:build` | wave-executor, execution-tracker, workflow-common | github-sync, spec-pipeline |
-| `/legion:review` | review-loop, review-panel, workflow-common | — |
-| `/legion:status` | execution-tracker, workflow-common | memory-manager |
-| `/legion:quick` | agent-registry, workflow-common | {matched by triggers} |
+| `/legion:build` | wave-executor, execution-tracker, workflow-common | github-sync, spec-pipeline, codebase-mapper (brownfield) |
+| `/legion:review` | review-loop, review-panel, workflow-common | codebase-mapper (brownfield) |
+| `/legion:status` | execution-tracker, workflow-common | memory-manager, codebase-mapper (brownfield) |
+| `/legion:quick` | agent-registry, workflow-common | {matched by triggers}, codebase-mapper (brownfield) |
 | `/legion:portfolio` | portfolio-manager, workflow-common | — |
 | `/legion:milestone` | milestone-tracker, workflow-common | — |
 | `/legion:agent` | agent-creator, agent-registry, workflow-common | — |
@@ -220,6 +220,21 @@ Before loading a skill, check the estimated token impact:
 - `high` skills: load only when the command requires them (heavy context, 500+ lines)
 
 If multiple high-cost skills are needed in a single command, consider whether the orchestrator can delegate to sub-agents (each with their own context window) rather than loading all skills into the main context.
+
+## Interactive Input Reliability Convention
+
+When a command uses AskUserQuestion for branching decisions, apply this guard consistently:
+
+**Failure modes** (all treated as "no decision"):
+1. **Empty response** — answer is empty or missing entirely
+2. **Whitespace-only** — answer contains only spaces/newlines
+3. **Phantom response** — answer is non-empty but does not match any of the offered option labels (bug: AskUserQuestion can auto-resolve with fabricated answers the user never saw)
+
+**Guard pattern** — after every AskUserQuestion call:
+1. Validate: does the returned answer contain text matching one of the offered option labels?
+2. If yes: proceed with the matched option
+3. If no (any failure mode): re-ask as plain chat text with numbered choices and wait for explicit response
+4. Never infer "skip", "continue", or "accept default" from an unvalidated response
 
 ## Error Handling Pattern
 
@@ -546,6 +561,9 @@ Absent → Analyzed (CODEBASE.md created) → Stale (>30 days old, re-analysis r
 |----------|-----------|------|
 | `/legion:start` | Detect + analyze | After pre-flight, before questioning (if existing codebase found) |
 | `/legion:plan` | Inject risk areas into context | During phase decomposition (if CODEBASE.md exists) |
+| `/legion:build` | Inject conventions + guidance into agent prompts | During prompt construction (wave-executor Section 3, Step 3.5) |
+| `/legion:review` | Inject conventions into review prompts | During review prompt construction (review-loop Section 3, Step 2.5) |
+| `/legion:plan` (critique) | Cross-reference risks with plan files | During plan-critique pre-mortem (Section 1, Step 1) |
 
 ### Graceful Degradation Rule
 All brownfield integration follows this pattern:

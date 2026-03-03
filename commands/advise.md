@@ -78,6 +78,8 @@ skills/agent-registry/CATALOG.md
         Description: "{brief rationale based on topic match}"
       - "{second_agent_id} — {specialty}"
         Description: "{brief rationale for alternative}"
+      - If answer is empty, unparseable, or does not match any offered option:
+        re-ask as plain text with numbered choices matching the presented agent options and wait
 
    e. If user selects "Other": accept a custom agent ID from user input
       - Validate the ID exists in agent-registry Section 1
@@ -148,6 +150,8 @@ skills/agent-registry/CATALOG.md
      Description: "Start a new advisory session with a different topic and potentially different agent"
    - "End session"
      Description: "Close the advisory session"
+   - If answer is empty, unparseable, or does not match any offered option:
+     re-ask as plain text: "Reply with 1 (follow-up question), 2 (switch topic), or 3 (end session)." and wait
 
    a. If "Ask a follow-up question":
       - Use AskUserQuestion with a free-text prompt:
@@ -155,6 +159,8 @@ skills/agent-registry/CATALOG.md
         Options:
         - "Type your question" (with description: "The same advisor will respond")
         - "End session" (with description: "Close the advisory session")
+      - If answer is empty, unparseable, or does not match any offered option:
+        re-ask as plain text: "Reply with 1 (type your question) or 2 (end session)." and wait
       - If user provides a question:
         Spawn the SAME agent again with updated prompt that includes:
         - Original personality

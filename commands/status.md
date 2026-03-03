@@ -17,6 +17,7 @@ skills/execution-tracker/SKILL.md
 skills/milestone-tracker/SKILL.md
 skills/memory-manager/SKILL.md
 skills/github-sync/SKILL.md
+skills/codebase-mapper/SKILL.md
 </execution_context>
 
 <context>
@@ -63,6 +64,12 @@ skills/github-sync/SKILL.md
       - Phase-to-PR mapping table
       - Milestone mapping table (if present)
       If ## GitHub section does not exist: skip, set github_metadata_available = false
+
+   h. .planning/CODEBASE.md — if exists, extract:
+      - Analyzed date from the header
+      - Calculate age in days from current date
+      - Set codebase_map_available = true, codebase_map_age = {days}
+      If .planning/CODEBASE.md does not exist: skip, set codebase_map_available = false
 
 3. CALCULATE PROGRESS
    Follow execution-tracker Section 5 (Progress Calculation):
@@ -118,6 +125,14 @@ skills/github-sync/SKILL.md
    ## Requirements Progress
    {checked_count}/{total_count} requirements complete
    {List unchecked requirements from current phase, if any}
+
+   If codebase_map_available AND codebase_map_age > 30:
+
+   ## Codebase Map
+   **Last analyzed**: {analyzed_date} ({codebase_map_age} days ago)
+   Tip: Your codebase map is stale (>30 days). Run `/legion:quick analyze codebase` to refresh it.
+
+   If codebase_map_available is false OR codebase_map_age <= 30: omit this section entirely (no placeholder).
 
    If memory_available (i.e., .planning/memory/OUTCOMES.md exists and has records):
 

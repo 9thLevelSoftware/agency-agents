@@ -20,6 +20,7 @@ Adaptive conversation engine for `/legion:start`. Captures everything needed to 
 4. **Structured choices for preferences, open conversation for vision** — Stage 1-2 are conversational; Stage 3 uses explicit choice prompts.
 5. **Target 5-8 total exchanges** — not 20 questions. Combine related questions. Skip what's already clear.
 6. **Summarize between stages** — after each stage, reflect back what you captured and ask for corrections before moving on.
+7. **No implicit skip on missing input** — empty or unparseable responses are not decisions. Re-ask and wait for explicit user intent.
 
 ---
 
@@ -226,7 +227,7 @@ For each phase, produce a block matching the roadmap template pattern:
 ## Section 5: Edge Cases
 
 ### User wants to skip questions
-Accept it. Infer reasonable defaults from whatever context they provided. Record all assumptions as decisions in `{decisions_table}` with rationale "Inferred — user skipped detailed questioning." Apply default workflow preferences (Guided, Standard, Balanced).
+Accept it only when the user explicitly says they want to skip or proceed with defaults. Do not treat empty or unclear input as skip intent. Infer reasonable defaults from whatever context they provided. Record all assumptions as decisions in `{decisions_table}` with rationale "Inferred — user skipped detailed questioning." Apply default workflow preferences (Guided, Standard, Balanced).
 
 ### User provides a PRD, spec, or requirements document
 If the user pastes or references an existing document:
