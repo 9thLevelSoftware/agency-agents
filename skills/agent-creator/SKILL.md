@@ -13,7 +13,7 @@ Guided conversation engine for creating new agent personalities. Captures agent 
 References:
 - Personality paths and divisions from `workflow-common.md` (Agent Personality Paths, Division Constants)
 - Catalog format and recommendation algorithm from `agent-registry.md` (Section 1 row format, Section 3 scoring)
-- Adaptive conversation pattern from `questioning-flow.md` (3-stage structure, plain-text choice usage)
+- Adaptive conversation pattern from `questioning-flow.md` (3-stage structure, AskUserQuestion usage)
 
 ---
 
@@ -97,7 +97,7 @@ Infer from the extracted information:
 - **Division** — map the specialty domain to one of the 10 divisions (engineering, design, marketing, product, project-management, testing, support, spatial-computing, specialized, custom). Use `custom` only when none of the existing divisions fit.
 - **Suggested name** — generate a kebab-case name following the pattern `{division}-{specialty}` (e.g., `engineering-security-auditor`, `design-motion-designer`). Keep names descriptive but concise.
 
-**Confirm via plain-text numbered choices:**
+**Confirm via AskUserQuestion:**
 > "I'll create a {division} agent — '{suggested-name}'. Specialty: {description}. Correct, or would you like to adjust?"
 
 Options:
@@ -122,7 +122,7 @@ Ask these questions adaptively — skip any that the user already answered in St
    - Capture as critical rules
    - These become the Critical Rules section verbatim
 
-**Confirm summary via plain-text numbered choices before proceeding:**
+**Confirm summary via AskUserQuestion before proceeding:**
 > "Here's the agent I'll create:
 > - **Division**: {division}
 > - **Name**: {name}
@@ -142,7 +142,7 @@ Generate 3-5 task type tags from the captured capabilities. Tags must be:
 - Aligned with existing registry tags where the capability overlaps
 - Specific enough to differentiate from generic tags
 
-**Present via plain-text numbered choices:**
+**Present via AskUserQuestion:**
 > "For recommendations to work, I need task type tags. Based on capabilities, I suggest: {tag1}, {tag2}, {tag3}. These align with existing registry tags like: {example_existing_tags}. Add or remove any?"
 
 Options:
@@ -210,7 +210,7 @@ Validation Checklist:
 ```
 
 **On validation failure:**
-- Present specific errors via plain-text numbered choices:
+- Present specific errors via AskUserQuestion:
   > "Validation found {N} issue(s):
   > - {error_1}
   > - {error_2}

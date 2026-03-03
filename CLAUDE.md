@@ -2,16 +2,6 @@
 
 A Claude Code plugin for orchestrating 51 AI specialist personalities as a coordinated legion.
 
-## CRITICAL: Never Use AskUserQuestion
-
-**AskUserQuestion has a platform bug that auto-submits phantom answers.** The user never sees the prompt but the tool returns as if they responded. This causes commands to skip steps, accept defaults without consent, and proceed without user input.
-
-**For ALL user interaction in Legion commands and skills:**
-- Output plain-text numbered choices directly in the conversation
-- Wait for the user to reply before proceeding
-- If the response is empty, unclear, or unparseable — re-ask, never assume consent
-- Never call the AskUserQuestion tool under any circumstances
-
 ## Available Commands
 
 | Command | Description |

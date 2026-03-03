@@ -2,7 +2,7 @@
 name: legion:advise
 description: Get read-only expert consultation from Legion's 51 agent personalities
 argument-hint: <topic> (e.g., architecture, UX, marketing, testing)
-allowed-tools: [Read, Grep, Glob, Agent]
+allowed-tools: [Read, Grep, Glob, Agent, AskUserQuestion]
 ---
 
 <objective>
@@ -23,11 +23,6 @@ skills/agent-registry/CATALOG.md
 </context>
 
 <process>
-0. INTERACTION SAFETY RULE (APPLIES TO ALL USER PROMPTS IN THIS COMMAND)
-   - Never use AskUserQuestion — it has a platform bug that auto-submits phantom answers.
-   - For every decision point, present plain-text numbered choices and wait for the user's reply.
-   - Do NOT default to "skip" or "continue" on missing or unclear input — re-ask.
-
 1. PARSE TOPIC
    - Read $ARGUMENTS for the topic
    - If $ARGUMENTS is empty or missing:
@@ -76,12 +71,13 @@ skills/agent-registry/CATALOG.md
       - Select top 2 candidates for recommendation
       - Do NOT apply mandatory roles enforcement (advisors don't need testing/coordination)
 
-   d. Present recommendation to user as plain-text numbered choice:
-      "Which agent should advise on this topic?
-      1. {top_agent_id} — {specialty} (Recommended) — {brief rationale}
-      2. {second_agent_id} — {specialty} — {brief rationale}
-      Reply with 1 or 2 (or type an agent ID for a custom choice)."
-      Wait for the user's response before proceeding.
+   d. Present recommendation to user via AskUserQuestion:
+      "Which agent should advise on this topic?"
+      Options:
+      - "{top_agent_id} — {specialty}" (Recommended)
+        Description: "{brief rationale based on topic match}"
+      - "{second_agent_id} — {specialty}"
+        Description: "{brief rationale for alternative}"
 
    e. If user selects "Other": accept a custom agent ID from user input
       - Validate the ID exists in agent-registry Section 1
@@ -143,17 +139,22 @@ skills/agent-registry/CATALOG.md
    {agent's advisory response}
 
 7. OFFER FOLLOW-UP
-   Present plain-text numbered choice:
-   "Continue this advisory session?
-   1. Ask a follow-up question — same advisor responds
-   2. Switch topic — new advisory session with a different agent
-   3. End session
-   Reply with 1, 2, or 3."
-   Wait for the user's response before proceeding.
+   Use AskUserQuestion:
+   "Continue this advisory session?"
+   Options:
+   - "Ask a follow-up question"
+     Description: "Continue with the same advisor on a related question"
+   - "Switch topic"
+     Description: "Start a new advisory session with a different topic and potentially different agent"
+   - "End session"
+     Description: "Close the advisory session"
 
-   a. If follow-up question (1):
-      - Ask in plain text: "What's your follow-up question?"
-      - Wait for the user's response
+   a. If "Ask a follow-up question":
+      - Use AskUserQuestion with a free-text prompt:
+        "What's your follow-up question?"
+        Options:
+        - "Type your question" (with description: "The same advisor will respond")
+        - "End session" (with description: "Close the advisory session")
       - If user provides a question:
         Spawn the SAME agent again with updated prompt that includes:
         - Original personality

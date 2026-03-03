@@ -82,7 +82,7 @@ Structured design system creation with guided questioning, document generation, 
 
 ### 2.1: Design Brief Questioning
 
-When a design phase is detected during `/legion:plan`, gather design parameters using plain-text numbered choices. This replaces the generic decomposition questioning for design phases.
+When a design phase is detected during `/legion:plan`, gather design parameters using AskUserQuestion. This replaces the generic decomposition questioning for design phases.
 
 Key questions (adapt based on responses -- do not ask all if answers imply others):
 
@@ -607,7 +607,7 @@ In phase-decomposer, after reading ROADMAP phase details:
 
 2. If design phase detected:
    a. Read design-workflows skill for domain-specific patterns
-   b. Run Design Brief Questioning (Section 2.1) via plain-text numbered choices
+   b. Run Design Brief Questioning (Section 2.1) via AskUserQuestion
    c. Generate design system document (Section 2.2) at .planning/designs/{slug}-system.md
    d. If research is in scope: generate research report template at .planning/designs/{slug}-research.md
    e. Use design-specific wave pattern for plan decomposition:

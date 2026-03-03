@@ -203,10 +203,10 @@ When a command determines it needs a specific skill, load the ENTIRE SKILL.md co
 |---------|-------------|-------------------|
 | `/legion:start` | questioning-flow, workflow-common | codebase-mapper (brownfield) |
 | `/legion:plan` | phase-decomposer, agent-registry, workflow-common | marketing-workflows, design-workflows, plan-critique, spec-pipeline |
-| `/legion:build` | wave-executor, execution-tracker, workflow-common | github-sync, spec-pipeline, codebase-mapper (brownfield) |
-| `/legion:review` | review-loop, review-panel, workflow-common | codebase-mapper (brownfield) |
-| `/legion:status` | execution-tracker, workflow-common | memory-manager, codebase-mapper (brownfield) |
-| `/legion:quick` | agent-registry, workflow-common | {matched by triggers}, codebase-mapper (brownfield) |
+| `/legion:build` | wave-executor, execution-tracker, workflow-common | github-sync, spec-pipeline |
+| `/legion:review` | review-loop, review-panel, workflow-common | — |
+| `/legion:status` | execution-tracker, workflow-common | memory-manager |
+| `/legion:quick` | agent-registry, workflow-common | {matched by triggers} |
 | `/legion:portfolio` | portfolio-manager, workflow-common | — |
 | `/legion:milestone` | milestone-tracker, workflow-common | — |
 | `/legion:agent` | agent-creator, agent-registry, workflow-common | — |
@@ -220,29 +220,6 @@ Before loading a skill, check the estimated token impact:
 - `high` skills: load only when the command requires them (heavy context, 500+ lines)
 
 If multiple high-cost skills are needed in a single command, consider whether the orchestrator can delegate to sub-agents (each with their own context window) rather than loading all skills into the main context.
-
-## Interactive Input Convention
-
-**Do NOT use AskUserQuestion in skill or command execution contexts.** There is a known Claude Code platform bug ([#30216](https://github.com/anthropics/claude-code/issues/30216)) where AskUserQuestion auto-resolves with phantom responses — the user never sees the options but the tool returns as if they answered. Guard instructions are insufficient because the executing AI sees a non-empty response and proceeds.
-
-**Use plain-text numbered choices instead.** For every decision point in a command:
-
-1. Output the question and numbered options as plain text in the conversation
-2. Wait for the user to reply with a number or text before proceeding
-3. If the user's response doesn't match any option, re-ask
-4. Never infer "skip", "continue", or "accept default" from missing or unclear input
-
-**Pattern:**
-```
-"Question text?
-1. Option label — description
-2. Option label — description
-3. Option label — description
-
-Reply with the number of your choice."
-```
-
-Then wait for the user's response. Parse their reply (accept the number, the label text, or reasonable variations). If unclear, ask again.
 
 ## Error Handling Pattern
 
@@ -569,9 +546,6 @@ Absent → Analyzed (CODEBASE.md created) → Stale (>30 days old, re-analysis r
 |----------|-----------|------|
 | `/legion:start` | Detect + analyze | After pre-flight, before questioning (if existing codebase found) |
 | `/legion:plan` | Inject risk areas into context | During phase decomposition (if CODEBASE.md exists) |
-| `/legion:build` | Inject conventions + guidance into agent prompts | During prompt construction (wave-executor Section 3, Step 3.5) |
-| `/legion:review` | Inject conventions into review prompts | During review prompt construction (review-loop Section 3, Step 2.5) |
-| `/legion:plan` (critique) | Cross-reference risks with plan files | During plan-critique pre-mortem (Section 1, Step 1) |
 
 ### Graceful Degradation Rule
 All brownfield integration follows this pattern:

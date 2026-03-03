@@ -1,7 +1,7 @@
 ---
 name: legion:milestone
 description: Milestone management — status, definition, completion, and archiving
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob]
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
 ---
 
 <objective>
@@ -26,11 +26,6 @@ skills/github-sync/SKILL.md
 </context>
 
 <process>
-0. INTERACTION SAFETY RULE (APPLIES TO ALL USER PROMPTS IN THIS COMMAND)
-   - Never use AskUserQuestion — it has a platform bug that auto-submits phantom answers.
-   - For every decision point, present plain-text numbered choices and wait for the user's reply.
-   - Do NOT default to "skip" or "continue" on missing or unclear input — re-ask.
-
 1. CHECK PROJECT EXISTS
    - Attempt to read .planning/PROJECT.md
    - If not found:
@@ -57,12 +52,11 @@ skills/github-sync/SKILL.md
       No milestones defined yet.
       Milestones group phases into major deliverables for tracking and archiving."
 
-     Present plain-text numbered choice:
-     "Would you like to define milestones for this project?
-     1. Define milestones — analyze phases and propose logical groupings
-     2. Skip for now — return without defining milestones
-     Reply with 1 or 2."
-     Wait for the user's response before proceeding.
+     Present via AskUserQuestion:
+     "Would you like to define milestones for this project?"
+     Options:
+     - "Define milestones" — "Analyze phases and propose logical milestone groupings"
+     - "Skip for now" — "Return without defining milestones"
 
      If "Define milestones": Go to Step 7 (DEFINE MILESTONES)
      If "Skip for now": Display "Run `/legion:milestone` anytime to set up milestones." → Exit
@@ -125,17 +119,13 @@ skills/github-sync/SKILL.md
    **If milestones need redefinition**:
    - "Redefine milestones" — "Re-analyze phase groupings and update milestone boundaries"
 
-   Present available options as plain-text numbered choice:
-   "What would you like to do?
-   {numbered list of available options based on milestone state}
-   Reply with the number of your choice."
-   Wait for the user's response before proceeding.
+   Present options via AskUserQuestion:
+   "What would you like to do?"
 
 6. HANDLE USER CHOICE
 
    **Path A: View milestone details**
-   - If multiple milestones: present plain-text numbered choice with milestone names
-     Wait for the user's response before proceeding.
+   - If multiple milestones: ask which one (AskUserQuestion with milestone names)
    - Display full details for the selected milestone:
      - Goal, phase range
      - Per-phase breakdown: plan count, key deliverables from SUMMARY.md files
@@ -231,12 +221,11 @@ skills/github-sync/SKILL.md
       | 1 | {name} | {start}-{end} | {goal} |
       ...
 
-   d. Present plain-text numbered choice:
-      "Accept these milestone groupings?
-      1. Accept — use these milestone definitions
-      2. Modify — let me adjust the groupings
-      Reply with 1 or 2."
-      Wait for the user's response before proceeding.
+   d. Ask via AskUserQuestion:
+      "Accept these milestone groupings?"
+      Options:
+      - "Accept" — "Use these milestone definitions"
+      - "Modify" — "Let me adjust the groupings"
 
    e. If "Modify": Ask for specific changes (which phases to regroup, new names, etc.)
    f. If "Accept" or after modifications:

@@ -31,19 +31,18 @@ Core rules governing brownfield analysis and the detection heuristic that determ
 
 ### Principles
 
-1. **Opt-in only** -- brownfield analysis is never automatic. The user is always asked via plain-text numbered choices before any analysis begins. No background scanning, no silent analysis.
-2. **Explicit consent only** -- empty, whitespace-only, or unparseable user responses are not consent. Re-ask and wait for a clear choice. Never infer "skip" from missing input.
-3. **Human-readable markdown** -- the output artifact (`.planning/CODEBASE.md`) follows the same structured markdown convention as STATE.md, ROADMAP.md, and all other Legion state files. No JSON, no binary, no databases.
-4. **Graceful degradation** -- every consumer checks for CODEBASE.md existence before using it. If absent, the workflow proceeds identically to greenfield mode. Brownfield analysis is an enhancement, never a requirement.
-5. **Heuristic-based** -- all detection uses file presence and content grep, not AST parsing or LSP analysis. Simple, auditable, and sufficient for planning-time orientation.
-6. **Depth-limited** -- analysis constrains itself to avoid consuming the context window on large codebases. Work with counts and samples, never full enumeration.
-7. **Calibrated scoring** -- risk levels use per-file rates relative to project size, not absolute counts. A 5-file project with 10 TODOs is HIGH; a 500-file project with 10 TODOs is LOW.
+1. **Opt-in only** -- brownfield analysis is never automatic. The user is always asked via AskUserQuestion before any analysis begins. No background scanning, no silent analysis.
+2. **Human-readable markdown** -- the output artifact (`.planning/CODEBASE.md`) follows the same structured markdown convention as STATE.md, ROADMAP.md, and all other Legion state files. No JSON, no binary, no databases.
+3. **Graceful degradation** -- every consumer checks for CODEBASE.md existence before using it. If absent, the workflow proceeds identically to greenfield mode. Brownfield analysis is an enhancement, never a requirement.
+4. **Heuristic-based** -- all detection uses file presence and content grep, not AST parsing or LSP analysis. Simple, auditable, and sufficient for planning-time orientation.
+5. **Depth-limited** -- analysis constrains itself to avoid consuming the context window on large codebases. Work with counts and samples, never full enumeration.
+6. **Calibrated scoring** -- risk levels use per-file rates relative to project size, not absolute counts. A 5-file project with 10 TODOs is HIGH; a 500-file project with 10 TODOs is LOW.
 
 ### When to Run
 
 - Triggered by `/legion:start` when existing source code is detected in the project directory
 - Can be re-triggered manually if the codebase has changed significantly
-- NEVER runs automatically -- always prompted via plain-text numbered choices
+- NEVER runs automatically -- always prompted via AskUserQuestion
 - If `.planning/CODEBASE.md` already exists and is <30 days old, skip and inform the user
 - If `.planning/CODEBASE.md` exists but is >30 days old, offer re-analysis
 
@@ -64,7 +63,7 @@ Check for non-Legion files in the current directory. Run these checks in order:
 ```
 
 **Decision logic:**
-- If ANY of the above are found: existing codebase detected. Proceed to plain-text numbered choice.
+- If ANY of the above are found: existing codebase detected. Proceed to AskUserQuestion.
 - If NONE found: pure greenfield. Skip brownfield flow silently.
 - If ONLY .md files found: content project, not a codebase. Skip brownfield flow silently.
 
@@ -583,7 +582,7 @@ After the pre-flight check (Step 1) and before the questioning flow (Step 3):
 ```
 1. Run Source Code Detection Heuristic (Section 1)
 2. If existing source detected:
-   Present plain-text numbered choice:
+   Use AskUserQuestion:
      "I detected an existing codebase in this directory. Would you like me to analyze it
       before we start planning? This maps your architecture, frameworks, and risk areas
       so agents can work with your existing patterns."
@@ -604,12 +603,6 @@ After the pre-flight check (Step 1) and before the questioning flow (Step 3):
      Option 3: "I'll run /legion:plan directly"
        -> Abort start, let user plan manually
        -> No CODEBASE.md created
-
-     Input guard:
-       - If the response is empty/whitespace/unparseable input:
-         -> Re-ask as plain chat text with numbered choices (1/2/3)
-         -> Wait for explicit answer before proceeding
-       - Never treat missing input as "No, skip the analysis"
 
 3. If no existing source detected:
    Skip brownfield flow entirely (pure greenfield)
@@ -705,7 +698,6 @@ Every command that integrates with brownfield analysis MUST follow this contract
 5. Never block workflow completion on CODEBASE.md
 6. Never require brownfield analysis for any operation
 7. Never auto-trigger analysis without user consent
-8. Never interpret empty user input as user intent; re-prompt until explicit
 ```
 
 This is identical to the Memory Conventions and GitHub Conventions degradation pattern -- the three optional integrations (Memory, GitHub, Brownfield) all follow the same contract.
@@ -745,14 +737,14 @@ Step 2: Check existing analysis age
     - Calculate age in days
     - If age <= STALE_THRESHOLD_DAYS (30):
       Inform user: "CODEBASE.md is {age} days old (threshold: 30 days). Still current."
-      Present plain-text numbered choice: "Re-analyze anyway?"
+      Use AskUserQuestion: "Re-analyze anyway?"
         - "Yes, re-analyze" → continue to Step 3
         - "No, keep current" → exit
   - If .planning/CODEBASE.md does not exist:
     Continue to Step 3 (first-time analysis)
 
 Step 3: Confirm with user
-  Present plain-text numbered choice:
+  Use AskUserQuestion:
     "Ready to analyze the codebase? This will map architecture, frameworks,
      conventions, and risk areas."
     - "Yes, analyze" → proceed to Step 4

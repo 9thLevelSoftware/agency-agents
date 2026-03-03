@@ -204,7 +204,7 @@ Step 3: Collect and format proposals
   | Best for | {scenario} | {scenario} | {scenario} |
 
 Step 4: User selection
-  Present plain-text numbered choice:
+  Use AskUserQuestion:
 
   "Which architecture approach for Phase {N}?"
   Options:
@@ -475,7 +475,7 @@ Before writing any plan files, present the complete breakdown for user approval.
 
 ### Confirmation Prompt
 
-Present plain-text numbered choice to get user approval:
+Use AskUserQuestion to get user approval:
 
 ```
 Question: "Does this plan breakdown and agent assignment look right?"
@@ -508,7 +508,7 @@ If the user selects "Adjust the plan structure":
 1. Ask what they want to change (merge plans, split a plan, reorder waves, etc.)
 2. Discuss the impact on dependencies and agent assignments
 3. Revise the breakdown
-4. Re-present for confirmation using the same plain-text numbered choice flow
+4. Re-present for confirmation using the same AskUserQuestion flow
 
 Only proceed to plan file generation after the user confirms "Looks good."
 
@@ -737,7 +737,7 @@ Check if `.planning/phases/{NN}-{slug}/` already contains `*-PLAN.md` files befo
 If plan files exist, warn the user:
 
 ```
-Present plain-text numbered choice:
+Use AskUserQuestion:
   Question: "Phase {N} already has plan files in .planning/phases/{NN}-{slug}/.
              Re-planning will overwrite them. Continue?"
   Options:
@@ -776,7 +776,7 @@ Do not attempt to create a new phase — that requires updating the ROADMAP.md, 
 If the ROADMAP.md progress table shows the phase as "Complete":
 
 ```
-Present plain-text numbered choice:
+Use AskUserQuestion:
   Question: "Phase {N} is already marked complete in ROADMAP.md.
              Re-planning a complete phase is unusual. Continue anyway?"
   Options:

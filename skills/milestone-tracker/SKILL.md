@@ -91,7 +91,7 @@ Step 3: Propose 2-4 milestones
   - Goal: one-line description of what this milestone delivers
 
 Step 4: Present proposals to user
-  Present plain-text numbered choice to show the proposed milestones:
+  Use AskUserQuestion to show the proposed milestones:
   "Here are the proposed milestones for your project:
 
   Milestone 1: {name} (Phases {start}-{end})
@@ -424,7 +424,7 @@ How to handle failures and edge cases across all milestone operations.
 
 - **Already archived milestone**: Report the archive location and do not re-archive. Display: "Milestone {N} is already archived at .planning/archive/milestone-{N}/. No action needed."
 
-- **Milestone summary already exists**: During completion, check if `.planning/milestones/MILESTONE-{N}.md` exists. If so, ask user via plain-text numbered choices: "Milestone summary already exists at .planning/milestones/MILESTONE-{N}.md. Overwrite with fresh metrics, or skip summary generation?"
+- **Milestone summary already exists**: During completion, check if `.planning/milestones/MILESTONE-{N}.md` exists. If so, ask user via AskUserQuestion: "Milestone summary already exists at .planning/milestones/MILESTONE-{N}.md. Overwrite with fresh metrics, or skip summary generation?"
 
 - **Archive directory already exists**: If `.planning/archive/milestone-{N}/` already exists (partial previous archive attempt), ask user: "Archive directory already exists. Continue moving remaining phase directories, or abort archiving?"
 

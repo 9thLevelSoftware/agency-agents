@@ -2,7 +2,7 @@
 name: legion:quick
 description: Run a single ad-hoc task with intelligent agent selection
 argument-hint: <task-description>
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, Agent]
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, Agent, AskUserQuestion]
 ---
 
 <objective>
@@ -16,7 +16,6 @@ Output: Task results with agent summary and optional commit.
 skills/workflow-common/SKILL.md
 skills/agent-registry/SKILL.md
 skills/agent-registry/CATALOG.md
-skills/codebase-mapper/SKILL.md
 </execution_context>
 
 <context>
@@ -25,11 +24,6 @@ skills/codebase-mapper/SKILL.md
 </context>
 
 <process>
-0. INTERACTION SAFETY RULE (APPLIES TO ALL USER PROMPTS IN THIS COMMAND)
-   - Never use AskUserQuestion — it has a platform bug that auto-submits phantom answers.
-   - For every decision point, present plain-text numbered choices and wait for the user's reply.
-   - Do NOT default to "skip" or "continue" on missing or unclear input — re-ask.
-
 1. PARSE TASK DESCRIPTION
    - Read $ARGUMENTS for the task description
    - If $ARGUMENTS is empty or missing:
@@ -50,17 +44,6 @@ skills/codebase-mapper/SKILL.md
    - Attempt to read .planning/STATE.md
    - If found: note current phase for awareness (but quick tasks don't modify phase state)
 
-2.5. CODEBASE ANALYSIS ROUTING (optional)
-   - Check if the task description matches codebase analysis keywords:
-     "analyze codebase", "refresh codebase", "map codebase", "re-analyze",
-     "codebase map", "update CODEBASE.md"
-   - If matched:
-     Route to codebase-mapper Section 7 (Standalone Re-Analysis) directly.
-     This is an orchestrator-level operation — no agent spawn needed.
-     Execute the re-analysis protocol and display results.
-     Skip steps 3-7 (no agent selection, spawning, or commit needed).
-   - If not matched: continue to step 3 as normal
-
 3. SELECT AGENT
    Follow agent-registry Section 3 (Recommendation Algorithm) at single-task scope:
 
@@ -79,13 +62,15 @@ skills/codebase-mapper/SKILL.md
       - For quick tasks: select top 1-2 candidates (not full team assembly)
       - Cap at 1 agent for execution (quick = single agent)
 
-   d. Present recommendation to user as plain-text numbered choice:
-      "Which agent should handle this task?
-      1. {top_agent_id} — {specialty} (Recommended) — {brief rationale}
-      2. {second_agent_id} — {specialty} — {brief rationale}
-      3. No agent — run autonomously (faster, generic)
-      Reply with 1, 2, or 3."
-      Wait for the user's response before proceeding.
+   d. Present recommendation to user via AskUserQuestion:
+      "Which agent should handle this task?"
+      Options:
+      - "{top_agent_id} — {specialty}" (Recommended)
+        Description: "{brief rationale based on task match}"
+      - "{second_agent_id} — {specialty}"
+        Description: "{brief rationale for alternative}"
+      - "No agent — run autonomously"
+        Description: "Execute without personality injection (faster, generic)"
 
    e. If user selects "Other": accept a custom agent ID from user input
       - Validate the ID exists in agent-registry Section 1
@@ -169,12 +154,13 @@ skills/codebase-mapper/SKILL.md
 7. OFFER COMMIT (if files changed)
    - Check if the agent created or modified any files:
      Run `git status --short` to detect changes
-   - If changes exist, present plain-text numbered choice:
-     "Commit the changes from this quick task?
-     1. Yes — commit with conventional message
-     2. No — leave uncommitted for further review
-     Reply with 1 or 2."
-     Wait for the user's response before proceeding.
+   - If changes exist, use AskUserQuestion:
+     "Commit the changes from this quick task?"
+     Options:
+     - "Yes — commit with conventional message" (Recommended)
+       Description: "Creates a feat/fix/chore commit for the work done"
+     - "No — leave uncommitted"
+       Description: "Keep changes in working directory for further review"
    - If user chooses to commit:
      - Determine commit type from task description:
        - Task mentions "fix", "bug", "repair" -> fix(legion)

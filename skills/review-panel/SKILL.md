@@ -82,7 +82,7 @@ Step 5: Assign rubrics
   use the division default rubric.
 
 Step 6: Present panel to user for confirmation
-  Display the composed panel via plain-text numbered choices:
+  Display the composed panel via AskUserQuestion:
 
   ## Phase {N}: {phase_name} — Review Panel
 

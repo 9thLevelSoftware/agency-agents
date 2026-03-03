@@ -2,7 +2,7 @@
 name: legion:review
 description: Run quality review cycle with testing/QA agents
 argument-hint: [--phase N]
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, Agent, TeamCreate, TeamDelete, TaskCreate, TaskUpdate, TaskList, SendMessage]
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, Agent, TeamCreate, TeamDelete, TaskCreate, TaskUpdate, TaskList, SendMessage, AskUserQuestion]
 ---
 
 <objective>
@@ -19,7 +19,6 @@ skills/execution-tracker/SKILL.md
 skills/memory-manager/SKILL.md
 skills/github-sync/SKILL.md
 skills/design-workflows/SKILL.md
-skills/codebase-mapper/SKILL.md
 </execution_context>
 
 <context>
@@ -29,11 +28,6 @@ skills/codebase-mapper/SKILL.md
 </context>
 
 <process>
-0. INTERACTION SAFETY RULE (APPLIES TO ALL USER PROMPTS IN THIS COMMAND)
-   - Never use AskUserQuestion — it has a platform bug that auto-submits phantom answers.
-   - For every decision point, present plain-text numbered choices and wait for the user's reply.
-   - Do NOT default to "skip" or "continue" on missing or unclear input — re-ask.
-
 1. DETERMINE TARGET PHASE
    - Check $ARGUMENTS for --phase N flag (e.g., `/legion:review --phase 4`)
    - If no flag: read STATE.md to determine current phase
@@ -85,22 +79,16 @@ skills/codebase-mapper/SKILL.md
        6. If git diff fails or memory not available: skip silently
        This is informational — manual edit detection never blocks review.
 
-   2.7 BROWNFIELD CONVENTIONS (optional — follows codebase-mapper Section 6.4):
-       If `.planning/CODEBASE.md` exists, review-loop Section 3, Step 2.5 will automatically
-       load brownfield conventions (Detected Stack, Conventions Detected) and inject them into
-       each review agent's prompt as convention-checking context. Review agents will flag
-       non-conformance with established conventions as WARNING-level findings.
-       If CODEBASE.md is absent: skip silently, no convention checking injected.
-
 3. SELECT REVIEW AGENTS
 
    **3.0 Choose Review Mode**
-   Present plain-text numbered choice:
-   "How should reviewers be selected for this phase?
-   1. Dynamic review panel (Recommended) — 2-4 agents selected by scoring with domain-weighted rubrics
-   2. Classic reviewer selection — static mapping based on phase type (reality-checker + domain secondary)
-   Reply with 1 or 2."
-   Wait for the user's response before proceeding.
+   Use AskUserQuestion to offer the review approach:
+   "How should reviewers be selected for this phase?"
+   Options:
+   - "Dynamic review panel (Recommended)" — 2-4 agents selected by agent-registry scoring with domain-weighted rubrics
+     Description: "Panel composer analyzes what was built and assembles the best reviewers with non-overlapping evaluation criteria"
+   - "Classic reviewer selection" — static mapping based on phase type
+     Description: "Uses the predefined phase-type-to-agent table (testing-reality-checker + domain secondary)"
 
    If user selects "Dynamic review panel": go to Step 3-PANEL below
    If user selects "Classic reviewer selection": continue with existing Step 3.a-3.e unchanged
@@ -133,8 +121,8 @@ skills/codebase-mapper/SKILL.md
       - If missing: fall back to testing-reality-checker for that slot
       - Log any fallback: "Warning: {agent-id}.md not found. Using testing-reality-checker."
 
-   d. Present selected reviewers to user as plain-text numbered choice:
-      Display the reviewer confirmation table first:
+   d. Present selected reviewers to user via AskUserQuestion:
+      Show the reviewer confirmation display from review-loop Section 2:
       "## Phase {N}: {phase_name} — Review Setup
        Phase Type(s): {detected types}
        Artifacts to Review: {count} files
@@ -142,15 +130,12 @@ skills/codebase-mapper/SKILL.md
        | Slot | Agent ID                    | Role                        | Rationale      |
        |------|-----------------------------|-----------------------------|----------------|
        | 1    | {primary-agent-id}          | {role description}          | {why selected} |
-       | 2    | {secondary-agent-id}        | {role description}          | {why selected} |
-
-       Which reviewer configuration?
-       1. {primary_agent_name} + {secondary_agent_name} (Recommended)
-       2. {primary_agent_name} only — single reviewer, faster but less thorough
-       3. {alternative_agent_name} + {primary_agent_name} — different reviewer pair
-       4. Other — enter custom agent IDs
-       Reply with 1, 2, 3, or 4."
-      Wait for the user's response before proceeding.
+       | 2    | {secondary-agent-id}        | {role description}          | {why selected} |"
+      Options:
+      - "{primary_agent_name} + {secondary_agent_name}" (Recommended)
+      - "{primary_agent_name} only" — single reviewer, faster but less thorough
+      - "{alternative_agent_name} + {primary_agent_name}" — different reviewer pair
+      - "Other" — enter custom agent IDs
 
    e. If user selects "Other": accept custom agent IDs from user input and validate each one
       exists in agent-registry
@@ -449,13 +434,11 @@ skills/codebase-mapper/SKILL.md
       |---|---------------|-----------------------|----------------------|
       | 1 | path/file.md  | {brief issue}         | {3 attempts summary} |
 
-   d. Present plain-text numbered choice:
-      "How would you like to proceed?
-      1. Fix manually and re-run /legion:review — exit; address the issues yourself
-      2. Accept as-is and move to /legion:plan {N+1} — mark phase complete despite issues
-      3. Investigate further — exit to diagnose root cause
-      Reply with 1, 2, or 3."
-      Wait for the user's response before proceeding.
+   d. Use AskUserQuestion: "How would you like to proceed?"
+      Options:
+      - "Fix manually and re-run /legion:review" — exit; let user address the issues
+      - "Accept as-is and move to /legion:plan {N+1}" — mark phase complete despite issues
+      - "Investigate further" — exit for user to diagnose root cause
 
    e. If user selects "Accept as-is":
       - Mark phase complete using the same STATE.md and ROADMAP.md updates as Path A

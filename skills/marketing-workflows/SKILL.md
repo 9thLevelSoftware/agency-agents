@@ -82,7 +82,7 @@ Structured campaign creation with guided questioning, document generation, agent
 
 ### 2.1: Campaign Brief Questioning
 
-When a marketing phase is detected during `/legion:plan`, gather campaign parameters using plain-text numbered choices. This replaces the generic decomposition questioning for marketing phases.
+When a marketing phase is detected during `/legion:plan`, gather campaign parameters using AskUserQuestion. This replaces the generic decomposition questioning for marketing phases.
 
 Key questions (adapt based on responses -- do not ask all if answers imply others):
 
@@ -448,7 +448,7 @@ In phase-decomposer, after reading ROADMAP phase details:
 
 2. If marketing phase detected:
    a. Read marketing-workflows skill for domain-specific patterns
-   b. Run Campaign Brief Questioning (Section 2.1) via plain-text numbered choices
+   b. Run Campaign Brief Questioning (Section 2.1) via AskUserQuestion
    c. Generate campaign document (Section 2.2) at .planning/campaigns/{slug}.md
    d. Use marketing-specific wave pattern for plan decomposition:
 
