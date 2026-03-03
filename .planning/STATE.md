@@ -47,7 +47,7 @@ progress:
 
 Milestone: v4.0 — Inspiration Audit Adoption
 Status: Active — Phase 35 complete (all 3 plans executed)
-Last activity: 2026-03-03 — Phase 35 Plan 03 complete (Agent Team Conventions + Claude Code Memory Alignment documented in workflow-common and memory-manager)
+Last activity: 2026-03-02 — Phase 35 Plan 01 complete (7 consolidation audit findings resolved: 3 agent rewrites, 11 division normalizations, analytics differentiation, orchestrator boundary, review skill cross-references)
 
 Progress: [==========] 100% (7/7 phases complete — Phase 35 Consolidation Audit all plans done)
 
@@ -88,6 +88,15 @@ Progress: [==========] 100% (7/7 phases complete — Phase 35 Consolidation Audi
 
 Phase 35 Plans 01, 02, and 03 complete — all CON requirements (CON-01, CON-02, CON-03) covered.
 v4.0 milestone is complete — all 7 phases executed. Run `/legion:review` to verify Phase 35: Consolidation Audit, then `/legion:milestone` to close and archive v4.0.
+
+### Key Decisions Added (35-01)
+
+- marketing-social-media-strategist is the strategy layer (WHERE to show up), platform specialists are execution (HOW to show up there) — preserves all 4 platform specialists without modification
+- project-manager-senior scope is TASK-level within a plan; differentiation from project-shepherd (PHASE-level) and studio-operations made explicit in personality body
+- testing-workflow-optimizer scope locked to testing/QA metrics only — any non-testing metric is explicitly out of scope to prevent recurrence of the misclassification
+- Division field uses Title Case to match CLAUDE.md canonical list; agent-creator validation updated in same commit to prevent creating new agents with old lowercase-hyphenated values
+- Boundary documentation for agents-orchestrator is a blockquote at the top of file body — visible at first glance during full personality injection
+- review-loop/review-panel cross-reference added only in frontmatter summary; bodies already cross-reference each other in References sections
 
 ### Key Decisions Added (35-03)
 
