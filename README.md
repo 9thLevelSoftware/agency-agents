@@ -1,6 +1,6 @@
 # Legion
 
-Orchestrate 51 AI specialist personalities as a coordinated legion.
+Orchestrate 51 AI specialist personalities across 9 AI CLI runtimes.
 
 > *"My name is Legion, for we are many."*
 
@@ -10,37 +10,41 @@ Turn 51 isolated agent personalities into a coordinated legion. Type `/legion:st
 
 ## Installation
 
-### From GitHub (recommended)
+### Quick install (recommended)
 
 ```bash
-# Step 1: Add the marketplace
-claude plugin marketplace add 9thLevelSoftware/legion
-
-# Step 2: Install the plugin
-claude plugin install legion@9thLevelSoftware-legion
+npx @9thlevelsoftware/legion --claude
 ```
 
-Or from inside the Claude Code TUI:
-```
-/plugin marketplace add 9thLevelSoftware/legion
-/plugin install legion@9thLevelSoftware-legion
-```
+Replace `--claude` with your runtime of choice:
+
+| Flag | Runtime |
+|------|---------|
+| `--claude` | Claude Code |
+| `--codex` | OpenAI Codex CLI |
+| `--cursor` | Cursor |
+| `--copilot` | GitHub Copilot CLI |
+| `--gemini` | Google Gemini CLI |
+| `--amazon-q` | Amazon Q Developer |
+| `--windsurf` | Windsurf |
+| `--opencode` | OpenCode |
+| `--aider` | Aider |
 
 ### Local development
 
 ```bash
 git clone https://github.com/9thLevelSoftware/legion.git
-claude --plugin-dir ./legion
+node bin/install.js --claude
 ```
 
 ### Prerequisites
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI installed
-- No additional dependencies — pure Claude Code primitives
+- Node.js 18+
+- One of the 9 supported AI CLI runtimes listed above
 
 ## Getting Started
 
-1. Install the plugin (see above)
+1. Install Legion (see above)
 2. In any project directory, run `/legion:start`
 3. Answer the guided questions — the system explores your vision before jumping to implementation
 4. Review the generated PROJECT.md and ROADMAP.md
@@ -63,6 +67,7 @@ claude --plugin-dir ./legion
 | `/legion:portfolio` | Multi-project dashboard with dependency tracking | When managing multiple projects |
 | `/legion:milestone` | Milestone completion, archiving, and metrics | At project milestones |
 | `/legion:agent` | Create a new agent personality through guided workflow | When you need a specialist that doesn't exist |
+| `/legion:update` | Check for updates and install latest version from npm | After installation — keeps Legion current |
 
 ## How It Works
 
@@ -457,16 +462,16 @@ The first six are complete orchestration systems that shaped Legion's architectu
 
 | Metric | GSD | Conductor | Shipyard | Best Practice | Daem0n | **Legion** |
 |--------|-----|-----------|----------|---------------|--------|------------|
-| Commands | 33+ | 15+ | 29 | 5 | N/A | **10** |
+| Commands | 33+ | 15+ | 29 | 5 | N/A | **11** |
 | Workflow files | 33+ | 20+ | 15+ | 8 | 3 | **17 skills** |
-| Setup required | CLI install + config | Directory init | Hook setup | Copy files | MCP server | **`plugin install`** |
+| Setup required | CLI install + config | Directory init | Hook setup | Copy files | MCP server | **`npx`** |
 | Custom tooling | Node.js CLI | None | Shell hooks | None | MCP server | **None** |
 | Agent personalities | None | None | None | Templates | None | **51 specialists** |
 | Cross-session memory | None | None | None | None | Hook-driven | **Explicit, opt-in** |
 | Domain workflows | Engineering only | Engineering only | Engineering only | Engineering only | N/A | **Eng + Marketing + Design** |
 | State format | Markdown | JSON + Markdown | Markdown + JSON | Markdown | SQLite | **Markdown only** |
 
-Ten commands. Seventeen skills. Zero custom tooling. Fifty-one personalities. Install the plugin and go.
+Eleven commands. Seventeen skills. Zero custom tooling. Fifty-one personalities. Nine CLIs supported. Install with npx and go.
 
 ## The 51 Agents
 
@@ -489,13 +494,12 @@ Browse the full roster in the [`agents/`](agents/) directory.
 ## Architecture
 
 ```
-legion/                     <- Plugin root
-├── .claude-plugin/
-│   ├── plugin.json         <- Plugin manifest (name, version, author, keywords)
-│   └── marketplace.json    <- Marketplace entry for `claude plugin marketplace add`
-├── settings.json           <- Plugin settings (empty — multi-agent, not single-agent)
+legion/                     <- Project root
+├── package.json           <- npm package manifest (name, version, engines)
+├── bin/
+│   └── install.js         <- Cross-runtime installer (npx entry point)
 ├── CLAUDE.md               <- Project instructions (injected into Claude Code context)
-├── commands/               <- 10 /legion: command entry points
+├── commands/               <- 11 /legion: command entry points
 │   ├── start.md
 │   ├── plan.md
 │   ├── build.md
@@ -505,7 +509,8 @@ legion/                     <- Plugin root
 │   ├── advise.md
 │   ├── portfolio.md
 │   ├── milestone.md
-│   └── agent.md
+│   ├── agent.md
+│   └── update.md
 ├── skills/                 <- 17 reusable workflow skills
 │   ├── workflow-common/SKILL.md     <- Shared constants and conventions
 │   ├── agent-registry/
@@ -525,7 +530,8 @@ legion/                     <- Plugin root
 │   ├── marketing-content-creator.md
 │   ├── testing-reality-checker.md
 │   └── ... (47 more)
-└── .planning/              <- Project state (generated per-project, not part of plugin)
+├── adapters/               <- Per-CLI adapter files (claude-code.md, codex-cli.md, etc.)
+└── .planning/              <- Project state (generated per-project, not part of package)
     ├── PROJECT.md
     ├── ROADMAP.md
     ├── STATE.md
@@ -536,7 +542,7 @@ legion/                     <- Plugin root
 ## Design Principles
 
 - **Personality-first**: Agent .md files are the source of truth for behavior
-- **Pure Claude Code**: No custom tooling — skills, commands, and agents only
+- **CLI-agnostic**: Works with 9 AI CLI runtimes — skills, commands, and agents adapt via per-runtime adapters
 - **Human-readable state**: All planning files are markdown, readable without tools
 - **Full personality injection**: Agents are spawned with their complete .md as instructions
 - **Standardized format**: All 51 agents use Format A — emoji section headings, "Your" pronouns, 80-350 line range
@@ -564,8 +570,9 @@ These activate automatically when their prerequisites are met:
 
 ## Requirements
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI
-- No additional dependencies
+- Node.js 18+ (install-time only — zero runtime dependencies)
+- One of the 9 supported AI CLI runtimes:
+  Claude Code, OpenAI Codex CLI, Cursor, GitHub Copilot CLI, Google Gemini CLI, Amazon Q Developer, Windsurf, OpenCode, or Aider
 
 ## Contributing
 
