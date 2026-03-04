@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legion | My Name Is Legion, For We Are Many</title>
-    <meta name="description" content="Orchestrate 51 AI specialist personalities as a coordinated legion. A Claude Code plugin — plan, build, review with personality-first agents across 9 divisions.">
+    <meta name="description" content="Orchestrate 51 AI specialist personalities across 9 AI CLI runtimes. Plan, build, review with personality-first agents across 9 divisions.">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -701,7 +701,7 @@
 
             <h1>LEG<span>I</span>ON</h1>
             <p class="tagline">"My Name Is Legion, For We Are Many"</p>
-            <p class="sub-tagline">51 AI Specialist Personalities. One Coordinated Force.</p>
+            <p class="sub-tagline">51 AI Specialist Personalities. 9 CLI Runtimes. One Coordinated Force.</p>
         </header>
 
         <div class="divider"><div class="divider-line"></div></div>
@@ -709,7 +709,7 @@
         <!-- ===== INTRO ===== -->
         <section class="reveal-section">
             <p class="intro-text">
-                <strong>Legion</strong> is a Claude Code plugin that binds <em>51 specialist personalities</em>
+                <strong>Legion</strong> is a multi-CLI orchestrator that binds <em>51 specialist personalities</em>
                 into a single coordinated force. Engineers, designers, marketers, testers, product leads,
                 project managers, and more &mdash; each with deep expertise, distinct voice, and hard-earned opinions.
                 Speak the word, and the many answer as one.
@@ -728,7 +728,11 @@
                     <div class="label">Divisions</div>
                 </div>
                 <div class="stat">
-                    <div class="num">10</div>
+                    <div class="num">9</div>
+                    <div class="label">CLIs</div>
+                </div>
+                <div class="stat">
+                    <div class="num">11</div>
                     <div class="label">Commands</div>
                 </div>
                 <div class="stat">
@@ -746,18 +750,19 @@
         <section class="grimoire-section reveal-section">
             <h2>Summon the Legion</h2>
             <p>
-                Install the plugin, open any project, and speak:
+                Install with npx, open any project, and speak:
                 <em>/legion:start</em><br>
                 The many will answer.
             </p>
             <div class="ritual-code" style="text-align: left; margin-bottom: 1.5rem;">
-<pre><span class="comment"># From the Claude Code TUI</span>
-<span class="command">/plugin marketplace add</span> <span class="string">9thLevelSoftware/legion</span>
-<span class="command">/plugin install</span> <span class="string">legion@9thLevelSoftware-legion</span>
+<pre><span class="comment"># Install for Claude Code</span>
+<span class="command">npx</span> <span class="string">@9thlevelsoftware/legion</span> <span class="flag">--claude</span>
 
-<span class="comment"># Or from the command line</span>
-<span class="command">claude plugin marketplace add</span> <span class="string">9thLevelSoftware/legion</span>
-<span class="command">claude plugin install</span> <span class="string">legion@9thLevelSoftware-legion</span>
+<span class="comment"># Or for other runtimes:</span>
+<span class="command">npx</span> <span class="string">@9thlevelsoftware/legion</span> <span class="flag">--codex</span>      <span class="comment"># OpenAI Codex CLI</span>
+<span class="command">npx</span> <span class="string">@9thlevelsoftware/legion</span> <span class="flag">--cursor</span>     <span class="comment"># Cursor</span>
+<span class="command">npx</span> <span class="string">@9thlevelsoftware/legion</span> <span class="flag">--gemini</span>     <span class="comment"># Google Gemini CLI</span>
+<span class="comment"># + copilot, amazon-q, windsurf, opencode, aider</span>
 
 <span class="comment"># Then, in any project directory:</span>
 <span class="command">/legion:start</span>            <span class="comment"># And the many awaken</span></pre>
@@ -834,7 +839,7 @@
         <section class="reveal-section">
             <h2>The Commands</h2>
             <p class="intro-text" style="margin-bottom: 1rem;">
-                Ten commands. No more, no less. Each a word of power.
+                Eleven commands. Each a word of power.
             </p>
             <table class="command-table">
                 <thead>
@@ -851,6 +856,7 @@
                     <tr><td>/legion:portfolio</td><td>Multi-project dashboard with dependency tracking</td></tr>
                     <tr><td>/legion:milestone</td><td>Milestone completion, archiving, and metrics</td></tr>
                     <tr><td>/legion:agent</td><td>Create a new agent personality through guided workflow</td></tr>
+                    <tr><td>/legion:update</td><td>Check for updates and install latest version from npm</td></tr>
                 </tbody>
             </table>
         </section>
@@ -943,8 +949,8 @@
                     <p>GitHub integration, memory, brownfield analysis, marketing workflows, design workflows, panels, critique &mdash; all opt-in. The core loop works without any of them.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>Zero Dependencies</h3>
-                    <p>No custom CLI. No MCP server. No Node packages. No shell hooks. Pure Claude Code primitives: skills, commands, agents. Install the plugin and go.</p>
+                    <h3>Zero Runtime Dependencies</h3>
+                    <p>No custom CLI. No MCP server. No shell hooks. Zero runtime dependencies — npm is install-time only. Skills, commands, agents. Install with npx and go.</p>
                 </div>
             </div>
         </section>
@@ -1052,7 +1058,7 @@
         <!-- ===== FOOTER ===== -->
         <footer>
             <p>
-                Legion &middot; A Claude Code Plugin by <a href="https://github.com/9thLevelSoftware">9th Level Software</a><br>
+                Legion &middot; A Multi-CLI Orchestrator by <a href="https://github.com/9thLevelSoftware">9th Level Software</a><br>
                 <a href="https://github.com/9thLevelSoftware/legion">GitHub Repository</a> &middot;
                 <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a>
             </p>
@@ -1060,7 +1066,7 @@
                 "My name is Legion, for we are many."
             </p>
             <p style="margin-top: 0.5rem; color: #444; font-size: 0.8rem;">
-                51 agents &middot; 9 divisions &middot; 10 commands &middot; 17 skills &middot; Zero dependencies
+                51 agents &middot; 9 divisions &middot; 9 CLIs &middot; 11 commands &middot; 17 skills &middot; Zero runtime dependencies
             </p>
         </footer>
     </div>
