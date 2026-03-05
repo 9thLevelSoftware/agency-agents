@@ -325,13 +325,57 @@ Step 1: Collect and parse
     - Reviewer agent ID
     - Criterion tag (from rubric)
 
-Step 2: Deduplicate across reviewers
-  Same deduplication rules as review-loop Section 4, Step 2:
-  - Same file + same line/section: keep highest severity
-  - Same file + different lines: keep both
-  - Severity disagreement on same issue: escalate to BLOCKER
+Step 2: Deduplicate findings by location and severity
 
-Step 2.5: Filter by confidence
+Location-based deduplication:
+1. Parse location from each finding:
+   - Format: "{file_path}:{line_number}" or "{file_path}:{start_line}-{end_line}"
+   - If no line number: use file_path only
+   
+2. Group findings by normalized location:
+   - Normalize: resolve relative paths, lowercase on case-insensitive FS
+   - Group key: "{normalized_path}:{line}"
+   
+3. For each location group with multiple findings:
+   a. Keep the finding with HIGHEST severity:
+      Priority: BLOCKER > WARNING > SUGGESTION
+   b. If same severity: keep HIGHEST confidence
+   c. If same severity and confidence: merge descriptions
+   d. Tag merged finding: "Consolidated from {N} reviewers"
+
+Severity escalation rules:
+- Same issue, different severity from reviewers → escalate to highest
+- Example: Reviewer A says WARNING, Reviewer B says BLOCKER → result: BLOCKER
+- Reason: Err on side of caution — if any reviewer considers it blocking, it is
+
+Line range overlap detection:
+- Finding 1: src/auth.ts:45-52
+- Finding 2: src/auth.ts:50-60
+- Overlap at lines 50-52 → treat as same location, merge
+
+Preservation rules:
+- ALWAYS preserve at least one finding per location
+- NEVER discard all findings for a location
+- When merging: concatenate reviewer IDs, keep all suggested fixes as options
+
+Step 2.5: Generate deduplication report
+  After deduplication, report statistics:
+  
+  ### Deduplication Summary
+  | Metric | Count |
+  |--------|-------|
+  | Raw findings (before dedup) | {N} |
+  | Unique locations | {M} |
+  | Findings merged | {N - M} |
+  | Severity escalations | {K} |
+  
+  ### Merged Findings
+  | Location | Original Severity | Final Severity | Reviewers |
+  |----------|-------------------|----------------|-----------|
+  | src/x.ts:45 | WARNING → BLOCKER | BLOCKER | A, B |
+  | src/y.ts:30 | SUGGESTION | SUGGESTION | C, D |
+
+Step 2.6: Filter by confidence
   - HIGH-confidence findings (80%+): include in synthesis
   - MEDIUM-confidence findings (50-79%): collect into "Deferred" section
   - LOW-confidence findings: discard
