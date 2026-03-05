@@ -4,12 +4,12 @@ milestone: v5.0
 milestone_name: — Production-Grade Architecture
 status: building
 last_updated: "2026-03-05"
-last_session: "2026-03-05 — Completed 37-04 plan (Two-Wave Execution Pattern)"
-  progress:
+last_session: "2026-03-05 — Completed 38-00 plan (Intent-Driven Execution Test Scaffolding)"
+progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 9
+  completed_plans: 9
   total_requirements: 32
   completed_requirements: 18
 ---
@@ -26,7 +26,7 @@ Milestone: v5.0 — Production-Grade Architecture
 Status: **Ready to Build** — Requirements defined, roadmap created
 Last activity: 2026-03-05 — Milestone v5.0 initialized (32 requirements, 5 phases)
 
-Progress: [████▌     ] 45% (5 phases planned, 8 plans executed, 18 requirements delivered)
+Progress: [█████     ] 50% (5 phases planned, 9 plans executed, 18 requirements delivered)
 
 ## Shipped Milestones
 
@@ -62,9 +62,45 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
 - Requirements satisfied: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, WAVE-01, WAVE-02, WAVE-03, WAVE-04, WAVE-05
 - Two-wave pattern: Wave A (Build+Analysis) → Architecture Gate → Wave B (Execution+Remediation) → Production Readiness Gate
 
-**Next:** Phase 38 — Intent-Driven Execution
+**Phase 38 — Intent-Driven Execution:**
+- Plan 00 complete (Intent-Driven Execution Test Scaffolding)
+- Created 5 test files with 123 passing tests
+- Test coverage: flag parsing, filtering, validation, teams, review
+- Requirements satisfied: INTENT-01, INTENT-02, INTENT-03, INTENT-04, INTENT-05, INTENT-06
+
+**Next:** Phase 38 Plan 01 — Build intent-teams.yaml registry and intent-router skill
 
 ## Recent Activity
+
+### Completed: Plan 38-00 — Intent-Driven Execution Test Scaffolding
+- Created `tests/intent-flag-parsing.test.js` — 28 tests for flag detection
+  - Tests --just-harden, --just-document, --just-security, --skip-frontend, --skip-backend
+  - Flag combination parsing with equals syntax and space separator
+  - Edge cases: unknown flags, case sensitivity, missing values
+- Created `tests/intent-filtering.test.js` — 27 tests for plan filtering
+  - Agent-based filtering: exclude by agent ID, include specific types
+  - File-based filtering: glob patterns, double-star, multiple patterns with OR
+  - Task-based filtering: include/exclude task types
+  - Content-based filtering: detect intent from plan objectives
+- Created `tests/intent-validation.test.js` — 26 tests for validation rules
+  - Mutual exclusion: reject conflicting --just-* flag combinations
+  - Command context: --just-harden/--just-document only for build, --just-security only for review
+  - Error messages with helpful suggestions
+- Created `tests/intent-teams.test.js` — 15 tests for team assembly
+  - Template loading from YAML with custom parser
+  - Agent resolution: primary and secondary agent lookup
+  - Team building for harden, document, security-only intents
+  - Domain mapping to authority matrix
+- Created `tests/intent-review.test.js` — 12 tests for review integration
+  - Security-only filtering for review findings
+  - Ad-hoc review team spawning
+  - Security audit report synthesis
+  - Integration with review panel deduplication
+- Created test fixture: `tests/fixtures/intent-teams.yaml`
+  - 3 sample intents: harden, document, security-only
+  - Agents, domains, filters, and severity thresholds
+- Status: ✓ Complete, 3 commits, all 123 tests passing
+- Requirements satisfied: INTENT-01, INTENT-02, INTENT-03, INTENT-04, INTENT-05, INTENT-06
 
 ### Completed: Plan 37-00 — Test Scaffolding
 - Created `tests/authority-matrix.test.js` — 28 tests for domain ownership validation
