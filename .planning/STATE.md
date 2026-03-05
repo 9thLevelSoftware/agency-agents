@@ -4,7 +4,7 @@ milestone: v5.0
 milestone_name: — Production-Grade Architecture
 status: building
 last_updated: "2026-03-05"
-last_session: "2026-03-05 — Completed 38-02 plan (Intent-Driven Build Integration)"
+last_session: "2026-03-05 — Completed 38-03 plan (Review Command Integration)"
 progress:
   total_phases: 5
   completed_phases: 0
@@ -84,9 +84,31 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
   - Step 3.5: Apply intent filters before wave execution
 - Requirements satisfied: INTENT-01, INTENT-02, INTENT-03
 
-**Next:** Phase 38 Plan 03 — Integrate --just-security into /legion:review command
+- Plan 03 complete (Review Command Integration)
+- Updated commands/review.md with --just-security support
+  - Step 0.5: Intent detection and validation for review command
+  - Step 1: Security-only mode with template agent selection
+  - Step 6-INTENT: Security-specific output with OWASP/STRIDE
+- Updated skills/review-panel/SKILL.md with intent filtering
+  - Section 1.2: Intent-Based Panel Filtering
+  - Step 2.5: Intent Filtering with domain matching
+- All 15 intent-review tests passing
+- Requirements satisfied: INTENT-04
+
+**Phase 38 — Intent-Driven Execution: COMPLETE**
+- All 4 plans complete (38-00, 38-01, 38-02, 38-03)
+- Requirements satisfied: INTENT-01, INTENT-02, INTENT-03, INTENT-04, INTENT-05, INTENT-06
+
+**Next:** Phase 39 — Environment Mapping (ENV-01 through ENV-05)
 
 ## Recent Activity
+
+### Completed: Plan 38-03 — Review Command Integration
+- Added intent detection to commands/review.md (Step 0.5)
+- Added security-only agent selection (Step 1)
+- Added Step 6-INTENT for security report generation
+- Added intent filtering to review-panel skill
+- 15/15 tests passing
 
 ### Completed: Plan 38-02 — Intent-Driven Build Integration
 - Updated `commands/build.md` with intent-driven execution support
