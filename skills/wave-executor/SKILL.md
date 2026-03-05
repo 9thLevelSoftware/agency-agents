@@ -1060,3 +1060,178 @@ Detect task types from plan content:
 - Cache results for performance
 
 This enables INTENT-02 (--just-document) and INTENT-03 (--skip-frontend) by filtering plans before execution.
+
+---
+
+## Section 10: File Placement Utilities (ENV-04)
+
+Helper functions for validating file placement against directory mappings.
+
+> **Note**: These utilities mirror the path enforcement logic in spec-pipeline
+> Section 8, but operate at execution time rather than specification time.
+
+### 10.1: File Category Inference
+
+Determine the expected directory category from a file path:
+
+```
+inferFileCategory(filePath):
+  # Extract file name and extension
+  fileName = basename(filePath)
+  fileExt = extname(filePath)
+  fileDir = dirname(filePath)
+  
+  # Test patterns (highest priority)
+  if matches(fileName, "*.test.*") or matches(fileName, "*.spec.*"):
+    return "tests"
+  
+  # Directory-based categories
+  if matches(fileDir, "**/routes/**") or matches(fileDir, "**/api/**"):
+    return "routes"
+  if matches(fileDir, "**/components/**") or matches(fileDir, "**/ui/**"):
+    return "components"
+  if matches(fileDir, "**/services/**"):
+    return "services"
+  if matches(fileDir, "**/utils/**") or matches(fileDir, "**/helpers/**") or matches(fileDir, "**/lib/**"):
+    return "utils"
+  if matches(fileDir, "**/types/**") or matches(fileDir, "**/interfaces/**"):
+    return "types"
+  if matches(fileDir, "**/config/**"):
+    return "config"
+  if matches(fileDir, "**/middleware/**") or matches(fileDir, "**/plugins/**"):
+    return "middleware"
+  if matches(fileDir, "**/public/**") or matches(fileDir, "**/assets/**") or matches(fileDir, "**/static/**"):
+    return "assets"
+  if matches(fileDir, "**/styles/**") or matches(fileDir, "**/css/**"):
+    return "styles"
+  if matches(fileDir, "**/hooks/**") or matches(fileDir, "**/composables/**"):
+    return "hooks"
+  if matches(fileDir, "**/stores/**") or matches(fileDir, "**/state/**"):
+    return "stores"
+  
+  # Legion-specific categories
+  if matches(fileDir, "**/commands/**"):
+    return "commands"
+  if matches(fileDir, "**/skills/**") and matches(fileName, "SKILL.md"):
+    return "skills"
+  if matches(fileDir, "**/agents/**"):
+    return "agents"
+  if matches(fileDir, "**/adapters/**"):
+    return "adapters"
+  
+  # Default
+  return "general"
+```
+
+### 10.2: Directory Validation
+
+Check if a file is in an allowed directory for its category:
+
+```
+validateDirectory(filePath, category, mappings):
+  # Get allowed paths for category
+  categoryConfig = mappings.mappings[category]
+  
+  if not categoryConfig:
+    # No mapping for this category - allow anywhere
+    return { 
+      valid: true, 
+      note: "No directory mapping for category '{category}'" 
+    }
+  
+  allowedPaths = categoryConfig.paths
+  fileDir = dirname(filePath)
+  
+  # Check if fileDir matches or is a child of any allowed path
+  for allowedPath in allowedPaths:
+    if fileDir == allowedPath or fileDir.startsWith(allowedPath + "/"):
+      return {
+        valid: true,
+        matchedPath: allowedPath,
+        isNested: fileDir != allowedPath
+      }
+  
+  # No match - violation
+  primaryPath = allowedPaths[0]
+  suggestedPath = join(primaryPath, basename(filePath))
+  
+  return {
+    valid: false,
+    currentDir: fileDir,
+    allowedPaths: allowedPaths,
+    suggestion: suggestedPath,
+    category: category
+  }
+```
+
+### 10.3: Validation Result Handler
+
+Process validation results based on enforcement settings:
+
+```
+handleValidationResults(results, strictness, planId):
+  violations = results.filter(r => !r.valid)
+  warnings = results.filter(r => r.valid && r.warning)
+  
+  if violations.length == 0 and warnings.length == 0:
+    return {
+      action: "proceed",
+      message: "All {results.length} files validated successfully ✓"
+    }
+  
+  if strictness == "strict" and violations.length > 0:
+    errorMessage = buildErrorMessage(violations, planId)
+    return {
+      action: "block",
+      message: errorMessage,
+      halt: true
+    }
+  
+  if (strictness == "warn" and violations.length > 0) or warnings.length > 0:
+    warningMessage = buildWarningMessage(violations, warnings, planId)
+    return {
+      action: "warn",
+      message: warningMessage,
+      halt: false
+    }
+  
+  # strictness == "off"
+  return {
+    action: "proceed",
+    message: "Validation disabled - {violations.length} violations noted but not enforced"
+  }
+```
+
+### 10.4: Validation Report Format
+
+Format validation results for wave reports:
+
+```markdown
+### File Placement Validation
+
+**Status:** {All valid | {N} warnings | {N} violations}
+
+| File | Category | Directory | Status |
+|------|----------|-----------|--------|
+| {file} | {category} | {dir} | ✓ Valid |
+| {file} | {category} | {dir} | ⚠️ Warning: Should be in {suggested} |
+| {file} | {category} | {dir} | ❌ Violation: Must be in {allowed} |
+
+{If violations present:}
+**Required Actions:**
+- Move files to correct directories, or
+- Update directory mappings, or  
+- Add path_override to plan frontmatter
+```
+
+### 10.5: Cross-Reference with Spec Pipeline
+
+Integration points with spec-pipeline path enforcement:
+
+| Stage | Tool | Validation | Action on Violation |
+|-------|------|-----------|---------------------|
+| Planning | spec-pipeline | Pre-execution | Warn/Block spec finalization |
+| Execution | wave-executor | Pre-spawn | Warn/Block agent spawn |
+
+**Consistency Rule**: Both tools use the same directory-mappings.yaml and follow
+the same validation logic from spec-pipeline Section 8.
