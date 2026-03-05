@@ -63,12 +63,12 @@ Enhanced brownfield detection with workspace path enforcement.
 
 Verify coverage for critical DevOps and security roles.
 
-- [ ] **ROSTER-01:** Agent registry identifies gaps between existing 52 agents and production-grade roles
-- [ ] **ROSTER-02:** SRE-equivalent coverage verified (SLOs, chaos engineering, runbooks)
-- [ ] **ROSTER-03:** Security-auditor coverage verified (OWASP, STRIDE, PII compliance)
-- [ ] **ROSTER-04:** Data-scientist coverage verified for AI/ML projects
-- [ ] **ROSTER-05:** If gaps found, `/legion:agent` workflow generates missing specialists
-- [ ] **ROSTER-06:** Roster analysis respects 52-agent limit — no inflation beyond
+- [x] **ROSTER-01:** Agent registry identifies gaps between existing 52 agents and production-grade roles
+- [x] **ROSTER-02:** SRE-equivalent coverage verified (SLOs, chaos engineering, runbooks)
+- [x] **ROSTER-03:** Security-auditor coverage verified (OWASP, STRIDE, PII compliance)
+- [x] **ROSTER-04:** Data-scientist coverage verified for AI/ML projects
+- [x] **ROSTER-05:** If gaps found, `/legion:agent` workflow generates missing specialists
+- [x] **ROSTER-06:** Roster analysis respects 52-agent limit — no inflation beyond
 
 ---
 
@@ -136,12 +136,12 @@ Verify coverage for critical DevOps and security roles.
 | ENV-03 | Phase 39 | Complete |
 | ENV-04 | Phase 39 | Complete |
 | ENV-05 | Phase 39 | Complete |
-| ROSTER-01 | Phase 40 | Pending |
-| ROSTER-02 | Phase 40 | Pending |
-| ROSTER-03 | Phase 40 | Pending |
-| ROSTER-04 | Phase 40 | Pending |
-| ROSTER-05 | Phase 40 | Pending |
-| ROSTER-06 | Phase 40 | Pending |
+| ROSTER-01 | Phase 40 | Complete |
+| ROSTER-02 | Phase 40 | Complete |
+| ROSTER-03 | Phase 40 | Complete |
+| ROSTER-04 | Phase 40 | Complete |
+| ROSTER-05 | Phase 40 | Complete |
+| ROSTER-06 | Phase 40 | Complete |
 
 **Coverage:**
 - v1 requirements: 32 total
@@ -151,4 +151,12 @@ Verify coverage for critical DevOps and security roles.
 ---
 
 *Requirements defined: 2026-03-05*  
+**Phase 40 Completion:** All 6 ROSTER requirements satisfied. 
+- Created: engineering-security-engineer, product-technical-writer
+- Gap analysis engine: GAP_ANALYSIS.md
+- Tests: 47 roster gap analysis tests
+- Status: Production-grade coverage verified ✓
+
+---
+
 *Last updated: 2026-03-05 after research synthesis*
