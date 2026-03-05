@@ -4,14 +4,14 @@ milestone: v5.0
 milestone_name: — Production-Grade Architecture
 status: building
 last_updated: "2026-03-05"
-last_session: "2026-03-05 — Completed 37-00 plan (Test scaffolding for authority boundaries)"
+last_session: "2026-03-05 — Completed 37-04 plan (Two-Wave Execution Pattern)"
   progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 7
-  completed_plans: 7
+  total_plans: 8
+  completed_plans: 8
   total_requirements: 32
-  completed_requirements: 14
+  completed_requirements: 18
 ---
 
 # Project State
@@ -26,7 +26,7 @@ Milestone: v5.0 — Production-Grade Architecture
 Status: **Ready to Build** — Requirements defined, roadmap created
 Last activity: 2026-03-05 — Milestone v5.0 initialized (32 requirements, 5 phases)
 
-Progress: [███▌      ] 35% (5 phases planned, 7 plans executed, 14 requirements delivered)
+Progress: [████▌     ] 45% (5 phases planned, 8 plans executed, 18 requirements delivered)
 
 ## Shipped Milestones
 
@@ -57,7 +57,12 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
 - All 3 plans complete (36-01, 36-02, 36-03)
 - Requirements satisfied: POLY-01, POLY-02, POLY-03, POLY-04, POLY-05, POLY-06
 
-**Next:** Phase 37 — select next phase from v5.0 roadmap
+**Phase 37 — Authority Boundaries: COMPLETE**
+- All 5 plans complete (37-00, 37-01, 37-02, 37-03, 37-04)
+- Requirements satisfied: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, WAVE-01, WAVE-02, WAVE-03, WAVE-04, WAVE-05
+- Two-wave pattern: Wave A (Build+Analysis) → Architecture Gate → Wave B (Execution+Remediation) → Production Readiness Gate
+
+**Next:** Phase 38 — Intent-Driven Execution
 
 ## Recent Activity
 
@@ -92,6 +97,27 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
   - Conflict resolution quick reference
 - Status: ✓ Complete, 3 commits, all verification criteria passed
 - Requirements satisfied: AUTH-01, AUTH-05
+
+### Completed: Plan 37-04 — Two-Wave Execution Pattern
+- Updated `commands/build.md` — Added two-wave execution mode
+  - Wave A: Build + Analysis with Architecture Gate
+  - Wave B: Execution + Remediation with Production Readiness Gate
+  - Auto-detection based on plan count and service groups
+  - Command flags: --two-wave, --single-wave, --skip-gates
+- Created `.planning/templates/two-wave-manifest.md` — Plan template
+  - wave_role: build|analysis|execution|remediation
+  - service_group for parallel builds
+  - authority_scope for domain ownership
+- Created `skills/wave-executor/WAVE-A.md` — Wave A execution protocol
+  - Parallel builds per service group
+  - Analysis agents with read-only access
+  - Architecture Gate with user decision
+- Created `skills/wave-executor/WAVE-B.md` — Wave B execution protocol
+  - Execution Stream (tests, validation)
+  - Remediation Stream (chaos, data analysis)
+  - Production Readiness Gate with PASS/NEEDS_WORK/FAIL verdicts
+- Status: ✓ Complete, 4 commits, all verification criteria passed
+- Requirements satisfied: WAVE-02, WAVE-03, WAVE-04, WAVE-05
 
 ### Completed: Plan 37-03 — Review Panel Deduplication and Authority Filtering
 - Updated `skills/review-panel/SKILL.md` — Enhanced deduplication and filtering
@@ -184,3 +210,7 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
 - BLOCKER severity overrides domain ownership per authority conflict resolution rules
 - Authority constraints injected proactively into agent prompts, not just reactive filtering
 - All 53 agents mapped with exclusive domains across 9 divisions
+- Two-wave pattern: Wave A (Build+Analysis) → Architecture Gate → Wave B (Execution+Remediation) → Production Readiness Gate
+- Parallel execution streams: Execution tests and Remediation chaos run simultaneously, not sequentially
+- Service group parallelization for Wave A builds
+- Three-verdict production readiness: PASS, NEEDS_WORK, or FAIL

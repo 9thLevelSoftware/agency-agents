@@ -127,10 +127,10 @@ Verify coverage for critical DevOps and security roles.
 | INTENT-05 | Phase 38 | Pending |
 | INTENT-06 | Phase 38 | Pending |
 | WAVE-01 | Phase 37 | Complete |
-| WAVE-02 | Phase 37 | Pending |
-| WAVE-03 | Phase 37 | Pending |
-| WAVE-04 | Phase 37 | Pending |
-| WAVE-05 | Phase 37 | Pending |
+| WAVE-02 | Phase 37 | Complete |
+| WAVE-03 | Phase 37 | Complete |
+| WAVE-04 | Phase 37 | Complete |
+| WAVE-05 | Phase 37 | Complete |
 | ENV-01 | Phase 39 | Pending |
 | ENV-02 | Phase 39 | Pending |
 | ENV-03 | Phase 39 | Pending |
