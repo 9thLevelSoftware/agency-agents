@@ -9,7 +9,7 @@ Check the installed Legion version against the latest npm release and update if 
 </objective>
 
 <execution_context>
-skills/workflow-common/SKILL.md
+skills/workflow-common-core/SKILL.md
 </execution_context>
 
 <process>
@@ -68,3 +68,5 @@ skills/workflow-common/SKILL.md
 - If npm registry is unreachable: inform user and suggest trying again later
 - If the installer fails: display the error and suggest running the command manually
 </error_handling>
+</output>
+

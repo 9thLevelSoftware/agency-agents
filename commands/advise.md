@@ -1,6 +1,6 @@
 ---
 name: legion:advise
-description: Get read-only expert consultation from Legion's 51 agent personalities
+description: Get read-only expert consultation from Legion's 52 agent personalities
 argument-hint: <topic> (e.g., architecture, UX, marketing, testing)
 allowed-tools: [Read, Grep, Glob, Agent, AskUserQuestion]
 ---
@@ -13,7 +13,7 @@ Output: Structured advice from a domain expert, with optional interactive follow
 </objective>
 
 <execution_context>
-skills/workflow-common/SKILL.md
+skills/workflow-common-core/SKILL.md
 skills/agent-registry/SKILL.md
 skills/agent-registry/CATALOG.md
 </execution_context>
@@ -177,3 +177,4 @@ skills/agent-registry/CATALOG.md
    They operate entirely outside the phase workflow — pure consultation.
 </process>
 </output>
+

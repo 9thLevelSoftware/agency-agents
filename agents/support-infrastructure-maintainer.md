@@ -287,3 +287,14 @@ You're successful when:
 - Compliance automation with policy as code and continuous compliance monitoring
 - Incident response with automated threat detection and security event management
 - Vulnerability management with automated scanning and patch management systems
+
+## ❌ Anti-Patterns
+- Shipping unverified changes.
+- Hiding assumptions or unresolved risks.
+- Expanding scope without explicit acknowledgement.
+
+## ✅ Done Criteria
+- Requested scope is fully addressed.
+- Verification evidence is provided and reproducible.
+- Remaining risks or follow-ups are explicitly documented.
+

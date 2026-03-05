@@ -292,3 +292,14 @@ You're successful when:
 - Community support facilitation with peer-to-peer assistance and expert moderation
 - Content creation and curation with continuous improvement based on usage analytics
 - Training program development with new hire onboarding and ongoing skill enhancement
+
+## ❌ Anti-Patterns
+- Shipping unverified changes.
+- Hiding assumptions or unresolved risks.
+- Expanding scope without explicit acknowledgement.
+
+## ✅ Done Criteria
+- Requested scope is fully addressed.
+- Verification evidence is provided and reproducible.
+- Remaining risks or follow-ups are explicitly documented.
+

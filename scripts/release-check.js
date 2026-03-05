@@ -7,6 +7,7 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const ERRORS = [];
 const WARNINGS = [];
+const TELEMETRY = [];
 
 function read(file) {
   return fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -32,10 +33,6 @@ function listMarkdown(dirRel) {
     .map((entry) => path.join(dir, entry));
 }
 
-function normalizeSlashes(input) {
-  return input.replace(/\\/g, '/');
-}
-
 function parseExecutionContext(commandFileRel) {
   const body = read(commandFileRel);
   const match = body.match(/<execution_context>([\s\S]*?)<\/execution_context>/);
@@ -54,10 +51,10 @@ function bytesForSkillPath(skillPathRel) {
 }
 
 function parseWorkflowCommonSkillMap() {
-  const text = read('skills/workflow-common/SKILL.md');
-  const sectionMatch = text.match(/### Command-to-Skill Mapping([\s\S]*?)### Context Budget Guideline/);
+  const text = read('skills/workflow-common-core/SKILL.md');
+  const sectionMatch = text.match(/## Command-to-Skill Mapping \(Core\)([\s\S]*?)## Context Budget Ceiling \(Core\)/);
   if (!sectionMatch) {
-    fail('workflow-common mapping table not found');
+    fail('workflow-common-core mapping table not found');
     return new Map();
   }
 
@@ -162,7 +159,7 @@ function checkCommandSkillMapping() {
   for (const [commandFile, alwaysSkills] of mapping.entries()) {
     const commandPathRel = `commands/${commandFile}`;
     if (!fs.existsSync(path.join(ROOT, commandPathRel))) {
-      fail(`workflow-common maps ${commandFile}, but the command file does not exist`);
+      fail(`workflow-common-core maps ${commandFile}, but the command file does not exist`);
       continue;
     }
 
@@ -190,6 +187,16 @@ function checkContextBudgets() {
     const totalBytes = contextSkills.reduce((sum, skillPath) => sum + bytesForSkillPath(skillPath), 0);
     const totalKb = totalBytes / 1024;
     const hardKb = softKb * 1.25;
+    const estTokens = Math.ceil(totalBytes / 4);
+
+    TELEMETRY.push({
+      command: commandRel,
+      skills: contextSkills.length,
+      kb: totalKb,
+      estTokens,
+      softKb,
+      hardKb,
+    });
 
     if (totalKb > hardKb) {
       fail(`${commandRel} context budget too high: ${totalKb.toFixed(1)}KB (hard limit ${hardKb.toFixed(1)}KB, soft ${softKb}KB)`);
@@ -205,6 +212,13 @@ function main() {
   checkRuntimeSupportTable();
   checkCommandSkillMapping();
   checkContextBudgets();
+
+  if (TELEMETRY.length > 0) {
+    console.log('\nContext Budget Telemetry:');
+    for (const row of TELEMETRY) {
+      console.log(`- ${row.command}: ${row.kb.toFixed(1)}KB (~${row.estTokens} tokens), skills=${row.skills}, soft=${row.softKb}KB, hard=${row.hardKb.toFixed(1)}KB`);
+    }
+  }
 
   if (WARNINGS.length > 0) {
     console.log('\nWarnings:');

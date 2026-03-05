@@ -1,0 +1,23 @@
+[
+  {
+    "name": "backend-performance",
+    "prompt": "Build a scalable backend API and reduce latency under load",
+    "expectedTop": "engineering-backend-architect",
+    "expectedConfidence": "high",
+    "mustInclude": ["testing-api-tester"]
+  },
+  {
+    "name": "marketing-campaign",
+    "prompt": "Design a TikTok and Instagram growth campaign with viral referral loop",
+    "expectedTop": "marketing-tiktok-strategist",
+    "expectedConfidence": "high",
+    "mustInclude": ["marketing-growth-hacker"]
+  },
+  {
+    "name": "ambiguous-low-confidence",
+    "prompt": "Need help improving our thing",
+    "expectedTop": "agents-orchestrator",
+    "expectedConfidence": "low",
+    "mustInclude": []
+  }
+]

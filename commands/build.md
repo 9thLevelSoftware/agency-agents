@@ -1,7 +1,7 @@
 ---
 name: legion:build
 description: Execute current phase plans with parallel agent teams
-argument-hint: [--phase N]
+argument-hint: [--phase N] [--dry-run]
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, Agent, TeamCreate, TeamDelete, TaskCreate, TaskUpdate, TaskList, SendMessage, AskUserQuestion]
 ---
 
@@ -10,7 +10,7 @@ Execute all plans for the current (or specified) phase. Spawn agents with full p
 </objective>
 
 <execution_context>
-skills/workflow-common/SKILL.md
+skills/workflow-common-core/SKILL.md
 skills/agent-registry/SKILL.md
 skills/agent-registry/CATALOG.md
 skills/wave-executor/SKILL.md
@@ -24,10 +24,23 @@ skills/execution-tracker/SKILL.md
 </context>
 
 <process>
+DRY-RUN MODE (deterministic, no side effects)
+   - If `$ARGUMENTS` contains `--dry-run`, DO NOT write files, spawn agents, open Teams, create Tasks, send messages, commit, or call external side-effecting integrations.
+   - Validate prerequisites only (target phase, plan discovery, dependency graph, required files).
+   - Output a deterministic dry-run report artifact to stdout with sections:
+     - Command: `build`
+     - Target phase
+     - Prerequisite checks: PASS/FAIL with reasons
+     - Wave execution preview (plans per wave)
+     - Skills that would load (always + conditional)
+   - Stop after reporting.
+
 0. CONDITIONAL SKILL LOADING (context budget)
    Load optional high-cost skills only when needed:
-   - `skills/memory-manager/SKILL.md` only if `.planning/memory/` exists OR this run creates memory outcomes.
-   - `skills/github-sync/SKILL.md` only if `gh auth status` succeeds and a git remote exists.
+   
+   - `skills/workflow-common-memory/SKILL.md` only if `.planning/memory/` exists OR this run creates memory outcomes.
+   
+   - `skills/workflow-common-github/SKILL.md` only if `gh auth status` succeeds and a git remote exists.
    - `skills/codebase-mapper/SKILL.md` only if `.planning/CODEBASE.md` exists.
    If a condition is not met, skip that skill silently and continue.
 1. DETERMINE TARGET PHASE
@@ -301,4 +314,8 @@ skills/execution-tracker/SKILL.md
    - Do NOT automatically trigger /legion:review — let the user decide when to proceed.
 </process>
 </output>
+
+
+
+
 

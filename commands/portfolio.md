@@ -12,7 +12,7 @@ Output: Dashboard display with actionable next steps.
 </objective>
 
 <execution_context>
-skills/workflow-common/SKILL.md
+skills/workflow-common-core/SKILL.md
 skills/portfolio-manager/SKILL.md
 skills/agent-registry/SKILL.md
 </execution_context>

@@ -1,14 +1,14 @@
 ---
 name: legion:workflow-common
-description: Shared constants, paths, and patterns for all /legion: commands
+description: Compatibility shim for workflow-common; delegates always-load behavior to workflow-common-core and optional extensions
 triggers: [common, shared, paths, conventions, state, config]
 token_cost: medium
-summary: "Shared constants, paths, and patterns for all /legion: commands. Defines state file locations, personality injection pattern, wave execution pattern, cost profiles, and all workflow conventions."
+summary: "Compatibility shim. New command execution should load workflow-common-core first, then optional workflow-common extensions as needed."
 ---
 
 # Legion Workflow Common
 
-Shared constants, paths, and patterns used across all /legion: commands.
+Compatibility shim for legacy references. New commands should always load `workflow-common-core` and only load optional `workflow-common-*` extensions when needed.
 
 ## CLI Detection and Adapter Loading
 
@@ -117,7 +117,7 @@ Step 4: Log resolved values in command notes before execution.
 When settings are present, command skills must honor them instead of hardcoded values.
 ## Agent Personality Paths
 
-All 51 agent personalities live under `agents/` in the plugin root (not necessarily the user's CWD). The path must be resolved before use:
+All 52 built-in agent personalities live under `agents/` in the plugin root (not necessarily the user's CWD). The path must be resolved before use:
 
 ```
 {AGENTS_DIR}/{agent-id}.md
@@ -335,16 +335,17 @@ When a command determines it needs a specific skill, load the ENTIRE SKILL.md co
 
 | Command | Always Loads | Conditionally Loads |
 |---------|-------------|-------------------|
-| `/legion:start` | questioning-flow, workflow-common | codebase-mapper (brownfield) |
-| `/legion:plan` | workflow-common, agent-registry, phase-decomposer | memory-manager, github-sync, codebase-mapper, marketing-workflows, design-workflows, plan-critique, spec-pipeline |
-| `/legion:build` | workflow-common, agent-registry, wave-executor, execution-tracker | memory-manager, github-sync, codebase-mapper |
-| `/legion:review` | workflow-common, agent-registry, review-loop, review-panel, execution-tracker | memory-manager, github-sync, design-workflows |
-| `/legion:status` | workflow-common, execution-tracker, milestone-tracker | memory-manager, github-sync, codebase-mapper |
-| `/legion:quick` | agent-registry, workflow-common | {matched by triggers} |
-| `/legion:portfolio` | portfolio-manager, workflow-common | — |
-| `/legion:milestone` | milestone-tracker, workflow-common | — |
-| `/legion:agent` | agent-creator, agent-registry, workflow-common | — |
-| `/legion:advise` | agent-registry, workflow-common | {matched by triggers} |
+| `/legion:start` | workflow-common-core, questioning-flow, agent-registry | codebase-mapper, workflow-common-domains |
+| `/legion:plan` | workflow-common-core, agent-registry, phase-decomposer | memory-manager, github-sync, codebase-mapper, marketing-workflows, design-workflows, plan-critique, spec-pipeline, workflow-common-memory, workflow-common-github, workflow-common-domains |
+| `/legion:build` | workflow-common-core, agent-registry, wave-executor, execution-tracker | memory-manager, github-sync, codebase-mapper, workflow-common-memory, workflow-common-github |
+| `/legion:review` | workflow-common-core, agent-registry, review-loop, review-panel, execution-tracker | memory-manager, github-sync, design-workflows, workflow-common-memory, workflow-common-github, workflow-common-domains |
+| `/legion:status` | workflow-common-core, execution-tracker, milestone-tracker | memory-manager, github-sync, codebase-mapper, workflow-common-memory, workflow-common-github |
+| `/legion:quick` | workflow-common-core, agent-registry | workflow-common-domains |
+| `/legion:portfolio` | workflow-common-core, portfolio-manager | workflow-common-github |
+| `/legion:milestone` | workflow-common-core, milestone-tracker, execution-tracker | github-sync, workflow-common-github |
+| `/legion:agent` | workflow-common-core, agent-registry, agent-creator | workflow-common-domains |
+| `/legion:advise` | workflow-common-core, agent-registry | workflow-common-domains |
+| `/legion:update` | workflow-common-core | workflow-common-github |
 
 ### Context Budget Guideline
 
@@ -486,7 +487,7 @@ DIVISIONS = [
   "Specialized"         # 3 agents — orchestration, data, LSP
 ]
 
-TOTAL_AGENTS = 51
+TOTAL_AGENTS = 52
 ```
 
 ## Portfolio Conventions
@@ -770,6 +771,9 @@ All design workflow integration follows this pattern:
 2. If yes: use design-specific decomposition, wave patterns, and three-lens review
 3. If no: standard decomposition -- no impact whatsoever
 4. Never error, never block, never require design workflows for non-design phases
+
+
+
 
 
 

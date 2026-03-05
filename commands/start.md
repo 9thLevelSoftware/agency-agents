@@ -9,7 +9,7 @@ Guide the user through an adaptive questioning flow to capture project vision, r
 </objective>
 
 <execution_context>
-skills/workflow-common/SKILL.md
+skills/workflow-common-core/SKILL.md
 skills/agent-registry/SKILL.md
 skills/questioning-flow/SKILL.md
 skills/portfolio-manager/SKILL.md

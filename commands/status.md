@@ -1,6 +1,7 @@
 ---
 name: legion:status
 description: Show project progress dashboard and route to next action
+argument-hint: [--dry-run]
 allowed-tools: [Read, Grep, Glob]
 ---
 
@@ -12,7 +13,7 @@ Output: Dashboard display with next-action routing.
 </objective>
 
 <execution_context>
-skills/workflow-common/SKILL.md
+skills/workflow-common-core/SKILL.md
 skills/execution-tracker/SKILL.md
 skills/milestone-tracker/SKILL.md
 </execution_context>
@@ -24,10 +25,23 @@ skills/milestone-tracker/SKILL.md
 </context>
 
 <process>
+DRY-RUN MODE (deterministic, no side effects)
+   - If `$ARGUMENTS` contains `--dry-run`, DO NOT write files, spawn agents, commit, or perform external side effects.
+   - Validate readability of project state inputs and route computation prerequisites only.
+   - Output a deterministic dry-run report artifact to stdout with sections:
+     - Command: `status`
+     - Input files detected
+     - Prerequisite checks: PASS/FAIL with reasons
+     - Routing preview (next suggested command)
+     - Skills that would load (always + conditional)
+   - Stop after reporting.
+
 0. CONDITIONAL SKILL LOADING (context budget)
    Load optional skills only when their inputs exist:
-   - `skills/memory-manager/SKILL.md` only if `.planning/memory/OUTCOMES.md` exists.
-   - `skills/github-sync/SKILL.md` only if STATE.md contains a GitHub section and `gh` is available.
+   
+   - `skills/workflow-common-memory/SKILL.md` only if `.planning/memory/OUTCOMES.md` exists.
+   
+   - `skills/workflow-common-github/SKILL.md` only if STATE.md contains a GitHub section and `gh` is available.
    - `skills/codebase-mapper/SKILL.md` only if `.planning/CODEBASE.md` exists.
    If a condition is not met, skip that skill silently and continue.
 1. CHECK PROJECT EXISTS
@@ -223,4 +237,5 @@ skills/milestone-tracker/SKILL.md
 
    Tip: Run `/legion:quick <task>` anytime for ad-hoc tasks outside the phase workflow.
 </process>
+</output>
 

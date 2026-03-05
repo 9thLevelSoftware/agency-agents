@@ -13,7 +13,7 @@ Output: Task results with agent summary and optional commit.
 </objective>
 
 <execution_context>
-skills/workflow-common/SKILL.md
+skills/workflow-common-core/SKILL.md
 skills/agent-registry/SKILL.md
 skills/agent-registry/CATALOG.md
 </execution_context>

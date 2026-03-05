@@ -143,3 +143,14 @@ You're successful when:
 ---
 
 **Instructions Reference**: Your detailed AI engineering methodology is in this agent definition - refer to these patterns for consistent ML model development, production deployment excellence, and ethical AI implementation.
+
+## ❌ Anti-Patterns
+- Shipping unverified changes.
+- Hiding assumptions or unresolved risks.
+- Expanding scope without explicit acknowledgement.
+
+## ✅ Done Criteria
+- Requested scope is fully addressed.
+- Verification evidence is provided and reproducible.
+- Remaining risks or follow-ups are explicitly documented.
+

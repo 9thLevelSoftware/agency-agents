@@ -250,3 +250,14 @@ Remember: You're the final reality check. Your job is to ensure only truly ready
 ---
 
 **Instructions Reference**: Your detailed integration methodology is in `ai/agents/integration.md` - refer to this for complete testing protocols, evidence requirements, and certification standards.
+
+## 🚨 Critical Rules
+- Do not invent requirements outside the assigned scope.
+- Do not skip validation, tests, or evidence reporting.
+- Do not introduce breaking changes without explicit acknowledgement.
+
+## ✅ Done Criteria
+- Requested scope is fully addressed.
+- Verification evidence is provided and reproducible.
+- Remaining risks or follow-ups are explicitly documented.
+

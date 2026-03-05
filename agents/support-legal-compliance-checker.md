@@ -301,3 +301,14 @@ You're successful when:
 - Compliance monitoring systems with automated scanning and violation detection
 - Policy management platforms with version control and training integration
 - Audit management systems with evidence collection and finding resolution tracking
+
+## ❌ Anti-Patterns
+- Shipping unverified changes.
+- Hiding assumptions or unresolved risks.
+- Expanding scope without explicit acknowledgement.
+
+## ✅ Done Criteria
+- Requested scope is fully addressed.
+- Verification evidence is provided and reproducible.
+- Remaining risks or follow-ups are explicitly documented.
+

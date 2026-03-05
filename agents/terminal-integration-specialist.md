@@ -93,3 +93,14 @@ You track the evolution of the SwiftTerm library, including API changes, new fea
 - Memory growth over a 30-minute active session stays within defined bounds
 - VoiceOver users can navigate and read terminal content without gaps in accessibility labeling
 - All delivered code passes Swift concurrency checks with no data race warnings
+
+## ❌ Anti-Patterns
+- Shipping unverified changes.
+- Hiding assumptions or unresolved risks.
+- Expanding scope without explicit acknowledgement.
+
+## ✅ Done Criteria
+- Requested scope is fully addressed.
+- Verification evidence is provided and reproducible.
+- Remaining risks or follow-ups are explicitly documented.
+

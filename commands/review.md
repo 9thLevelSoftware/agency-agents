@@ -1,7 +1,7 @@
 ---
 name: legion:review
 description: Run quality review cycle with testing/QA agents
-argument-hint: [--phase N]
+argument-hint: [--phase N] [--dry-run]
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, Agent, TeamCreate, TeamDelete, TaskCreate, TaskUpdate, TaskList, SendMessage, AskUserQuestion]
 ---
 
@@ -10,7 +10,7 @@ Select appropriate review agents for the current phase, run a personality-inject
 </objective>
 
 <execution_context>
-skills/workflow-common/SKILL.md
+skills/workflow-common-core/SKILL.md
 skills/agent-registry/SKILL.md
 skills/agent-registry/CATALOG.md
 skills/review-loop/SKILL.md
@@ -25,11 +25,25 @@ skills/execution-tracker/SKILL.md
 </context>
 
 <process>
+DRY-RUN MODE (deterministic, no side effects)
+   - If `$ARGUMENTS` contains `--dry-run`, DO NOT write files, spawn agents, open Teams, send messages, commit, close issues, or perform external side effects.
+   - Validate prerequisites only (target phase eligibility, summary presence, files-to-review extraction).
+   - Output a deterministic dry-run report artifact to stdout with sections:
+     - Command: `review`
+     - Target phase
+     - Prerequisite checks: PASS/FAIL with reasons
+     - Reviewer selection preview
+     - Skills that would load (always + conditional)
+   - Stop after reporting.
+
 0. CONDITIONAL SKILL LOADING (context budget)
    Load optional skills only when prerequisites are present:
-   - `skills/memory-manager/SKILL.md` only if `.planning/memory/` exists or this review stores outcomes/preferences.
-   - `skills/github-sync/SKILL.md` only if `gh auth status` succeeds and a git remote exists.
-   - `skills/design-workflows/SKILL.md` only for design-phase review or if `.planning/designs/` docs exist.
+   
+   - `skills/workflow-common-memory/SKILL.md` only if `.planning/memory/` exists or this review stores outcomes/preferences.
+   
+   - `skills/workflow-common-github/SKILL.md` only if `gh auth status` succeeds and a git remote exists.
+   
+   - `skills/workflow-common-domains/SKILL.md` only for design/marketing domain review contexts.
    If a condition is not met, skip that skill silently and continue.
 1. DETERMINE TARGET PHASE
    - Check $ARGUMENTS for --phase N flag (e.g., `/legion:review --phase 4`)
@@ -503,5 +517,9 @@ skills/execution-tracker/SKILL.md
    - Do NOT automatically trigger /legion:plan — let the user decide when to proceed.
 </process>
 </output>
+
+
+
+
 
 

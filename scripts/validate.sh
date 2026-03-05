@@ -12,7 +12,6 @@ COMMANDS_DIR="$REPO_ROOT/commands"
 REGISTRY="$SKILLS_DIR/agent-registry/CATALOG.md"
 README="$REPO_ROOT/README.md"
 CHANGELOG="$REPO_ROOT/CHANGELOG.md"
-PACKAGE_JSON="$REPO_ROOT/package.json"
 
 PASS=0
 FAIL=0
@@ -121,28 +120,23 @@ while IFS= read -r line; do
   fi
 done < "$REGISTRY"
 
-header "CHECK 3 - Required emoji headings"
+header "CHECK 3 - Persona structure contract"
 
 for f in "$AGENTS_DIR"/*.md; do
   base="$(basename "$f")"
-  errors=()
+  missing=()
 
-  if ! grep -qP '##.*🧠' "$f" 2>/dev/null; then
-    if ! grep -q '## .*🧠\|##.*🧠' "$f" 2>/dev/null; then
-      errors+=("missing 🧠 heading")
-    fi
-  fi
+  grep -Eq '^## .*Identity' "$f" || missing+=("identity section")
+  grep -Eq '^## .*(Core Mission|Mission)' "$f" || missing+=("mission section")
+  grep -Eq '^## .*(Critical Rules|Rules You Must Follow)' "$f" || missing+=("critical-rules section")
+  grep -Eq '^## .*(Technical Deliverables|Workflow Process|Implementation Process|Execution Process|Deliverables|Process)' "$f" || missing+=("deliverables/process section")
+  grep -Eq '^## .*(Anti-Patterns|What You Must Not Do|Common Rationalizations|Failure Modes)' "$f" || missing+=("anti-patterns section")
+  grep -Eq '^## .*(Done Criteria|Success Criteria|Definition of Done|Completion Criteria|Exit Criteria)' "$f" || missing+=("done-criteria section")
 
-  if ! grep -qP '##.*🎯' "$f" 2>/dev/null; then
-    if ! grep -q '## .*🎯\|##.*🎯' "$f" 2>/dev/null; then
-      errors+=("missing 🎯 heading")
-    fi
-  fi
-
-  if [[ ${#errors[@]} -eq 0 ]]; then
+  if [[ ${#missing[@]} -eq 0 ]]; then
     pass "$base"
   else
-    fail "$base - $(IFS=', '; echo "${errors[*]}")"
+    fail "$base - missing $(IFS=', '; echo "${missing[*]}")"
   fi
 done
 
@@ -173,10 +167,11 @@ for cmd in "$COMMANDS_DIR"/*.md; do
   done < "$cmd"
 done
 
-header "CHECK 5 - Agent size range contract (80-350 lines)"
+header "CHECK 5 - Agent minimum size contract + telemetry"
 
 under_count=0
-over_count=0
+over_300_count=0
+over_350_count=0
 
 for f in "$AGENTS_DIR"/*.md; do
   base="$(basename "$f")"
@@ -185,15 +180,18 @@ for f in "$AGENTS_DIR"/*.md; do
   if [[ $lines -lt 80 ]]; then
     fail "$base - only $lines lines (minimum is 80)"
     under_count=$((under_count + 1))
-  elif [[ $lines -gt 350 ]]; then
-    warn "$base - $lines lines (above 350 target; high context cost)"
-    over_count=$((over_count + 1))
   else
     pass "$base - $lines lines"
+    if [[ $lines -gt 300 ]]; then
+      over_300_count=$((over_300_count + 1))
+    fi
+    if [[ $lines -gt 350 ]]; then
+      over_350_count=$((over_350_count + 1))
+    fi
   fi
 done
 
-echo "  INFO  under-80: $under_count, over-350: $over_count"
+echo "  INFO  under-80: $under_count, over-300 (telemetry): $over_300_count, over-350 (telemetry): $over_350_count"
 
 header "CHECK 6 - README metrics block sync"
 

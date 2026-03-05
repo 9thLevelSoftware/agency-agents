@@ -19,7 +19,8 @@ Adapters bridge Legion's generic workflow concepts to the specific tools and con
 |-------|------|-------------|
 | `cli` | string | Machine-readable CLI identifier (e.g., `claude-code`, `codex-cli`) |
 | `cli_display_name` | string | Human-readable name (e.g., "Claude Code", "OpenAI Codex CLI") |
-| `version` | string | Adapter version |`n| `support_tier` | string | One of `certified`, `beta`, `experimental` for disclosure and diagnostics |
+| `version` | string | Adapter version |
+| `support_tier` | string | One of `certified`, `beta`, `experimental` for disclosure and diagnostics |
 
 ### Capabilities (YAML frontmatter)
 

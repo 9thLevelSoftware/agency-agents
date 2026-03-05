@@ -1,14 +1,14 @@
 ---
 name: legion:agent-registry
-description: Maps all 51 Legion agents by division, capability, and task type for intelligent team assembly
+description: Maps all 52 Legion agents by division, capability, and task type for intelligent team assembly
 triggers: [agent, recommend, team, catalog, assign, match]
 token_cost: low
-summary: "Maps all 51 agents by division, capability, and task type. Recommendation algorithm scores agents against task descriptions. Use when assembling teams or selecting agents for plans."
+summary: "Maps all 52 agents by division, capability, and task type. Recommendation algorithm is semantic-first with heuristic tiebreak scoring. Use when assembling teams or selecting agents for plans."
 ---
 
 # Legion Agent Registry
 
-Complete catalog of all agent personalities. Includes 51 built-in agents across 9 divisions plus any custom agents created via `/legion:agent`. Use this registry to assemble the right team for any project task.
+Complete catalog of all agent personalities. Includes 52 built-in agents across 9 divisions plus any custom agents created via `/legion:agent`. Use this registry to assemble the right team for any project task.
 
 > Agent catalog and task-type index are in `CATALOG.md` in this directory.
 
@@ -16,17 +16,20 @@ Complete catalog of all agent personalities. Includes 51 built-in agents across 
 
 ## Section 3: Recommendation Algorithm
 
-When assembling a team for a task, follow this decision process:
+When assembling a team for a task, follow this semantic-first process:
 
-### Step 1: Parse Task Description
-Extract key terms from the task description. Match terms against the `task_types` tags in the Agent Catalog above.
+### Step 1: Parse Intent and Constraints
+Extract:
+- Primary objective (build, review, optimize, diagnose, launch)
+- Domain signals (engineering, design, marketing, testing, product, support, spatial)
+- Hard constraints (platform, runtime, deadline, no-new-dependencies, etc.)
 
-**Custom agents:** Custom agents added to the Section 1 catalog via `/legion:agent` are automatically eligible for recommendation. Their task type tags are matched identically to built-in agents. No changes to the scoring algorithm are needed.
+**Custom agents:** Custom agents added via `/legion:agent` are first-class candidates in every step below.
 
-### Step 1.5: Normalize Semantic Terms (Synonym Map)
-Normalize common synonyms before scoring so semantically similar requests can match the right `task_types` tags.
+### Step 2: Build a Semantic Shortlist (Primary Ranking)
+Map natural-language intent to normalized concepts before any point scoring.
 
-Use these mappings as a baseline:
+Baseline concept normalization:
 - `scalability`, `latency`, `throughput` -> `performance`
 - `harden`, `exploit`, `vulnerability` -> `security`
 - `a11y`, `wcag`, `screen reader` -> `accessibility`
@@ -34,67 +37,59 @@ Use these mappings as a baseline:
 - `refactor`, `cleanup`, `maintainability` -> `code-quality`
 - `onboarding`, `activation`, `retention` -> `product`
 
-If a term has no exact map, keep the original term and continue with normal scoring.
+Shortlist rules:
+1. Prefer agents with direct semantic overlap between normalized concepts and `task_types`.
+2. Include cross-division specialists when their specialty text clearly matches intent.
+3. Keep shortlist to top 6-8 agents before tie-breaking.
 
-### Step 2: Match Agents to Task Types
-For each extracted term, find all agents whose task types contain a match. Weight matches:
-- **Exact match** on a task type tag: 3 points
-- **Partial match** (substring in specialty description): 1 point
-- **Division alignment** (task category maps to a division): 2 points
+### Step 3: Apply Heuristic Tiebreak (Secondary)
+Use points only to break ties inside the semantic shortlist:
+- **Exact task-type match**: +3
+- **Partial specialty match**: +1
+- **Division alignment**: +2
 
-### Step 3: Rank Candidates
-1. **Primary division match** ranks highest -- agents whose division directly maps to the task domain
-2. **Cross-division support** ranks second -- agents from other divisions whose task types overlap
-3. Break ties by specificity: prefer agents with narrower specializations over generalists
+Notes:
+- Heuristics refine ranking; they do not replace semantic intent matching.
+- If no semantic shortlist forms, fall back to heuristic scoring across all agents and label low confidence.
 
-### Step 3.5: Confidence Classification
-After ranking, classify recommendation confidence from the top score:
-- **High confidence**: top score >= 8
-- **Medium confidence**: top score 5-7
-- **Low confidence**: top score <= 4
+### Step 4: Confidence Classification
+Classify confidence from top-candidate quality:
+- **High confidence**: strong semantic alignment + top score >= 8
+- **Medium confidence**: partial semantic alignment or top score 5-7
+- **Low confidence**: weak semantic evidence or top score <= 4
 
 If confidence is low:
-1. Explicitly label the recommendation as low confidence.
-2. Offer 2-3 alternative agents from different divisions.
-3. Ask the user for guidance before locking the assignment.
+1. Label recommendation explicitly as low confidence.
+2. Offer 2-3 alternatives from different divisions.
+3. Ask for user guidance before locking assignment.
 
-### Step 4: Cap Team Size
-- **2 agents** for single-domain tasks (e.g., "fix a CSS bug")
-- **3 agents** for standard feature work (e.g., "build a settings page")
-- **4 agents** for cross-domain work (e.g., "build and launch a new feature")
-- Never exceed 4 agents per discrete task; split larger efforts into sub-tasks
+### Step 5: Team Size and Composition Guardrails
+- **2 agents** for single-domain tasks.
+- **3 agents** for standard feature work.
+- **4 agents** for cross-domain work.
+- Never exceed 4 agents for one discrete task; split larger efforts.
 
-### Step 4.5: Apply Memory Boost (Optional)
-
+### Step 6: Apply Memory Boost (Optional, Additive Only)
 If `.planning/memory/OUTCOMES.md` exists:
+1. Recall agent scores via memory-manager.
+2. Add memory score to shortlisted agents only.
+3. Re-rank candidates.
+4. Show memory influence in output (for transparency).
 
-1. Call memory-manager Section 4 "Recall Agent Scores" with the task types extracted in Step 1
-2. Receive an `agent_id → memory_score` mapping (scores in range [0, 5])
-3. For each agent in the current candidate list:
-   - If the agent has a memory_score: add it to their recommendation score
-   - Memory scores are additive — they boost existing scores, not replace them
-4. Re-rank candidates with the updated scores
-5. Display memory influence in the recommendation output:
-   - For each agent with a memory boost: "(+{score} from {task_count} past outcomes)"
-   - Example: "engineering-senior-developer — 8 points (+2.3 from 5 past outcomes)"
+Constraints:
+- Memory boost is additive and cannot override mandatory-role constraints.
+- Memory boost cannot promote unrelated agents with zero semantic/heuristic relevance.
+- Agents with fewer than 2 recorded outcomes are excluded from memory boosting.
+- If memory is unavailable, skip silently.
 
-**Constraints**:
-- Memory boost CANNOT override Step 5 (Mandatory Roles). A testing agent is still required for code execution teams regardless of memory scores.
-- Memory boost CANNOT promote an agent from a completely unrelated division. An agent must have at least 1 point from Step 2 matching to receive a memory boost.
-- If memory is unavailable (no OUTCOMES.md): skip this step entirely, proceed to Step 5. No warning, no placeholder.
-- Minimum data threshold: agents with fewer than 2 recorded outcomes are excluded from memory boosting (prevents one-off noise from influencing recommendations).
+### Step 7: Enforce Mandatory Roles
+- **Execution teams** (code-writing/deployment) MUST include at least one Testing-division agent.
+- **Cross-division teams** MUST include a coordinator: `project-manager-senior`, `project-management-project-shepherd`, or `agents-orchestrator`.
+- **User-facing change teams** SHOULD include a Design-division reviewer.
 
-If `.planning/memory/OUTCOMES.md` does not exist: skip this step entirely.
-
-### Step 5: Mandatory Roles
-- **Every execution team** (teams that write or deploy code) MUST include at least one agent from the Testing division
-- **Cross-division tasks** (spanning 2+ divisions) MUST include a coordinator: either `project-manager-senior`, `project-management-project-shepherd`, or `agents-orchestrator`
-- **User-facing changes** SHOULD include a Design division agent for review
-
-### Step 6: Conflict Resolution
-- If two agents from the same division are equally ranked, prefer the one with broader scope (e.g., `engineering-senior-developer` over `engineering-rapid-prototyper` for production code)
-- If the task is exploratory or experimental, prefer `engineering-rapid-prototyper` and `project-management-experiment-tracker`
-
+### Step 8: Conflict Resolution
+- If two agents remain tied in one division, prefer broader production reliability for delivery tasks.
+- For exploratory work, prefer rapid-learning profiles (`engineering-rapid-prototyper`, `project-management-experiment-tracker`).
 ---
 
 ## Section 4: Team Assembly Patterns
@@ -161,7 +156,7 @@ Pre-configured team compositions for common project scenarios.
 
 | Role | Agent | Division |
 |------|-------|----------|
-| Developer | engineering-senior-developer | engineering |
+| Developer | engineering-senior-developer / engineering-laravel-specialist (Laravel stacks) | engineering |
 | QA Verification | testing-evidence-collector | testing |
 
 ### XR / Spatial Computing Build
@@ -173,5 +168,7 @@ Pre-configured team compositions for common project scenarios.
 | Interaction Design | xr-interface-architect | spatial-computing |
 | Immersive Dev | xr-immersive-developer | spatial-computing |
 | QA | testing-performance-benchmarker | testing |
+
+
 
 

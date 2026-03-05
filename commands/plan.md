@@ -1,7 +1,7 @@
 ---
 name: legion:plan
 description: Plan a specific phase with agent recommendations and wave-structured tasks
-argument-hint: <phase-number>
+argument-hint: <phase-number> [--dry-run]
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
 ---
 
@@ -10,7 +10,7 @@ Decompose a roadmap phase into wave-structured plans using `settings.planning.ma
 </objective>
 
 <execution_context>
-skills/workflow-common/SKILL.md
+skills/workflow-common-core/SKILL.md
 skills/agent-registry/SKILL.md
 skills/agent-registry/CATALOG.md
 skills/phase-decomposer/SKILL.md
@@ -24,13 +24,27 @@ skills/phase-decomposer/SKILL.md
 </context>
 
 <process>
+DRY-RUN MODE (deterministic, no side effects)
+   - If `$ARGUMENTS` contains `--dry-run`, DO NOT write plan files, spawn agents, modify git state, or call external side-effecting integrations.
+   - Run prerequisite checks only (required inputs, target phase validity, optional integration availability).
+   - Output a deterministic dry-run report artifact to stdout with sections:
+     - Command: `plan`
+     - Target phase and source inputs
+     - Prerequisite checks: PASS/FAIL with reasons
+     - Planned actions (what would happen)
+     - Skills that would load (always + conditional)
+   - Stop after reporting.
+
 0. CONDITIONAL SKILL LOADING (context budget)
    Load optional skills only if their activation condition is true:
-   - `skills/memory-manager/SKILL.md` only if `.planning/memory/OUTCOMES.md` exists.
-   - `skills/github-sync/SKILL.md` only if `gh auth status` succeeds and a git remote exists.
+   
+   - `skills/workflow-common-memory/SKILL.md` only if `.planning/memory/OUTCOMES.md` exists.
+   
+   - `skills/workflow-common-github/SKILL.md` only if `gh auth status` succeeds and a git remote exists.
    - `skills/codebase-mapper/SKILL.md` only if `.planning/CODEBASE.md` exists.
    - `skills/marketing-workflows/SKILL.md` only for MKT-* requirements or marketing keyword detection.
-   - `skills/design-workflows/SKILL.md` only for DSN-* requirements or design keyword detection.
+   
+   - `skills/workflow-common-domains/SKILL.md` only for MKT-* or DSN-* requirements (or matching domain keywords).
    - `skills/plan-critique/SKILL.md` only when user opts into plan critique.
    - `skills/spec-pipeline/SKILL.md` only when user opts into spec creation or an existing spec is present.
    If a condition is not met, skip that skill silently and continue.
@@ -306,5 +320,9 @@ skills/phase-decomposer/SKILL.md
     - Do NOT dump full plan file contents -- summary only
 </process>
 </output>
+
+
+
+
 
 

@@ -87,3 +87,14 @@ You track advances in XR hand tracking precision, gaze estimation accuracy, and 
 - Hand-interactive controls register intended activations at above 95% success rate in controlled testing
 - Frame rate holds at or above the headset's native refresh rate throughout full cockpit sessions
 - Cockpit experiences pass comfort review before submission to any public demonstration or deployment
+
+## ❌ Anti-Patterns
+- Shipping unverified changes.
+- Hiding assumptions or unresolved risks.
+- Expanding scope without explicit acknowledgement.
+
+## ✅ Done Criteria
+- Requested scope is fully addressed.
+- Verification evidence is provided and reproducible.
+- Remaining risks or follow-ups are explicitly documented.
+

@@ -302,3 +302,14 @@ You're successful when:
 ---
 
 **Instructions Reference**: Your comprehensive test analysis methodology is in your core training - refer to detailed statistical techniques, quality metrics frameworks, and reporting strategies for complete guidance.
+
+## ❌ Anti-Patterns
+- Shipping unverified changes.
+- Hiding assumptions or unresolved risks.
+- Expanding scope without explicit acknowledgement.
+
+## ✅ Done Criteria
+- Requested scope is fully addressed.
+- Verification evidence is provided and reproducible.
+- Remaining risks or follow-ups are explicitly documented.
+

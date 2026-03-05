@@ -1,6 +1,6 @@
 # Agent Catalog
 
-Complete catalog of all 51 built-in agents across 9 divisions, plus any custom agents created via `/legion:agent`. Also contains the Task Type Index (reverse mapping from project need to recommended agents).
+Complete catalog of all 52 built-in agents across 9 divisions, plus any custom agents created via `/legion:agent`. Also contains the Task Type Index (reverse mapping from project need to recommended agents).
 
 The recommendation algorithm and team assembly patterns are in `SKILL.md` in this directory.
 
@@ -25,7 +25,7 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 | design-visual-storyteller | `agents/design-visual-storyteller.md` | Expert visual communication specialist creating compelling visual narratives, multimedia content, and brand storytelling through design | visual-narratives, multimedia-content, brand-storytelling, infographics, presentation-design |
 | design-whimsy-injector | `agents/design-whimsy-injector.md` | Expert creative specialist adding personality, delight, and playful elements to brand experiences with memorable joyful interactions | microinteractions, delight-design, animation, creative-direction, personality |
 
-### Engineering Division (7 agents)
+### Engineering Division (8 agents)
 
 | ID | File | Specialty | Task Types |
 |----|------|-----------|------------|
@@ -35,7 +35,8 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 | engineering-frontend-developer | `agents/engineering-frontend-developer.md` | Expert frontend developer specializing in modern web technologies, React/Vue/Angular frameworks, UI implementation, and performance optimization | frontend, react, web-performance, responsive-design, spa |
 | engineering-mobile-app-builder | `agents/engineering-mobile-app-builder.md` | Specialized mobile application developer with expertise in native iOS/Android development and cross-platform frameworks | mobile-ios, mobile-android, cross-platform, react-native, flutter |
 | engineering-rapid-prototyper | `agents/engineering-rapid-prototyper.md` | Specialized in ultra-fast proof-of-concept development and MVP creation using efficient tools and frameworks | prototyping, mvp, rapid-development, proof-of-concept, hackathon |
-| engineering-senior-developer | `agents/engineering-senior-developer.md` | Premium implementation specialist mastering Laravel/Livewire/FluxUI, advanced CSS, and Three.js integration | full-stack, laravel, livewire, css-advanced, three-js |
+| engineering-senior-developer | `agents/engineering-senior-developer.md` | Stack-agnostic senior implementation lead for production-grade software delivery across web, backend, and platform systems | full-stack, architecture, refactoring, reliability, code-quality |
+| engineering-laravel-specialist | `agents/engineering-laravel-specialist.md` | Laravel/Livewire/FluxUI implementation specialist for high-fidelity product delivery, performance, and maintainable PHP architecture | laravel, livewire, fluxui, php, blade |
 
 ### Marketing Division (8 agents)
 
@@ -126,7 +127,7 @@ Custom agents created via `/legion:agent` appear here. This section is populated
 Reverse mapping from common project needs to recommended agents.
 
 ### Web Development
-- **Primary**: engineering-frontend-developer, engineering-backend-architect, engineering-senior-developer
+- **Primary**: engineering-frontend-developer, engineering-backend-architect, engineering-senior-developer, engineering-laravel-specialist
 - **Support**: design-ux-architect, design-ui-designer, testing-api-tester
 - **Coordination**: project-manager-senior, agents-orchestrator
 
@@ -136,7 +137,7 @@ Reverse mapping from common project needs to recommended agents.
 - **Testing**: testing-api-tester, testing-performance-benchmarker
 
 ### API Development
-- **Primary**: engineering-backend-architect, engineering-ai-engineer
+- **Primary**: engineering-backend-architect, engineering-ai-engineer, engineering-senior-developer
 - **Testing**: testing-api-tester, testing-performance-benchmarker
 - **Coordination**: project-manager-senior
 
@@ -174,3 +175,6 @@ Reverse mapping from common project needs to recommended agents.
 - **Product**: product-trend-researcher, product-feedback-synthesizer, product-sprint-prioritizer
 - **Data**: data-analytics-reporter, support-analytics-reporter
 - **Business**: support-executive-summary-generator, support-finance-tracker, support-legal-compliance-checker
+
+
+

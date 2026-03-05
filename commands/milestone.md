@@ -12,7 +12,7 @@ Output: Milestone dashboard with actionable operations.
 </objective>
 
 <execution_context>
-skills/workflow-common/SKILL.md
+skills/workflow-common-core/SKILL.md
 skills/milestone-tracker/SKILL.md
 skills/execution-tracker/SKILL.md
 skills/github-sync/SKILL.md
@@ -246,5 +246,4 @@ IMPORTANT:
 - The action loop (Steps 5-6) keeps the user in milestone context until they choose "Done"
 - All operations handle missing/stale state gracefully
 </process>
-</output>
 </output>

@@ -33,8 +33,8 @@ claude --plugin-dir ./legion --plugin-dir ./other-plugin
 
 ```
 commands/           11 command entry points (/legion:*)
-skills/             18 workflow skills (SKILL.md format)
-agents/             51 agent personality files (.md)
+skills/             22 workflow skills (SKILL.md format)
+agents/             52 agent personality files (.md)
 scripts/            Validation and maintenance scripts
 .claude-plugin/     Plugin manifest + marketplace entry
 settings.json       Plugin settings
@@ -68,7 +68,7 @@ The easiest way is `/legion:agent` — it guides you through creation and handle
    ```
    - `color` must be one of: red, green, blue, purple, cyan, orange, yellow, pink
    - `division` must be one of: engineering, design, marketing, product, project-management, testing, support, spatial-computing, specialized, custom
-2. Write the personality using Format A emoji headings (target 80-350 lines, hard minimum 80 lines). Required sections: `## 🧠 Your Identity & Memory`, `## 🎯 Your Core Mission`, `## 🚨 Critical Rules You Must Follow`, `## 🛠️ Your Technical Deliverables`, `## 🔄 Your Workflow Process`, `## 💭 Your Communication Style`, `## 🔄 Learning & Memory`, `## 🎯 Your Success Metrics`
+2. Write the personality using Format A emoji headings (hard minimum 80 lines). Required structure sections: identity, mission, critical rules, deliverables/process, anti-patterns, and done criteria.
 3. Add the agent to the catalog in `skills/agent-registry/CATALOG.md`
 4. Run `bash scripts/validate.sh` to verify schema compliance
 5. Test with `/legion:quick "task for your agent"`
@@ -94,7 +94,7 @@ The easiest way is `/legion:agent` — it guides you through creation and handle
 ## Code Style
 
 - **Markdown only** — no custom tooling, no build steps (validation script is the exception)
-- **Format A for agents** — emoji headings, "Your" pronouns, target 80-350 line range (hard minimum 80)
+- **Format A for agents** — emoji headings, "Your" pronouns, hard minimum 80 lines (upper range is telemetry-only)
 - **Named colors only** — red, green, blue, purple, cyan, orange, yellow, pink
 - **Kebab-case divisions** — spatial-computing, project-management, not Title Case
 - **Default max 3 tasks per plan (configurable)** — keeps work focused and reviewable
@@ -112,6 +112,7 @@ node --test
 ```
 
 This checks: version/changelog sync, agent schema + registry sync, heading format, execution-context paths, agent size contract, README metrics sync, and release consistency checks.
+
 
 
 

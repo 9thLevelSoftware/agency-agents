@@ -1,12 +1,12 @@
 # Legion
 
-Orchestrate 51 AI specialist personalities across 9 AI CLI runtimes.
+Orchestrate 52 AI specialist personalities across 9 AI CLI runtimes.
 
 > *"My name is Legion, for we are many."*
 
 ## What It Does
 
-Turn 51 isolated agent personalities into a coordinated legion. Type `/legion:start`, describe what you want, and the system assembles the right team, plans the work, executes in parallel, and runs quality checks — with each agent operating in full character.
+Turn 52 isolated agent personalities into a coordinated legion. Type `/legion:start`, describe what you want, and the system assembles the right team, plans the work, executes in parallel, and runs quality checks — with each agent operating in full character.
 
 ## Installation
 
@@ -119,18 +119,18 @@ Guides you through an adaptive conversation (5-8 exchanges) to capture project v
 1. Pre-flight check — detects existing projects and offers to reinitialize or continue
 2. Brownfield detection — if an existing codebase is found, offers architecture analysis via the `codebase-mapper` skill, producing `.planning/CODEBASE.md` with framework detection, risk areas, and conventions
 3. Vision exploration — 3-stage adaptive conversation via `questioning-flow`: vision → requirements → constraints, targeting 5-8 natural exchanges
-4. Agent recommendation — `agent-registry` scores all 51 agents to recommend 2-4 per phase based on keyword match and division affinity
+4. Agent recommendation — `agent-registry` scores all 52 agents to recommend 2-4 per phase based on keyword match and division affinity
 5. Document generation — produces `PROJECT.md`, `ROADMAP.md`, and `STATE.md` using questioning-flow templates
 6. Portfolio registration — registers the project in the global portfolio via `portfolio-manager` at `~/.claude/legion/portfolio.md`
 
-**Skills invoked:** `workflow-common` → `questioning-flow` → `agent-registry` → `portfolio-manager` | `codebase-mapper` (optional brownfield)
+**Skills invoked:** `workflow-common-core` → `questioning-flow` → `agent-registry` → `portfolio-manager` | `codebase-mapper` (optional brownfield)
 **Tools:** Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion
 **Produces:** `.planning/PROJECT.md`, `.planning/ROADMAP.md`, `.planning/STATE.md` | `.planning/CODEBASE.md` (brownfield)
 **User interaction:** Guided Q&A throughout; confirms generated documents before finalizing
 
 #### `/legion:plan <N>` — Phase Planning
 
-Decomposes a roadmap phase into wave-structured plans with a default max of 3 tasks each (configurable via settings). Recommends agents from the 51-agent registry for each plan and gets your confirmation.
+Decomposes a roadmap phase into wave-structured plans with a default max of 3 tasks each (configurable via settings). Recommends agents from the 52-agent registry for each plan and gets your confirmation.
 
 **Key steps:**
 1. Parse or auto-detect the next unplanned phase from STATE.md
@@ -144,7 +144,7 @@ Decomposes a roadmap phase into wave-structured plans with a default max of 3 ta
 9. Generate plan files with full task instructions, verification commands, and YAML frontmatter
 10. *(Optional)* GitHub issue creation via `github-sync` — creates a labeled issue with plan checklist
 
-**Skills invoked:** `workflow-common` → `phase-decomposer` → `agent-registry` → `memory-manager` | `codebase-mapper` (brownfield) | `marketing-workflows` | `design-workflows` | `spec-pipeline` | `plan-critique` | `github-sync` (all optional)
+**Skills invoked:** `workflow-common-core` → `phase-decomposer` → `agent-registry` → `memory-manager` | `codebase-mapper` (brownfield) | `marketing-workflows` | `design-workflows` | `spec-pipeline` | `plan-critique` | `github-sync` (all optional)
 **Tools:** Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion
 **Produces:** `.planning/phases/{NN}-{slug}/CONTEXT.md` and `{NN}-{PP}-PLAN.md` files | `.planning/specs/` (optional) | `.planning/campaigns/` (marketing) | `.planning/designs/` (design)
 **User interaction:** Confirms agent recommendations; opts into architecture proposals, spec pipeline, and plan critique; reviews critique findings
@@ -158,7 +158,7 @@ Spawns agents with full personality injection to execute all plans for the curre
 2. Discover plans via `wave-executor` — parse YAML frontmatter, build wave map, validate no circular dependencies or file conflicts
 3. Create a Claude Code Team via TeamCreate (`phase-{NN}-execution`) with TaskCreate for each plan and cross-wave dependencies via TaskUpdate
 4. Execute plans wave by wave via `wave-executor` — all agents within a wave spawn in parallel via Agent tool with `model: "sonnet"`
-5. Each agent receives its complete personality .md (80-350 lines) concatenated with the plan file as its prompt; autonomous plans skip personality injection
+5. Each agent receives its complete personality .md (currently 85-348 lines) concatenated with the plan file as its prompt; autonomous plans skip personality injection
 6. Agents auto-remediate environment issues (missing deps, wrong versions) — classify errors as BLOCKER vs ENVIRONMENT, retry once after remediation
 7. Collect results via SendMessage — parse structured summaries, write `{NN}-{PP}-SUMMARY.md` files
 8. Track progress via `execution-tracker` — update STATE.md, ROADMAP.md progress table, create atomic git commits per successful plan
@@ -166,7 +166,7 @@ Spawns agents with full personality injection to execute all plans for the curre
 10. Detect manual edits — intersect agent-modified files with `git diff` to capture corrective preference signals
 11. Shutdown team via SendMessage shutdown_request + TeamDelete
 
-**Skills invoked:** `workflow-common` → `wave-executor` → `execution-tracker` → `memory-manager` | `codebase-mapper` (brownfield context injection) | `github-sync` (issue checklist + PR creation)
+**Skills invoked:** `workflow-common-core` → `wave-executor` → `execution-tracker` → `memory-manager` | `codebase-mapper` (brownfield context injection) | `github-sync` (issue checklist + PR creation)
 **Tools:** Read, Write, Edit, Bash, Grep, Glob, Agent, TeamCreate, TeamDelete, TaskCreate, TaskUpdate, TaskList, SendMessage, AskUserQuestion
 **Produces:** Implementation artifacts plus `{NN}-{PP}-SUMMARY.md` files, atomic git commits, optional GitHub PR
 **User interaction:** Confirms pre-execution plan; monitors progress; resolves blockers if agents get stuck
@@ -191,7 +191,7 @@ Selects appropriate review agents for the phase, runs a structured dev-QA loop (
 11. On ESCALATE: present remaining blockers with fix attempt history, offer manual fix / accept-as-is / investigate options
 12. Shutdown team via SendMessage + TeamDelete
 
-**Skills invoked:** `workflow-common` → `review-loop` | `review-panel` → `execution-tracker` → `memory-manager` | `design-workflows` (three-lens) | `github-sync`
+**Skills invoked:** `workflow-common-core` → `review-loop` | `review-panel` → `execution-tracker` → `memory-manager` | `design-workflows` (three-lens) | `github-sync`
 **Tools:** Read, Write, Edit, Bash, Grep, Glob, Agent, TeamCreate, TeamDelete, TaskCreate, TaskUpdate, TaskList, SendMessage, AskUserQuestion
 **Produces:** `{NN}-REVIEW.md`, fix commits, updated STATE.md and ROADMAP.md
 **User interaction:** Chooses review mode; confirms reviewer selection; reviews findings; approves fixes; decides escalation path
@@ -213,7 +213,7 @@ Single command to understand where the project is and what to do next. Reads all
 6. Fetch GitHub status via `github-sync` (if STATE.md has GitHub section) — live issue/PR/milestone state via `gh` CLI
 7. Route to next action — decision tree: no project → start; pending → plan; planned → build; executed → review; complete → next phase or finish
 
-**Skills invoked:** `workflow-common` → `execution-tracker` → `milestone-tracker` | `memory-manager` | `github-sync` | `codebase-mapper` (staleness check)
+**Skills invoked:** `workflow-common-core` → `execution-tracker` → `milestone-tracker` | `memory-manager` | `github-sync` | `codebase-mapper` (staleness check)
 **Tools:** Read, Grep, Glob (read-only — no file modifications)
 **Produces:** Dashboard display (no file changes)
 **User interaction:** Follow the suggested next action, or run any command
@@ -233,14 +233,14 @@ Run any task outside the normal phase workflow with automatic agent selection. N
 4. Spawn the selected agent via Agent tool with `model: "sonnet"` and full personality injection — or run autonomously if user prefers
 5. Return results with an optional conventional commit (auto-detects type: feat/fix/test/docs/refactor from task description)
 
-**Skills invoked:** `workflow-common` → `agent-registry`
+**Skills invoked:** `workflow-common-core` → `agent-registry`
 **Tools:** Read, Write, Edit, Bash, Grep, Glob, Agent, AskUserQuestion
 **Produces:** Task output plus optional git commit (does NOT update STATE.md or ROADMAP.md)
 **User interaction:** Confirms agent selection; approves commit
 
 #### `/legion:advise <topic>` — Expert Consultation
 
-Get read-only strategic advice from any of the 51 agent personalities. The advisor can explore your codebase and ask clarifying questions but cannot modify any files.
+Get read-only strategic advice from any of the 52 agent personalities. The advisor can explore your codebase and ask clarifying questions but cannot modify any files.
 
 **Key steps:**
 1. Parse the topic (architecture, UX, marketing strategy, etc.) — provides a topic reference table spanning Engineering, Design, Business, Marketing, Testing, Product, and Spatial Computing
@@ -250,7 +250,7 @@ Get read-only strategic advice from any of the 51 agent personalities. The advis
 5. Display structured advice: Assessment → Recommendations → Trade-offs → Next Steps
 6. Interactive follow-up loop — ask another question (same advisor, carries prior context), switch topics (new advisor), or end session
 
-**Skills invoked:** `workflow-common` → `agent-registry`
+**Skills invoked:** `workflow-common-core` → `agent-registry`
 **Tools:** Read, Grep, Glob, Agent, AskUserQuestion (advisor spawned as Explore — cannot modify files)
 **Produces:** Advisory output (no file changes, no state updates)
 **User interaction:** Selects advisor agent; asks follow-up questions; ends session when satisfied
@@ -271,7 +271,7 @@ Cross-project visibility when managing multiple Legion projects. Shows dependenc
 5. Interactive operations: view project details, add cross-project dependencies, invoke Studio Producer analysis
 6. Studio Producer consultation (optional) — spawns `project-management-studio-producer` via Agent tool with `model: "opus"` for strategic portfolio coordination
 
-**Skills invoked:** `workflow-common` → `portfolio-manager` → `agent-registry`
+**Skills invoked:** `workflow-common-core` → `portfolio-manager` → `agent-registry`
 **Tools:** Read, Write, Edit, Bash, Grep, Glob, Agent, AskUserQuestion
 **Produces:** Dashboard display; optional portfolio registry updates and Studio Producer analysis
 **User interaction:** Reviews dashboard; adds dependencies; requests strategic coordination; exits when done
@@ -287,14 +287,14 @@ Handles the full milestone lifecycle: define milestone groupings, track status, 
 4. Complete milestone — validates all phases are Complete, generates summary at `.planning/milestones/MILESTONE-{N}.md` with metrics (plans, requirements, files, agents), closes GitHub milestone via `github-sync` (optional)
 5. Archive milestone — moves phase directories from `.planning/phases/` to `.planning/archive/milestone-{N}/`, condenses STATE.md, updates ROADMAP.md
 
-**Skills invoked:** `workflow-common` → `milestone-tracker` → `execution-tracker` | `github-sync`
+**Skills invoked:** `workflow-common-core` → `milestone-tracker` → `execution-tracker` | `github-sync`
 **Tools:** Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion
 **Produces:** Updated ROADMAP.md, milestone summaries at `.planning/milestones/`, archived phase directories at `.planning/archive/`
 **User interaction:** Selects milestone operation; confirms completion and archiving
 
 #### `/legion:agent` — Agent Creator
 
-Create a new specialist agent when the 51 existing personalities don't cover your needs. Guided conversation produces a validated agent .md file and registers it in the catalog.
+Create a new specialist agent when the 52 existing personalities don't cover your needs. Guided conversation produces a validated agent .md file and registers it in the catalog.
 
 **Key steps:**
 1. Stage 1: Agent Identity — adaptive conversation via `agent-creator` to define role, specialty, and division (infers kebab-case name like `{division}-{specialty}`)
@@ -304,7 +304,7 @@ Create a new specialist agent when the 51 existing personalities don't cover you
 5. Generate files — writes agent .md file to `agents/` with YAML frontmatter + substantive personality (80-120 lines), inserts catalog row into `agent-registry`
 6. Git commit — stages agent file + registry update
 
-**Skills invoked:** `workflow-common` → `agent-creator` → `agent-registry`
+**Skills invoked:** `workflow-common-core` → `agent-creator` → `agent-registry`
 **Tools:** Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion
 **Produces:** New agent personality file in `agents/`, updated `agent-registry` SKILL.md
 **User interaction:** Guided 3-stage Q&A; reviews and confirms the generated personality and registry tags
@@ -318,7 +318,7 @@ Three capabilities shipped in v2.0 that extend the core workflow with read-only 
 Lightweight expert consultation without the overhead of phase workflows or the risk of code changes.
 
 - **Read-only by design** — advisors are spawned as Explore agents (tool-level enforcement: no Write, no Edit, no Bash)
-- **Topic-based agent selection** — the registry algorithm scores all 51 agents against the topic and recommends the best match
+- **Topic-based agent selection** — the registry algorithm scores all 52 agents against the topic and recommends the best match
 - **Full personality injection** — the advisor operates in complete character with its specialist expertise, communication style, and hard rules
 - **Project-aware** — loads PROJECT.md context when available, but works without it for pure domain expertise
 - **Interactive follow-up** — after initial advice, continue with follow-up questions, switch topics, or end the session
@@ -352,9 +352,9 @@ Legion didn't invent its patterns from scratch. It cherry-picked the best ideas 
 
 ### What We Took (and What We Left Behind)
 
-#### The 51 Agent Personalities — [msitarzewski/agency-agents](https://github.com/msitarzewski/agency-agents)
+#### The Agent Personality Foundation — [msitarzewski/agency-agents](https://github.com/msitarzewski/agency-agents)
 
-The 51 specialist personalities that power Legion originated in the agency-agents repository by msitarzewski. These are not generic role labels — they are 37-434 line character sheets (target band: 80-350 lines) with deep expertise, communication styles, hard rules, and personality quirks across 9 divisions. Legion builds orchestration, planning, and review workflows on top of these personalities, but the personalities themselves are the foundation everything else stands on.
+Legion now ships 52 built-in personalities: 51 originated in the agency-agents repository by msitarzewski, plus 1 new Legion-native specialization (`engineering-laravel-specialist`). These are not generic role labels — they are structured character sheets (current range 85-348 lines) with deep expertise, communication styles, hard rules, and personality quirks across 9 divisions. Legion builds orchestration, planning, and review workflows on top of this personality foundation.
 
 #### From [GSD (Get Shit Done)](https://github.com/gsd-build/get-shit-done)
 
@@ -394,7 +394,7 @@ Atomic commits per completed plan (from Shipyard's `execution-tracker`) means ev
 
 Best Practice's `.claude/` directory structure (commands → skills → agents) is the canonical way to build Claude Code plugins. We adopted it wholesale: commands are entry points, skills are reusable logic, agents are personalities. Clean separation of concerns.
 
-Best Practice's agent frontmatter schema (YAML with name, description, color, division) became our agent contract. Every one of our 51 agents follows this structure, which means the `agent-registry.md` can programmatically catalog and recommend agents based on structured metadata rather than parsing free-form text.
+Best Practice's agent frontmatter schema (YAML with name, description, color, division) became our agent contract. Every one of our 52 agents follows this structure, which means the `agent-registry.md` can programmatically catalog and recommend agents based on structured metadata rather than parsing free-form text.
 
 **Left behind:** Best Practice's RPI workflow (too domain-specific) and custom hooks infrastructure. We kept the architecture patterns and dropped the opinionated workflows.
 
@@ -460,7 +460,7 @@ Puzld.ai's DPO (Direct Preference Optimization) extraction pattern — capturing
 
 Beyond combining these twelve projects, Legion introduced several original patterns:
 
-- **Personality-first agents**: The 51 agent personalities aren't just role labels — they're 37-434 line character sheets (target band: 80-350 lines) with expertise, communication style, hard rules, and personality quirks, all in a standardized emoji-headed format. When an agent is spawned, it receives its *complete personality* as system instructions, not a generic "you are a backend developer" prompt.
+- **Personality-first agents**: The 52 agent personalities are not role labels — they are 85-348 line character sheets with expertise, communication style, hard rules, and personality quirks, all in a standardized emoji-headed format. When an agent is spawned, it receives its *complete personality* as system instructions, not a generic "you are a backend developer" prompt.
 
 - **Hybrid agent selection**: The workflow recommends agents based on task analysis (keyword matching, division affinity, past performance), but the user always confirms or overrides. No black-box assignment.
 
@@ -479,19 +479,19 @@ Legion intentionally optimizes for orchestration ergonomics (few commands, markd
 | Command surface | 15-33+ command sets | 11 commands | Faster onboarding, but less granular command specialization |
 | State storage | JSON/DB/hybrid state | Markdown-only `.planning/` | Human-readable and git-native, but less strict schema enforcement |
 | Setup model | CLI bootstrap + config | `npx` installer | Simpler install path, but runtime capabilities can vary more |
-| Agent model | Generic role prompts | 51 full personalities | Higher domain specificity, but larger context footprint |
+| Agent model | Generic role prompts | 52 full personalities | Higher domain specificity, but larger context footprint |
 | Runtime coverage | Single-runtime focus | 9 runtime adapters | Broader portability, but feature parity differs by runtime tier |
 | Memory strategy | Hook-based/global memory | Project-local explicit memory | Better project isolation, but requires explicit integration points |
 
-Current repository metrics: 11 commands, 18 skills, 51 agent personalities, and 9 runtime adapters.
+Current repository metrics: 11 commands, 22 skills, 52 agent personalities, and 9 runtime adapters.
 
-## The 51 Agents
+## The 52 Agents
 
 Agents are organized across 9 divisions, each with deep specialist personalities:
 
 | Division | Agents | Focus |
 |----------|--------|-------|
-| Engineering | 7 | Full-stack, backend, frontend, AI, DevOps, mobile, prototyping |
+| Engineering | 8 | Full-stack, backend, frontend, AI, DevOps, mobile, prototyping, Laravel specialization |
 | Design | 6 | UI/UX, branding, visual storytelling, research |
 | Marketing | 8 | Content, social media, growth, platform strategies |
 | Testing | 7 | QA, evidence collection, performance, API testing |
@@ -523,11 +523,12 @@ legion/                     <- Project root
 │   ├── milestone.md
 │   ├── agent.md
 │   └── update.md
-├── skills/                 <- 18 reusable workflow skills
-│   ├── workflow-common/SKILL.md     <- Shared constants and conventions
+├── skills/                 <- 22 reusable workflow skills
+│   ├── workflow-common-core/SKILL.md <- Lean always-load core conventions
+│   ├── workflow-common/SKILL.md      <- Compatibility shim for legacy references
 │   ├── agent-registry/
 │   │   ├── SKILL.md               <- Recommendation algorithm + team patterns
-│   │   └── CATALOG.md             <- 51 agent catalog + task-type index
+│   │   └── CATALOG.md             <- 52 agent catalog + task-type index
 │   ├── questioning-flow/SKILL.md   <- 3-stage adaptive conversation
 │   ├── phase-decomposer/SKILL.md   <- Phase decomposition with domain detection
 │   ├── wave-executor/SKILL.md      <- Parallel execution with personality injection
@@ -535,13 +536,13 @@ legion/                     <- Project root
 │   ├── review-loop/SKILL.md        <- Dev-QA loop with structured feedback
 │   ├── review-panel/SKILL.md       <- Dynamic multi-reviewer composition with rubrics
 │   ├── plan-critique/SKILL.md      <- Pre-mortem analysis + assumption hunting
-│   └── + 9 more (portfolio, milestone, memory, agents, GitHub, brownfield, marketing, design, spec pipeline)
-├── agents/                 <- 51 personality .md files (flat, with division in frontmatter)
+│   └── + 12 more (portfolio, milestone, memory, agents, GitHub, brownfield, marketing, design, spec pipeline, and workflow-common extensions)
+├── agents/                 <- 52 personality .md files (flat, with division in frontmatter)
 │   ├── engineering-senior-developer.md
 │   ├── design-ui-designer.md
 │   ├── marketing-content-creator.md
 │   ├── testing-reality-checker.md
-│   └── ... (47 more)
+│   └── ... (48 more)
 ├── adapters/               <- Per-CLI adapter files (claude-code.md, codex-cli.md, etc.)
 └── .planning/              <- Project state (generated per-project, not part of package)
     ├── PROJECT.md
@@ -557,7 +558,7 @@ legion/                     <- Project root
 - **CLI-agnostic**: Works with 9 AI CLI runtimes — skills, commands, and agents adapt via per-runtime adapters (support tiers listed below)
 - **Human-readable state**: All planning files are markdown, readable without tools
 - **Full personality injection**: Agents are spawned with their complete .md as instructions
-- **Standardized format**: All 51 agents use Format A — emoji section headings, "Your" pronouns, current range 37-434 lines (target 80-350)
+- **Standardized format**: All 52 agents use Format A — emoji section headings, "Your" pronouns, current range 85-348 lines (minimum 80)
 - **Balanced cost**: Opus for planning, Sonnet for execution, Haiku for checks
 - **Default max 3 tasks per plan (configurable)**: Keeps work focused and reviewable
 - **Hybrid selection**: Workflow recommends agents, user confirms or overrides
@@ -582,9 +583,9 @@ These activate automatically when their prerequisites are met:
 
 <!-- legion-metrics:start -->
 - Commands: 11
-- Skills: 18
-- Agents: 51
-- Agent personality line range (current): 89-492
+- Skills: 22
+- Agents: 52
+- Agent personality line range (current): 85-348
 <!-- legion-metrics:end -->
 
 ## Requirements
@@ -600,6 +601,13 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and agent design gu
 ## License
 
 MIT
+
+
+
+
+
+
+
 
 
 
