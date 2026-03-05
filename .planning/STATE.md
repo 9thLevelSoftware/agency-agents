@@ -1,16 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v4.0
-milestone_name: — Inspiration Audit Adoption
-status: complete
-last_updated: "2026-03-02"
+milestone: v5.0
+milestone_name: — Production-Grade Architecture
+status: planning
+last_updated: "2026-03-05"
+last_session: "2026-03-05 — Completed 36-01 plan (Polymath agent + /legion:explore command)"
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 13
-  completed_plans: 13
-  total_requirements: 18
-  completed_requirements: 18
+  total_phases: 5
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  total_requirements: 32
+  completed_requirements: 0
 ---
 
 # Project State
@@ -21,11 +22,11 @@ progress:
 
 ## Current Position
 
-Milestone: v4.0 — Inspiration Audit Adoption
-Status: **Complete** — All 7 phases executed, 18/18 requirements delivered, milestone archived
-Last activity: 2026-03-02 — v4.0 milestone archived
+Milestone: v5.0 — Production-Grade Architecture
+Status: **Ready to Build** — Requirements defined, roadmap created
+Last activity: 2026-03-05 — Milestone v5.0 initialized (32 requirements, 5 phases)
 
-Progress: [==========] 100% (7/7 phases complete, 13/13 plans executed, 18/18 requirements delivered)
+Progress: [          ] 0% (5 phases planned, 0 plans executed, 0 requirements delivered)
 
 ## Shipped Milestones
 
@@ -38,15 +39,27 @@ Progress: [==========] 100% (7/7 phases complete, 13/13 plans executed, 18/18 re
 
 ## What's Deployed
 
-- 10 commands (`/legion:start`, `plan`, `build`, `review`, `status`, `quick`, `portfolio`, `milestone`, `agent`, `advise`)
+- 11 commands (`/legion:start`, `plan`, `build`, `review`, `status`, `quick`, `portfolio`, `milestone`, `agent`, `advise`, `explore`)
 - 18 skills with progressive disclosure metadata (triggers, token_cost, summary in frontmatter)
-- 52 agents across 9 divisions
+- 53 agents across 9 divisions (including Polymath pre-flight alignment specialist)
 - Plugin manifest at `.claude-plugin/plugin.json` — name: `legion`, version: `3.0.0`
 - Repository: `https://github.com/9thLevelSoftware/legion`
 
 ## Next Steps
 
-v4.0 milestone archived. Run `/gsd:new-milestone` (or `/legion:start`) to begin v5.0 planning.
+v5.0 milestone initialized with 32 requirements across 5 phases.
+
+**Phase 36 — Polymath Integration:** Plan 01 complete (Polymath agent + /legion:explore command created)
+
+**Next:** Execute Plan 02 — Integration testing with `/legion:start` handoff
+
+## Recent Activity
+
+### Completed: Plan 36-01 — Polymath Integration
+- Created `agents/polymath.md` — Pre-flight alignment specialist with structured choice workflow
+- Created `commands/explore.md` — `/legion:explore` command entry point
+- Updated `skills/agent-registry/CATALOG.md` — Registered Polymath in Specialized Division
+- Status: ✓ Complete, 3 commits, all verification criteria passed
 
 ## Session Continuity
 
