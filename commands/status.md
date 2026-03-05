@@ -76,13 +76,27 @@ DRY-RUN MODE (deterministic, no side effects)
       - total_records: total count of all outcome records
       If .planning/memory/OUTCOMES.md does not exist: skip, set memory_available = false
 
-   g. STATE.md `## GitHub` section — if present, extract:
+   g. `.planning/config/directory-mappings.yaml` — if exists:
+      - Run change detection (codebase-mapper Section 16.1)
+      - Assess significance (codebase-mapper Section 16.2)
+      - Set directory_mappings status:
+        ```yaml
+        directory_mappings:
+          exists: true
+          last_updated: {date from mappings file}
+          status: {current | stale}
+          changes_detected: significance.level != "none"
+          significance: significance.level
+          recommendation: significance.recommendation
+        ```
+
+   h. STATE.md `## GitHub` section — if present, extract:
       - Phase-to-issue mapping table
       - Phase-to-PR mapping table
       - Milestone mapping table (if present)
       If ## GitHub section does not exist: skip, set github_metadata_available = false
 
-   h. .planning/CODEBASE.md — if exists, extract:
+   i. .planning/CODEBASE.md — if exists, extract:
       - Analyzed date from the header
       - Calculate age in days from current date
       - Set codebase_map_available = true, codebase_map_age = {days}
@@ -191,9 +205,24 @@ DRY-RUN MODE (deterministic, no side effects)
    If github_metadata_available is false:
    Omit this section entirely. Do NOT show a placeholder.
 
-   If there are pre-existing issues in STATE.md:
-   ## Known Issues
-   {list pre-existing issues}
+If there are pre-existing issues in STATE.md:
+    ## Known Issues
+    {list pre-existing issues}
+
+If directory_mappings.status == "stale" OR directory_mappings.changes_detected:
+
+    ## Directory Mappings
+    Status: ⚠️ Changes detected ({directory_mappings.significance})
+    
+    New directories: {count}
+    Removed directories: {count}
+    Modified categories: {count}
+    
+    Recommendation: {directory_mappings.recommendation}
+    
+    Actions:
+    - Run `/legion:quick analyze codebase` to re-analyze
+    - Or: Review and update `.planning/config/directory-mappings.yaml`
 
 5. DETERMINE NEXT ACTION
    Apply this decision tree in order (first match wins):
