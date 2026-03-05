@@ -34,7 +34,7 @@ OpenCode supports subagent spawning with parallel execution, read-only Explore a
 | `model_execution` | User-configured model (e.g., `claude-sonnet-4-6`, `gpt-5.3-codex`) |
 | `model_check` | User-configured model (e.g., `claude-haiku-4-5`, `o3-mini`) |
 | `global_config_dir` | `~/.legion/` |
-| `plugin_discovery_glob` | `{HOME}/.config/opencode/agents/**/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
+| `plugin_discovery_glob` | `{HOME}/.legion/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
 | `commit_signature` | `Co-Authored-By: OpenCode <noreply@opencode.ai>` |
 
 ## Interaction Protocol

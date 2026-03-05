@@ -216,10 +216,12 @@ DRY-RUN MODE (deterministic, no side effects)
    Follow the active adapter's Execution Protocol to initialize review coordination.
    (e.g., TeamCreate on Claude Code; WAVE-CHECKLIST.md on other CLIs)
 
-   **LOOP START** (max 3 iterations):
+   Read `settings.review.max_cycles` from project settings (default 3 if not set). Store as {max_cycles}.
+
+   **LOOP START** (max {max_cycles} iterations):
 
    a. Increment cycle_count by 1
-      Announce: "Review cycle {cycle_count}/3 — Phase {N}: {phase_name}"
+      Announce: "Review cycle {cycle_count}/{max_cycles} — Phase {N}: {phase_name}"
 
    b. Spawn review agents (follow review-loop Section 3):
       For each selected reviewer:
@@ -270,7 +272,7 @@ DRY-RUN MODE (deterministic, no side effects)
       - Triage: must-fix list = all BLOCKERs + all WARNINGs; nice-to-have = all SUGGESTIONs
 
    d. Display findings table (follow review-loop Section 4, Step 4):
-      ## Review Findings — Cycle {cycle_count}/3 — Phase {N}
+      ## Review Findings — Cycle {cycle_count}/{max_cycles} — Phase {N}
 
       | #  | Severity   | File                    | Issue (brief)              | Reviewer           |
       |----|------------|-------------------------|----------------------------|--------------------|
@@ -294,7 +296,7 @@ DRY-RUN MODE (deterministic, no side effects)
    e. If aggregate verdict is PASS (must-fix list is empty AND all reviewers gave PASS):
       - Break the loop — go to step 6, Path A
 
-   f. If verdict is NEEDS WORK or FAIL and cycle_count < 3:
+   f. If verdict is NEEDS WORK or FAIL and cycle_count < {max_cycles}:
       Route fixes per review-loop Section 5 (Fix Cycle):
       - For each must-fix finding, determine the fix agent by file type:
         .md skill/command/agent/planning files → autonomous (no personality)
@@ -325,12 +327,12 @@ DRY-RUN MODE (deterministic, no side effects)
         Unresolved: {count or "none"}
 
         {adapter.commit_signature}"
-      - Update STATE.md: "Phase {N} under review — cycle {cycle_count}/3, {blocker_count}
+      - Update STATE.md: "Phase {N} under review — cycle {cycle_count}/{max_cycles}, {blocker_count}
         blocker(s) remaining"
       - Go back to LOOP START for re-review (re-review scopes to modified files per
         review-loop Section 6, Step 2)
 
-   g. If cycle_count >= 3 AND blockers remain:
+   g. If cycle_count >= {max_cycles} AND blockers remain:
       - Break the loop — go to step 6, Path B (escalation)
 
    **LOOP END**
@@ -504,7 +506,7 @@ DRY-RUN MODE (deterministic, no side effects)
      "Phase {N}: {phase_name} complete.
       Next: Run `/legion:plan {N+1}` to plan the next phase."
      If this was the last phase:
-     "All phases complete! The Legion Workflows project is finished."
+     "All phases complete! {project_name} is finished."
 
    - If escalated and user chose "Fix manually":
      "Fix the issues listed in .planning/phases/{NN}-{slug}/{NN}-REVIEW.md
@@ -516,10 +518,3 @@ DRY-RUN MODE (deterministic, no side effects)
 
    - Do NOT automatically trigger /legion:plan — let the user decide when to proceed.
 </process>
-</output>
-
-
-
-
-
-

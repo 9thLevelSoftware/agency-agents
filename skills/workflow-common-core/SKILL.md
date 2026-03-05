@@ -68,7 +68,7 @@ Use resolved path for all personality reads:
 
 | Command | Always Loads | Conditionally Loads |
 |---------|-------------|-------------------|
-| `/legion:start` | workflow-common-core, questioning-flow, agent-registry | codebase-mapper, workflow-common-domains |
+| `/legion:start` | workflow-common-core, questioning-flow, agent-registry, portfolio-manager, codebase-mapper | workflow-common-domains |
 | `/legion:plan` | workflow-common-core, agent-registry, phase-decomposer | memory-manager, github-sync, codebase-mapper, plan-critique, spec-pipeline, workflow-common-memory, workflow-common-github, workflow-common-domains |
 | `/legion:build` | workflow-common-core, agent-registry, wave-executor, execution-tracker | memory-manager, github-sync, codebase-mapper, workflow-common-memory, workflow-common-github |
 | `/legion:review` | workflow-common-core, agent-registry, review-loop, review-panel, execution-tracker | memory-manager, github-sync, design-workflows, workflow-common-memory, workflow-common-github, workflow-common-domains |

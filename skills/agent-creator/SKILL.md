@@ -194,8 +194,8 @@ Validation Checklist:
    - FAIL: unknown division
 
 6. Body content length
-   - Check: generated body content is at least 50 lines after the frontmatter
-   - PASS: 50+ lines
+   - Check: generated body content is at least 80 lines after the frontmatter
+   - PASS: 80+ lines
    - FAIL: too short — flesh out the personality content
 
 7. Heading check
@@ -268,32 +268,32 @@ color: {color}
 ```markdown
 # {AgentName} Agent Personality
 
-## Your Identity
+## 🧠 Your Identity & Memory
 
 {2-3 paragraphs establishing who this agent is, their background,
 expertise, and what drives them. Written in second person ("You are...").
 Draw from Stage 2 personality traits and domain knowledge.}
 
-## Core Mission
+## 🎯 Your Core Mission
 
 {Prose description of the agent's primary mission, followed by
 the capability list from Stage 2 written as detailed descriptions,
 not bare bullets. Each capability should be 2-3 sentences explaining
 what the agent does and how.}
 
-## Critical Rules
+## 🚨 Critical Rules You Must Follow
 
 {The hard rules from Stage 2, each as a numbered item with
 explanation of why the rule exists and what happens if violated.}
 
-## Your Process
+## 🔄 Your Workflow Process
 
 {Inferred workflow from the agent's capabilities. How does this agent
 approach a task from start to finish? What steps does it take?
 This section is generated — not directly from user input — based on
 the capabilities and personality captured in Stage 2.}
 
-## Success Criteria
+## 🎯 Your Success Metrics
 
 {How the agent measures its own success. Derived from capabilities
 and mission. Specific, observable outcomes — not vague aspirations.}

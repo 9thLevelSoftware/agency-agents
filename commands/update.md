@@ -68,5 +68,3 @@ skills/workflow-common-core/SKILL.md
 - If npm registry is unreachable: inform user and suggest trying again later
 - If the installer fails: display the error and suggest running the command manually
 </error_handling>
-</output>
-

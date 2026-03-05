@@ -365,7 +365,7 @@ Step 0: Check memory availability
     b. Call memory-manager Section 4 "Recall Agent Scores" with those task types
     c. Receive agent_id → memory_score mapping
     d. Pass this mapping to the per-plan selection below — it will be consumed
-       by agent-registry.md Step 4.5 (Memory Boost)
+       by agent-registry.md Step 6 (Memory Boost)
     e. Display memory context to inform the recommendation:
        "Memory: {count} past outcomes found for task types [{types}].
         Agents with track record: {agent_id} ({memory_score}), ..."

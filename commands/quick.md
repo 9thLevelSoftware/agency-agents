@@ -182,4 +182,3 @@ skills/agent-registry/CATALOG.md
    Note: Quick tasks do NOT update STATE.md or ROADMAP.md.
    They operate outside the phase workflow entirely.
 </process>
-</output>

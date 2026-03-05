@@ -34,7 +34,7 @@ Windsurf's Cascade is a single-agent system with deep context awareness. No suba
 | `model_execution` | User-configured model (Cascade default) |
 | `model_check` | User-configured model |
 | `global_config_dir` | `~/.legion/` |
-| `plugin_discovery_glob` | `{HOME}/.windsurf/extensions/**/legion/**/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
+| `plugin_discovery_glob` | `{HOME}/.legion/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
 | `commit_signature` | `Co-Authored-By: Windsurf <noreply@codeium.com>` |
 
 ## Interaction Protocol

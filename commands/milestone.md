@@ -15,7 +15,6 @@ Output: Milestone dashboard with actionable operations.
 skills/workflow-common-core/SKILL.md
 skills/milestone-tracker/SKILL.md
 skills/execution-tracker/SKILL.md
-skills/github-sync/SKILL.md
 </execution_context>
 
 <context>
@@ -26,6 +25,10 @@ skills/github-sync/SKILL.md
 </context>
 
 <process>
+0. CONDITIONAL SKILL LOADING
+   - `skills/github-sync/SKILL.md` only if `gh auth status` succeeds and a git remote exists.
+   If the condition is not met, skip silently and continue.
+
 1. CHECK PROJECT EXISTS
    - Attempt to read .planning/PROJECT.md
    - If not found:
@@ -246,4 +249,3 @@ IMPORTANT:
 - The action loop (Steps 5-6) keeps the user in milestone context until they choose "Done"
 - All operations handle missing/stale state gracefully
 </process>
-</output>

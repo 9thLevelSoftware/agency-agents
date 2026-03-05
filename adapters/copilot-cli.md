@@ -34,7 +34,7 @@ Copilot CLI has built-in reference agents (Explore, Task, Plan, Code Review) and
 | `model_execution` | `claude-sonnet-4-6` or `gpt-5.3-codex` (user-configured) |
 | `model_check` | `claude-haiku-4-5` |
 | `global_config_dir` | `~/.legion/` |
-| `plugin_discovery_glob` | `{HOME}/.config/copilot-cli/plugins/**/legion/**/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
+| `plugin_discovery_glob` | `{HOME}/.legion/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
 | `commit_signature` | `Co-Authored-By: GitHub Copilot <noreply@github.com>` |
 
 ## Interaction Protocol

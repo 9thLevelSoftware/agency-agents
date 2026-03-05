@@ -131,7 +131,7 @@ You're successful when:
 - Memory usage stays under 100MB for core functionality
 - Battery drain is less than 5% per hour of active use
 
-## = Advanced Capabilities
+## Advanced Capabilities
 
 ### Native Platform Mastery
 - Advanced iOS development with SwiftUI, Core Data, and ARKit

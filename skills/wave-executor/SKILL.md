@@ -73,8 +73,6 @@ Step 3: Read each plan file's YAML frontmatter
   - autonomous: boolean (true = no agent needed, false = agent-delegated)
   - files_modified: list of file paths this plan creates or modifies
   - requirements: list of requirement IDs covered by this plan
-  Extract the plan's assigned agent from the plan content body if present
-  (look for a line like: Agent: {agent-id} in the objective or context block)
 
 Step 4: Build the wave map
   Construct a data structure grouping plans by wave number:

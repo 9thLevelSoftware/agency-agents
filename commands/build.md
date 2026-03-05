@@ -313,9 +313,3 @@ DRY-RUN MODE (deterministic, no side effects)
 
    - Do NOT automatically trigger /legion:review — let the user decide when to proceed.
 </process>
-</output>
-
-
-
-
-

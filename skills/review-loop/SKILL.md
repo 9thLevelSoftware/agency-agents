@@ -635,7 +635,7 @@ Step 5: Route to next action
 What happens when the configured cycle limit is exhausted without resolving all blockers.
 
 ```
-When cycle_count exceeds {max_cycles} AND BLOCKERs remain unresolved:
+When cycle_count exceeds {max_cycles} AND (BLOCKERs OR unresolved WARNINGs) remain:
 
 Step 1: Generate escalation report
   Write .planning/phases/{NN}-{slug}/{NN}-REVIEW.md:

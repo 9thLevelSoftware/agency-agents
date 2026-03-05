@@ -34,7 +34,7 @@ Aider is a single-agent pair programming tool. No subagent spawning, no teams, n
 | `model_execution` | User-configured editor model (e.g., `claude-sonnet-4-6`, `deepseek-v3`) |
 | `model_check` | User-configured lightweight model (e.g., `claude-haiku-4-5`, `o1-mini`) |
 | `global_config_dir` | `~/.legion/` |
-| `plugin_discovery_glob` | `{HOME}/.config/aider/plugins/**/legion/**/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
+| `plugin_discovery_glob` | `{HOME}/.legion/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
 | `commit_signature` | `Co-Authored-By: Aider <noreply@aider.chat>` |
 
 ## Interaction Protocol

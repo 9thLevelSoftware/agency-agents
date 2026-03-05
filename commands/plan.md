@@ -43,7 +43,8 @@ DRY-RUN MODE (deterministic, no side effects)
    - `skills/workflow-common-github/SKILL.md` only if `gh auth status` succeeds and a git remote exists.
    - `skills/codebase-mapper/SKILL.md` only if `.planning/CODEBASE.md` exists.
    - `skills/marketing-workflows/SKILL.md` only for MKT-* requirements or marketing keyword detection.
-   
+   - `skills/design-workflows/SKILL.md` only for DSN-* requirements or design keyword detection.
+
    - `skills/workflow-common-domains/SKILL.md` only for MKT-* or DSN-* requirements (or matching domain keywords).
    - `skills/plan-critique/SKILL.md` only when user opts into plan critique.
    - `skills/spec-pipeline/SKILL.md` only when user opts into spec creation or an existing spec is present.
@@ -319,10 +320,3 @@ DRY-RUN MODE (deterministic, no side effects)
     - End with: "Run `/legion:build` to execute Phase {N}: {phase_name}"
     - Do NOT dump full plan file contents -- summary only
 </process>
-</output>
-
-
-
-
-
-

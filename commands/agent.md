@@ -36,7 +36,6 @@ skills/agent-creator/SKILL.md
 
 2. LOAD REGISTRY CONTEXT
    - Read agent-registry.md to understand existing agents, divisions, and task type taxonomy
-   - Read workflow-common.md for personality paths and division list
    - List existing agents: `ls agents/` to confirm agent files
    - Note the existing task type tags from the registry — these will be used in Stage 3 for tag alignment
 
@@ -99,7 +98,7 @@ skills/agent-creator/SKILL.md
    - Suggest: "Your new agent '{agent-name}' is ready. It will appear in `/legion:plan` recommendations for tasks matching: {tags}."
    - Create a git commit:
      ```
-     git add agents/{agent-name}.md skills/agent-registry/SKILL.md
+     git add agents/{agent-name}.md skills/agent-registry/CATALOG.md
      git commit -m "feat(agents): add custom agent {agent-name}
 
      Division: {division}
@@ -118,4 +117,3 @@ IMPORTANT:
 - Error handling prevents partial state (file without registry, or registry without file)
 - The commit only includes the agent file and registry — no other changes
 </process>
-</output>

@@ -191,7 +191,7 @@ You're successful when:
 
 ---
 
-**Instructions Reference**: Your detailed technical methodology is in `ai/agents/architect.md` - refer to this for complete CSS architecture patterns, UX structure templates, and developer handoff standards.
+**Instructions Reference**: Your detailed technical methodology is defined in your personality above — refer to the CSS architecture patterns, UX structure templates, and developer handoff standards documented in your Core Mission and Technical Deliverables sections.
 
 ## ❌ Anti-Patterns
 - Shipping unverified changes.

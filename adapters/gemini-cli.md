@@ -34,7 +34,7 @@ Gemini CLI supports experimental subagents and remote subagents via the Agent-to
 | `model_execution` | `gemini-pro` (default) |
 | `model_check` | `gemini-flash` (or `/model flash`) |
 | `global_config_dir` | `~/.legion/` |
-| `plugin_discovery_glob` | `{HOME}/.gemini/extensions/**/legion/**/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
+| `plugin_discovery_glob` | `{HOME}/.legion/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
 | `commit_signature` | `Co-Authored-By: Gemini <noreply@google.com>` |
 
 ## Interaction Protocol

@@ -34,7 +34,7 @@ Cursor supports async subagents with independent context windows. Subagents can 
 | `model_execution` | `claude-sonnet-4-6` (Cursor default) |
 | `model_check` | `claude-haiku-4-5` |
 | `global_config_dir` | `~/.legion/` |
-| `plugin_discovery_glob` | `{HOME}/.cursor/extensions/**/legion/**/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
+| `plugin_discovery_glob` | `{HOME}/.legion/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
 | `commit_signature` | `Co-Authored-By: Cursor Agent <noreply@cursor.com>` |
 
 ## Interaction Protocol

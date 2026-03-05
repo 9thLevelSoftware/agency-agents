@@ -34,7 +34,7 @@ Step 2: Score agents using agent-registry Section 3
   - Step 1: Parse extracted keywords as task terms
   - Step 2: Match agents — exact (3 pts), partial (1 pt), division (2 pts)
   - Step 3: Rank by score, break ties by specificity
-  - Step 4.5: Apply memory boost if OUTCOMES.md exists
+  - Step 6: Apply memory boost if OUTCOMES.md exists
 
 Step 3: Filter to review-capable agents
   From the ranked list, keep only agents whose specialty includes evaluation,
@@ -416,5 +416,5 @@ This skill extends patterns defined in:
 | Review Prompt Construction | review-loop.md Section 3 | Section 2 (rubric injection point) |
 | Feedback Collection | review-loop.md Section 4 | Section 3 (synthesis dedup) |
 | Mandatory Roles | agent-registry.md Section 3, Step 5 | Section 1, Step 4 (testing agent required) |
-| Memory Boost | agent-registry.md Section 3, Step 4.5 | Section 1, Step 2 (optional scoring boost) |
+| Memory Boost | agent-registry.md Section 3, Step 6 | Section 1, Step 2 (optional scoring boost) |
 

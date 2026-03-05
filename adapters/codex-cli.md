@@ -34,7 +34,7 @@ Codex CLI supports agent spawning via `spawn_agents_on_csv` but lacks native int
 | `model_execution` | `codex` (GPT-5.3-Codex or configured default) |
 | `model_check` | `o3-mini` (or configured lightweight model) |
 | `global_config_dir` | `~/.legion/` |
-| `plugin_discovery_glob` | `{HOME}/.codex/skills/**/legion/**/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
+| `plugin_discovery_glob` | `{HOME}/.legion/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
 | `commit_signature` | `Co-Authored-By: Codex <noreply@openai.com>` |
 
 ## Interaction Protocol

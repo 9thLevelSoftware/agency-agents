@@ -154,4 +154,3 @@ skills/codebase-mapper/SKILL.md
    - End with: "Run `/legion:plan 1` to begin Phase 1: {first_phase_name}"
    - Do NOT dump full file contents — summary only
 </process>
-</output>

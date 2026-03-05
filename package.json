@@ -48,8 +48,5 @@
     "opencode",
     "cursor"
   ],
-  "license": "MIT",
-  "dependencies": {
-    "@9thlevelsoftware/legion": "^1.0.1"
-  }
+  "license": "MIT"
 }

@@ -34,7 +34,7 @@ Amazon Q Developer CLI operates as a single-agent system with custom agent confi
 | `model_execution` | `claude-sonnet-4-6` |
 | `model_check` | `claude-haiku-4-5` |
 | `global_config_dir` | `~/.legion/` |
-| `plugin_discovery_glob` | `{HOME}/.aws/q/agents/**/legion/**/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
+| `plugin_discovery_glob` | `{HOME}/.legion/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
 | `commit_signature` | `Co-Authored-By: Amazon Q <noreply@amazon.com>` |
 
 ## Interaction Protocol

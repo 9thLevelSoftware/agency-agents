@@ -858,14 +858,14 @@ async function fetchNpmLatest(packageName) {
   const https = require('https');
   return new Promise((resolve, reject) => {
     const url = `https://registry.npmjs.org/${packageName}/latest`;
-    https.get(url, { headers: { Accept: 'application/json' } }, (res) => {
+    https.get(url, { headers: { Accept: 'application/json' }, timeout: 10000 }, (res) => {
       let data = '';
       res.on('data', (chunk) => { data += chunk; });
       res.on('end', () => {
         try { resolve(JSON.parse(data).version); }
         catch { reject(new Error('Failed to parse npm registry response')); }
       });
-    }).on('error', reject);
+    }).on('timeout', function() { this.destroy(); reject(new Error('Registry request timed out')); }).on('error', reject);
   });
 }
 

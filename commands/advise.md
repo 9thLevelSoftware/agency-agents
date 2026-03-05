@@ -176,5 +176,3 @@ skills/agent-registry/CATALOG.md
    Note: Advisory sessions do NOT update STATE.md, ROADMAP.md, or any project state.
    They operate entirely outside the phase workflow — pure consultation.
 </process>
-</output>
-

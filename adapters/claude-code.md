@@ -34,7 +34,7 @@ Claude Code supports the full Legion feature set: parallel wave execution via Ag
 | `model_execution` | `sonnet` |
 | `model_check` | `haiku` |
 | `global_config_dir` | `~/.claude/legion/` |
-| `plugin_discovery_glob` | `{HOME}/.claude/plugins/**/legion/**/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` before use — the Glob tool does not expand `~`) |
+| `plugin_discovery_glob` | `{HOME}/.claude/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` before use — the Glob tool does not expand `~`) |
 | `commit_signature` | `Co-Authored-By: Claude <noreply@anthropic.com>` |
 
 ## Prerequisites

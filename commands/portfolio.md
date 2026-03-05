@@ -86,7 +86,7 @@ Studio Producer: {AGENTS_DIR}/project-management-studio-producer.md (resolve AGE
    Within each group, sort by last activity (most recent first).
 
 4. DISPLAY CROSS-PROJECT DEPENDENCIES
-   Read the Cross-Project Dependencies table from PORTFOLIO.md.
+   Read the Cross-Project Dependencies table from {adapter.global_config_dir}/portfolio.md.
 
    If no dependencies:
    ```
@@ -174,10 +174,10 @@ Studio Producer: {AGENTS_DIR}/project-management-studio-producer.md (resolve AGE
    - Ask: "Which phase in {target_project} is blocked?"
    - Ask: "Dependency type?" — Options: "blocks (hard)" / "informs (soft)"
    - Follow portfolio-manager Section 4 (Add Dependency):
-     - Read PORTFOLIO.md
+     - Read {adapter.global_config_dir}/portfolio.md
      - Assign next DEP-{NN} ID
      - Add row to Cross-Project Dependencies table
-     - Write PORTFOLIO.md
+     - Write {adapter.global_config_dir}/portfolio.md
    - Display: "Dependency DEP-{NN} added: {source}:Phase {N} {type} {target}:Phase {M}"
    - Return to Step 6
 
@@ -246,4 +246,3 @@ IMPORTANT:
 - All operations handle missing/stale projects gracefully
 - Dependencies are validated against live project state, not just registry entries
 </process>
-</output>

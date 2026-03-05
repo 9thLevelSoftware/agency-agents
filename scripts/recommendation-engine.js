@@ -222,7 +222,13 @@ function recommendAgents({ prompt, topN = 4, memoryScores = {} }) {
   if (isExecutionTask(promptLower) && !hasTestingAgent(chosen)) {
     const testing = shortlist.find((c) => c.division === 'testing') || scored.find((c) => c.division === 'testing');
     if (testing) {
-      const replaceIndex = chosen.findIndex((c) => c.id !== 'project-manager-senior' && c.id !== 'project-management-project-shepherd' && c.id !== 'agents-orchestrator');
+      let replaceIndex = -1;
+      for (let i = chosen.length - 1; i >= 0; i--) {
+        if (!['project-manager-senior', 'project-management-project-shepherd', 'agents-orchestrator'].includes(chosen[i].id)) {
+          replaceIndex = i;
+          break;
+        }
+      }
       if (replaceIndex >= 0) {
         chosen[replaceIndex] = testing;
       } else {

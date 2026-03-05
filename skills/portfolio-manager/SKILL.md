@@ -297,7 +297,7 @@ From the agent usage map, derive:
 ### Division Reference (from workflow-common.md)
 
 ```
-engineering        — 7 agents
+engineering        — 8 agents
 design             — 6 agents
 marketing          — 8 agents
 product            — 3 agents

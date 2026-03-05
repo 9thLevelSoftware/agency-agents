@@ -237,5 +237,3 @@ DRY-RUN MODE (deterministic, no side effects)
 
    Tip: Run `/legion:quick <task>` anytime for ad-hoc tasks outside the phase workflow.
 </process>
-</output>
-
