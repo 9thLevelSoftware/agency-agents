@@ -1,0 +1,211 @@
+# Sample Directory Mappings
+# Example CODEBASE.md directory_mappings section for a Node.js/TypeScript project
+# Requirements: ENV-01, ENV-02
+
+version: "1.0.0"
+last_updated: "2026-03-05"
+requirements_validated: ["ENV-01", "ENV-02", "ENV-03", "ENV-04", "ENV-05"]
+
+# Directory mappings with priority levels:
+# - explicit (10): User-defined mappings, highest priority
+# - inferred (5): Auto-detected from codebase analysis
+# - default (1): Fallback patterns for common conventions
+
+directory_mappings:
+  routes:
+    description: "Application routes and API endpoints"
+    priority: 10
+    patterns:
+      - "app/routes/**"
+      - "src/routes/**"
+      - "pages/api/**"
+      - "src/pages/api/**"
+    file_types:
+      - ".ts"
+      - ".js"
+      - ".tsx"
+    naming_conventions:
+      - "*.routes.{ts,js}"
+      - "*.controller.{ts,js}"
+
+  tests:
+    description: "Test files and test suites"
+    priority: 10
+    patterns:
+      - "tests/**"
+      - "__tests__/**"
+      - "**/*.test.*"
+      - "**/*.spec.*"
+    file_types:
+      - ".test.ts"
+      - ".test.js"
+      - ".spec.ts"
+      - ".spec.js"
+    naming_conventions:
+      - "*.test.{ts,js}"
+      - "*.spec.{ts,js}"
+
+  components:
+    description: "UI components and React/Vue components"
+    priority: 10
+    patterns:
+      - "src/components/**"
+      - "app/components/**"
+      - "components/**"
+    file_types:
+      - ".tsx"
+      - ".jsx"
+      - ".vue"
+    naming_conventions:
+      - "PascalCase"
+      - "*.component.{tsx,jsx}"
+
+  services:
+    description: "Business logic services and providers"
+    priority: 10
+    patterns:
+      - "src/services/**"
+      - "services/**"
+      - "src/providers/**"
+    file_types:
+      - ".ts"
+      - ".js"
+    naming_conventions:
+      - "*.service.{ts,js}"
+      - "*.provider.{ts,js}"
+
+  utils:
+    description: "Utility functions and helpers"
+    priority: 5
+    patterns:
+      - "src/utils/**"
+      - "utils/**"
+      - "src/lib/**"
+      - "lib/**"
+    file_types:
+      - ".ts"
+      - ".js"
+    naming_conventions:
+      - "*.util.{ts,js}"
+      - "*.helper.{ts,js}"
+
+  types:
+    description: "TypeScript type definitions and interfaces"
+    priority: 5
+    patterns:
+      - "types/**"
+      - "src/types/**"
+      - "**/*.d.ts"
+    file_types:
+      - ".ts"
+      - ".d.ts"
+    naming_conventions:
+      - "*.types.ts"
+      - "*.d.ts"
+
+  config:
+    description: "Configuration files and settings"
+    priority: 5
+    patterns:
+      - "config/**"
+      - ".config/**"
+      - "**/config.*"
+    file_types:
+      - ".yaml"
+      - ".yml"
+      - ".json"
+      - ".ts"
+      - ".js"
+    naming_conventions:
+      - "*.config.{ts,js,json,yaml}"
+
+  middleware:
+    description: "Express/Connect middleware and interceptors"
+    priority: 10
+    patterns:
+      - "middleware/**"
+      - "src/middleware/**"
+    file_types:
+      - ".ts"
+      - ".js"
+    naming_conventions:
+      - "*.middleware.{ts,js}"
+
+  assets:
+    description: "Static assets, images, fonts, and public files"
+    priority: 1
+    patterns:
+      - "public/**"
+      - "static/**"
+      - "assets/**"
+      - "src/assets/**"
+    file_types:
+      - ".png"
+      - ".jpg"
+      - ".jpeg"
+      - ".svg"
+      - ".woff"
+      - ".woff2"
+    naming_conventions:
+      - "kebab-case"
+
+  styles:
+    description: "CSS, SCSS, and styling files"
+    priority: 5
+    patterns:
+      - "styles/**"
+      - "src/styles/**"
+      - "css/**"
+      - "scss/**"
+      - "**/*.css"
+      - "**/*.scss"
+      - "**/*.less"
+    file_types:
+      - ".css"
+      - ".scss"
+      - ".less"
+    naming_conventions:
+      - "*.module.{css,scss}"
+      - "*.styles.{css,scss}"
+
+# Enforcement configuration
+enforcement:
+  mode: error
+  # Per-category overrides
+  categories:
+    routes: error
+    tests: error
+    components: error
+    services: error
+    middleware: error
+    config: warn
+    types: warn
+    utils: warn
+    assets: off
+    styles: warn
+
+  # Path override patterns (legacy compatibility)
+  overrides:
+    - "legacy/**"
+    - "vendor/**"
+    - "migrations/**"
+
+# Auto-update configuration
+auto_update:
+  enabled: true
+  watch_patterns:
+    - "*/**"
+  exclude_patterns:
+    - "node_modules/**"
+    - ".git/**"
+    - "dist/**"
+    - "build/**"
+  debounce_ms: 5000
+
+# Monorepo support
+monorepo:
+  enabled: true
+  package_patterns:
+    - "packages/*/"
+    - "apps/*/"
+  inherit_mappings: true
