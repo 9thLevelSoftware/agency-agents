@@ -9,9 +9,9 @@ progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 14
-  completed_plans: 12
+  completed_plans: 13
   total_requirements: 32
-  completed_requirements: 23
+  completed_requirements: 24
 ---
 
 # Project State
@@ -23,10 +23,10 @@ progress:
 ## Current Position
 
 Milestone: v5.0 — Production-Grade Architecture
-Status: **Ready to Build** — Requirements defined, roadmap created
-Last activity: 2026-03-05 — Milestone v5.0 initialized (32 requirements, 5 phases)
+Status: **Building** — 24/32 requirements delivered
+Last activity: 2026-03-05 — Completed 39-02 plan (Path Enforcement Integration)
 
-Progress: [█████     ] 50% (5 phases planned, 9 plans executed, 18 requirements delivered)
+Progress: [██████    ] 56% (5 phases planned, 13 plans executed, 24 requirements delivered)
 
 ## Shipped Milestones
 
@@ -112,13 +112,31 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
   - Created `.planning/templates/codebase-mappings.yaml` (167 lines, 13 categories)
   - Generated `.planning/config/directory-mappings.yaml` for Legion (85 lines, 7 categories)
   - Requirements satisfied: ENV-01, ENV-02
-- Plan 02: Integrate path enforcement into spec pipeline (ENV-03)
+- Plan 02 complete (Path Enforcement Integration)
+  - Added Step 3.5 to spec-pipeline skill: Validate deliverable paths
+  - Added Section 8: Path Enforcement Utilities with helper functions
+  - All 45 path-enforcement tests passing
+  - Requirements satisfied: ENV-03
 - Plan 03: Add file placement validation to wave executor (ENV-04)
 - Plan 04: Implement auto-update mechanism for mappings (ENV-05)
 
-**Phase Status:** In Progress — 2/5 plans complete (39-00, 39-01)
+**Phase Status:** In Progress — 3/5 plans complete (39-00, 39-01, 39-02)
 
 ## Recent Activity
+
+### Completed: Plan 39-02 — Path Enforcement Integration
+- Added Step 3.5 to `skills/spec-pipeline/SKILL.md` — Validate deliverable paths against directory mappings
+  - Category inference from file patterns and descriptions
+  - Path validation with strict/warn/off enforcement modes
+  - Override mechanism with documented reasons
+  - Path Validation section for spec output
+- Added Section 8 — Path Enforcement Utilities (ENV-03)
+  - 8.1: Category inference function
+  - 8.2: Path validation function
+  - 8.3: Integration reference table
+  - 8.4: Example validation flow
+- All 45 path-enforcement tests passing
+- Commit: `517024d`
 
 ### Completed: Plan 39-00 — Environment Mapping Test Scaffolding
 - Created comprehensive test suite with 117 passing tests
