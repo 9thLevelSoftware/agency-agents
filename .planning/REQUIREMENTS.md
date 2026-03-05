@@ -131,11 +131,11 @@ Verify coverage for critical DevOps and security roles.
 | WAVE-03 | Phase 37 | Complete |
 | WAVE-04 | Phase 37 | Complete |
 | WAVE-05 | Phase 37 | Complete |
-| ENV-01 | Phase 39 | Pending |
-| ENV-02 | Phase 39 | Pending |
-| ENV-03 | Phase 39 | Pending |
-| ENV-04 | Phase 39 | Pending |
-| ENV-05 | Phase 39 | Pending |
+| ENV-01 | Phase 39 | Complete |
+| ENV-02 | Phase 39 | Complete |
+| ENV-03 | Phase 39 | Complete |
+| ENV-04 | Phase 39 | Complete |
+| ENV-05 | Phase 39 | Complete |
 | ROSTER-01 | Phase 40 | Pending |
 | ROSTER-02 | Phase 40 | Pending |
 | ROSTER-03 | Phase 40 | Pending |

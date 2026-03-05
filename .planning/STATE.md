@@ -4,14 +4,14 @@ milestone: v5.0
 milestone_name: — Production-Grade Architecture
 status: building
 last_updated: "2026-03-05"
-last_session: "2026-03-05 — Completed 39-03 plan (File Placement Validation in Wave Executor)"
+last_session: "2026-03-05 — Completed 39-04 plan (Environment Mapping Auto-Update)"
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 14
   completed_plans: 14
   total_requirements: 32
-  completed_requirements: 24
+  completed_requirements: 25
 ---
 
 # Project State
@@ -23,10 +23,10 @@ progress:
 ## Current Position
 
 Milestone: v5.0 — Production-Grade Architecture
-Status: **Building** — 24/32 requirements delivered
-Last activity: 2026-03-05 — Completed 39-02 plan (Path Enforcement Integration)
+Status: **Building** — 25/32 requirements delivered
+Last activity: 2026-03-05 — Completed 39-04 plan (Environment Mapping Auto-Update)
 
-Progress: [██████    ] 56% (5 phases planned, 13 plans executed, 24 requirements delivered)
+Progress: [██████    ] 58% (5 phases planned, 14 plans executed, 25 requirements delivered)
 
 ## Shipped Milestones
 
@@ -123,11 +123,44 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
   - Added Section 10: File Placement Utilities with helper functions
   - All 45 path-enforcement tests passing
   - Requirements satisfied: ENV-04
-- Plan 04: Implement auto-update mechanism for mappings (ENV-05)
+- Plan 04 complete (Environment Mapping Auto-Update)
+  - Added Section 16: Auto-Update Protocol (ENV-05) to codebase-mapper skill
+    - Change detection, significance assessment, update protocol
+    - Integration triggers for status, build, plan commands
+  - Updated status command with directory mappings staleness detection
+    - Step 2g: Check Directory Mappings Status
+    - Dashboard integration for reporting changes
+  - Created `.planning/templates/auto-update-manifest.md` for tracking updates
+  - All 34 environment-mapping tests passing
+  - Requirements satisfied: ENV-05
 
-**Phase Status:** In Progress — 4/5 plans complete (39-00, 39-01, 39-02, 39-03)
+**Phase 39 — Environment Mapping: COMPLETE**
+- All 5 plans complete (39-00, 39-01, 39-02, 39-03, 39-04)
+- Requirements satisfied: ENV-01, ENV-02, ENV-03, ENV-04, ENV-05
 
 ## Recent Activity
+
+### Completed: Plan 39-04 — Environment Mapping Auto-Update
+- Added Section 16: Auto-Update Protocol (ENV-05) to `skills/codebase-mapper/SKILL.md`
+  - 16.1: Change Detection with `detectStructureChanges()` function
+    - Detect new directories, removed directories, modified categories
+    - Identify potential new categories from uncategorized directories
+  - 16.2: Change Significance Assessment with threshold-based levels
+    - Minor: removed directories or category modifications
+    - Moderate: new directories in existing or new categories
+    - Major: multiple new directories or categories
+  - 16.3: Update Protocol with backup creation and safe updates
+  - 16.4: Integration Triggers for status, build, plan, post-execution
+  - 16.5: User Notification format with action suggestions
+  - 16.6: Configuration schema for auto-update behavior
+- Updated `commands/status.md` with directory mappings staleness detection
+  - Step 2g: Check Directory Mappings Status with change detection
+  - Dashboard section displaying changes and recommendations
+- Created `.planning/templates/auto-update-manifest.md` (60 lines)
+  - Update summary, changes applied, manual overrides
+  - Verification checklist and sign-off section
+- All 34 environment-mapping tests passing
+- Requirements satisfied: ENV-05
 
 ### Completed: Plan 39-03 — File Placement Validation in Wave Executor
 - Enhanced `skills/wave-executor/SKILL.md` with file placement validation (ENV-04)
