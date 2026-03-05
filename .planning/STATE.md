@@ -4,14 +4,14 @@ milestone: v5.0
 milestone_name: — Production-Grade Architecture
 status: planning
 last_updated: "2026-03-05"
-last_session: "2026-03-05 — Completed 36-01 plan (Polymath agent + /legion:explore command)"
+last_session: "2026-03-05 — Completed 36-02 plan (Polymath engine skill + exploration summary template)"
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 2
   total_requirements: 32
-  completed_requirements: 0
+  completed_requirements: 3
 ---
 
 # Project State
@@ -49,11 +49,23 @@ Progress: [          ] 0% (5 phases planned, 0 plans executed, 0 requirements de
 
 v5.0 milestone initialized with 32 requirements across 5 phases.
 
-**Phase 36 — Polymath Integration:** Plan 01 complete (Polymath agent + /legion:explore command created)
+**Phase 36 — Polymath Integration:** 
+- Plan 01 complete (Polymath agent + /legion:explore command)
+- Plan 02 complete (Polymath engine skill + exploration summary template)
 
-**Next:** Execute Plan 02 — Integration testing with `/legion:start` handoff
+**Next:** Execute Plan 03 — Integration testing with `/legion:start` handoff
 
 ## Recent Activity
+
+### Completed: Plan 36-02 — Polymath Integration
+- Created `skills/polymath-engine/SKILL.md` — Execution engine with research-first workflow
+  - 7 sections: Research Phase, Structured Choice Protocol, Knowledge Gap Detection, Exchange Management, Crystallization Output, Integration Points, State Management
+  - 5-category gap taxonomy: technical, scope, constraint, dependency, risk
+  - 7-exchange limit with early exit conditions
+- Created `.planning/templates/exploration-summary.md` — Template for exploration output documents
+  - 9 sections: Raw Concept, Crystallized Summary, Knowns, Unknowns/Deferred, Decisions Made, Research Applied, Complexity Assessment, Recommendation, Next Action
+- Status: ✓ Complete, 3 commits, all verification criteria passed
+- Requirements satisfied: POLY-02, POLY-03, POLY-04
 
 ### Completed: Plan 36-01 — Polymath Integration
 - Created `agents/polymath.md` — Pre-flight alignment specialist with structured choice workflow
@@ -78,6 +90,10 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
 - Pre-mortem + assumption hunting for plan critique
 - Competing architecture proposals: opt-in, 3 philosophies (Minimal, Clean, Pragmatic)
 - Spec pipeline: optional 5-stage pre-coding specification
+- Polymath engine: research-first exploration with structured choice protocol
 - Cherry-pick from 10 inspiration sources, don't wholesale adopt any
 - Maintain Legion's core identity: personality-first, wave execution, human-readable state
 - Anti-patterns documented as guardrails (no agent inflation, no 50-iteration loops, no full automation without checkpoints)
+- Polymath structured choice: arrow keys + Enter, max 7 exchanges
+- Gap detection taxonomy: 5 categories (technical, scope, constraint, dependency, risk)
+- Exploration output: crystallized summary or explicit park decision
