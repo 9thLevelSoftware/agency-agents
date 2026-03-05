@@ -80,13 +80,14 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 | xr-immersive-developer | `agents/xr-immersive-developer.md` | Expert WebXR and immersive technology developer with specialization in browser-based AR/VR/XR applications | webxr, ar-vr, browser-3d, immersive-apps, cross-platform-xr |
 | xr-interface-architect | `agents/xr-interface-architect.md` | Spatial interaction designer and interface strategist for immersive AR/VR/XR environments | spatial-ux, xr-interfaces, comfort-design, 3d-navigation, presence-optimization |
 
-### Specialized Division (3 agents)
+### Specialized Division (4 agents)
 
 | ID | File | Specialty | Task Types |
 |----|------|-----------|------------|
 | agents-orchestrator | `agents/agents-orchestrator.md` | Spawnable coordinator agent for cross-division task execution within a build task — coordinates specialist agents through dev-QA loops when multi-agent coordination is needed | orchestration, pipeline-management, workflow-automation, agent-coordination, dev-qa-loops |
 | data-analytics-reporter | `agents/data-analytics-reporter.md` | Technical data analyst building and maintaining data infrastructure — pipelines, ETL, warehouses, data quality. Pre-analysis work. | data-pipelines, etl, data-quality, data-warehouse, data-engineering |
 | lsp-index-engineer | `agents/lsp-index-engineer.md` | Language Server Protocol specialist building unified code intelligence systems through LSP client orchestration and semantic indexing | lsp, code-intelligence, semantic-indexing, language-servers, developer-tooling |
+| polymath | `agents/polymath.md` | Pre-flight alignment specialist who crystallizes raw ideas through structured exploration and research-first questioning | exploration, clarification, research-first, structured-questions, gap-detection |
 
 ### Support Division (6 agents)
 
