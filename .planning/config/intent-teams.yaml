@@ -1,0 +1,120 @@
+# Intent Teams Registry
+# Maps semantic intent flags to agent team templates and validation rules
+# Version: 1.0.0
+# Requirements Validated: INTENT-05, INTENT-06
+
+intents:
+  harden:
+    description: "Security audit with Testing + Security divisions"
+    agents:
+      primary:
+        - testing-reality-checker
+        - engineering-security-engineer
+      secondary:
+        - testing-api-tester
+        - testing-evidence-collector
+    domains:
+      - "security"
+      - "owasp"
+      - "stride"
+      - "vulnerability-assessment"
+    mode: "ad_hoc"
+    
+  document:
+    description: "Generate documentation without implementation"
+    agents:
+      primary:
+        - product-technical-writer
+      secondary:
+        - engineering-frontend-developer
+    filter:
+      include_task_types: ["documentation", "readme", "api-docs", "guides"]
+      exclude_task_types: ["implementation", "code", "testing"]
+    mode: "filter_plans"
+    
+  skip-frontend:
+    description: "Exclude frontend/UI tasks"
+    filter:
+      exclude_agents:
+        - engineering-frontend-developer
+        - design-ui-designer
+      exclude_file_patterns:
+        - "src/frontend/**"
+        - "*.tsx"
+        - "*.jsx"
+        - "*.css"
+        - "*.scss"
+        - "*.vue"
+      exclude_task_types: ["ui-components", "frontend-architecture", "styling"]
+    mode: "filter_plans"
+    
+  skip-backend:
+    description: "Exclude backend/API tasks"
+    filter:
+      exclude_agents:
+        - engineering-backend-architect
+        - engineering-devops-automator
+      exclude_file_patterns:
+        - "src/api/**"
+        - "src/backend/**"
+        - "*.route.ts"
+        - "prisma/schema.prisma"
+      exclude_task_types: ["api-endpoints", "database-schema", "backend-logic"]
+    mode: "filter_plans"
+    
+  security-only:
+    description: "Security-only review audit"
+    agents:
+      primary:
+        - engineering-security-engineer
+      secondary:
+        - testing-api-tester
+    domains:
+      - "security"
+      - "owasp"
+      - "stride"
+      - "authentication"
+      - "authorization"
+    mode: "filter_review"
+
+task_types:
+  # Taxonomy for filtering
+  documentation: ["readme", "api-docs", "guides", "tutorials", "comments"]
+  implementation: ["feature", "bug-fix", "refactor", "optimization"]
+  testing: ["unit-test", "integration-test", "e2e-test", "security-test"]
+  ui-components: ["react", "vue", "angular", "svelte", "web-components"]
+  frontend-architecture: ["routing", "state-management", "build-config"]
+  api-endpoints: ["rest", "graphql", "grpc", "webhook"]
+  database-schema: ["migration", "model", "relation", "index"]
+
+validation:
+  mutual_exclusion:
+    - flags: ["harden", "document"]
+      error: "Cannot use --just-harden and --just-document together. Choose one intent."
+    - flags: ["document", "skip-frontend"]
+      error: "--just-document already excludes implementation; --skip-frontend is redundant."
+    - flags: ["skip-frontend", "skip-backend"]
+      error: "Cannot skip both frontend and backend — nothing to build."
+      
+  requires_command:
+    - flag: "harden"
+      commands: ["build"]
+      error: "--just-harden is only valid for /legion:build"
+    - flag: "document"
+      commands: ["build"]
+      error: "--just-document is only valid for /legion:build"
+    - flag: "skip-frontend"
+      commands: ["build"]
+      error: "--skip-frontend is only valid for /legion:build"
+    - flag: "skip-backend"
+      commands: ["build"]
+      error: "--skip-backend is only valid for /legion:build"
+    - flag: "security-only"
+      commands: ["review"]
+      error: "--just-security is only valid for /legion:review"
+      
+  allowed_combinations:
+    - flags: ["skip-frontend"]
+      allows: ["skip-backend"]
+    - flags: ["harden"]
+      allows: []
