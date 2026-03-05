@@ -1,0 +1,607 @@
+# Agent Coverage Matrix
+# Maps all 53 Legion agents to production-grade roles with coverage analysis
+# Version: 1.0.0
+# Requirements: ROSTER-01, ROSTER-02, ROSTER-03, ROSTER-04, ROSTER-05, ROSTER-06
+
+metadata:
+  version: "1.0.0"
+  last_updated: "2026-03-05"
+  total_agents: 53
+  agent_limit: 52
+  over_limit: 1
+  requirements_validated:
+    - "ROSTER-01"
+    - "ROSTER-02"
+    - "ROSTER-03"
+    - "ROSTER-04"
+    - "ROSTER-05"
+    - "ROSTER-06"
+
+# All 53 agents with coverage mappings
+agents:
+  # Design Division (6 agents)
+  design-brand-guardian:
+    division: "Design"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "No production role coverage - specialized branding agent"
+    notes: "Brand strategy specialist, not production operations"
+
+  design-ui-designer:
+    division: "Design"
+    covers_roles:
+      - "frontend-specialist"
+    coverage_strength: "partial"
+    gaps:
+      - "No React/Vue implementation expertise"
+      - "No state management architecture"
+      - "Limited accessibility compliance (visual only)"
+    notes: "Covers UI design but not frontend engineering"
+
+  design-ux-architect:
+    division: "Design"
+    covers_roles:
+      - "frontend-specialist"
+    coverage_strength: "partial"
+    gaps:
+      - "Implementation expertise limited"
+      - "No React/Vue framework specialization"
+    notes: "CSS systems and layout frameworks, not full frontend dev"
+
+  design-ux-researcher:
+    division: "Design"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Research focus, not production roles"
+    notes: "User research and testing, not operations"
+
+  design-visual-storyteller:
+    division: "Design"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Visual narratives and multimedia"
+    notes: "Marketing support, not production"
+
+  design-whimsy-injector:
+    division: "Design"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Delight design and microinteractions"
+    notes: "Creative specialist, not production-critical"
+
+  # Engineering Division (8 agents)
+  engineering-ai-engineer:
+    division: "Engineering"
+    covers_roles:
+      - "ml-engineer"
+    coverage_strength: "partial"
+    gaps:
+      - "Limited MLOps pipeline expertise"
+      - "No feature store experience"
+      - "No Kubeflow/MLflow specialization"
+    notes: "ML model development but not full MLOps"
+
+  engineering-backend-architect:
+    division: "Engineering"
+    covers_roles:
+      - "backend-architect"
+      - "senior-developer"
+    coverage_strength: "full"
+    gaps: []
+    notes: "Full coverage for backend architecture"
+
+  engineering-devops-automator:
+    division: "Engineering"
+    covers_roles:
+      - "platform-engineer"
+    coverage_strength: "partial"
+    gaps:
+      - "No IDP (Internal Developer Platform) focus"
+      - "Limited golden path definition"
+    notes: "CI/CD and infrastructure, not platform-as-product"
+
+  engineering-frontend-developer:
+    division: "Engineering"
+    covers_roles:
+      - "frontend-specialist"
+      - "full-stack-developer"
+    coverage_strength: "full"
+    gaps: []
+    notes: "Full frontend coverage with React/Vue expertise"
+
+  engineering-mobile-app-builder:
+    division: "Engineering"
+    covers_roles:
+      - "full-stack-developer"
+    coverage_strength: "partial"
+    gaps:
+      - "Mobile-specific, limited web full-stack"
+    notes: "Native iOS/Android and cross-platform"
+
+  engineering-rapid-prototyper:
+    division: "Engineering"
+    covers_roles:
+      - "full-stack-developer"
+    coverage_strength: "partial"
+    gaps:
+      - "MVP/prototype focus, not production-grade"
+      - "Limited scalability expertise"
+    notes: "Fast POC development, not production systems"
+
+  engineering-senior-developer:
+    division: "Engineering"
+    covers_roles:
+      - "senior-developer"
+      - "full-stack-developer"
+    coverage_strength: "full"
+    gaps: []
+    notes: "Production-grade implementation lead"
+
+  engineering-laravel-specialist:
+    division: "Engineering"
+    covers_roles:
+      - "backend-architect"
+    coverage_strength: "partial"
+    gaps:
+      - "PHP/Laravel only, limited general backend"
+      - "No microservices architecture"
+    notes: "Specialized PHP stack coverage"
+
+  # Marketing Division (8 agents)
+  marketing-app-store-optimizer:
+    division: "Marketing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "App store marketing, not production"
+    notes: "ASO and app marketing"
+
+  marketing-content-creator:
+    division: "Marketing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Content strategy, not production roles"
+    notes: "Multi-platform content"
+
+  marketing-growth-hacker:
+    division: "Marketing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "User acquisition, not production"
+    notes: "Growth experimentation"
+
+  marketing-instagram-curator:
+    division: "Marketing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Social media, not production"
+    notes: "Instagram marketing"
+
+  marketing-reddit-community-builder:
+    division: "Marketing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Community engagement, not production"
+    notes: "Reddit marketing"
+
+  marketing-social-media-strategist:
+    division: "Marketing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Cross-platform strategy, not production"
+    notes: "Social media strategy"
+
+  marketing-tiktok-strategist:
+    division: "Marketing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "TikTok marketing, not production"
+    notes: "Short-form video marketing"
+
+  marketing-twitter-engager:
+    division: "Marketing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Twitter marketing, not production"
+    notes: "Real-time engagement"
+
+  # Product Division (3 agents)
+  product-feedback-synthesizer:
+    division: "Product"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "User feedback analysis, not production"
+    notes: "Product insights from feedback"
+
+  product-sprint-prioritizer:
+    division: "Product"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Sprint planning, not production roles"
+    notes: "Agile prioritization"
+
+  product-trend-researcher:
+    division: "Product"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Market research, not production"
+    notes: "Trend and opportunity analysis"
+
+  # Project Management Division (5 agents)
+  project-management-experiment-tracker:
+    division: "Project Management"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "A/B testing coordination, not production"
+    notes: "Experiment design and tracking"
+
+  project-management-project-shepherd:
+    division: "Project Management"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Project coordination, not production roles"
+    notes: "Cross-functional coordination"
+
+  project-management-studio-operations:
+    division: "Project Management"
+    covers_roles:
+      - "cost-optimizer"
+    coverage_strength: "partial"
+    gaps:
+      - "Limited cloud-specific FinOps"
+      - "No AWS/GCP/Azure cost optimization"
+    notes: "Operational efficiency, partial cost coverage"
+
+  project-management-studio-producer:
+    division: "Project Management"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Portfolio management, not production"
+    notes: "Strategic project orchestration"
+
+  project-manager-senior:
+    division: "Project Management"
+    covers_roles:
+      - "runbook-maintainer"
+    coverage_strength: "partial"
+    gaps:
+      - "Task management focus, not operational runbooks"
+    notes: "Task breakdown and planning"
+
+  # Spatial Computing Division (6 agents)
+  macos-spatial-metal-engineer:
+    division: "Spatial Computing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Specialized spatial computing, not general production"
+    notes: "visionOS/macOS Metal specialist"
+
+  terminal-integration-specialist:
+    division: "Spatial Computing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Terminal emulation niche, not production"
+    notes: "SwiftTerm and text rendering"
+
+  visionos-spatial-engineer:
+    division: "Spatial Computing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "visionOS niche, not general production"
+    notes: "Vision Pro spatial computing"
+
+  xr-cockpit-interaction-specialist:
+    division: "Spatial Computing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "XR cockpit niche, not production"
+    notes: "Immersive cockpit systems"
+
+  xr-immersive-developer:
+    division: "Spatial Computing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "WebXR niche, not general production"
+    notes: "Browser-based AR/VR/XR"
+
+  xr-interface-architect:
+    division: "Spatial Computing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Spatial UX niche, not production"
+    notes: "XR interface design"
+
+  # Specialized Division (4 agents)
+  agents-orchestrator:
+    division: "Specialized"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Workflow orchestration, not production roles"
+    notes: "Cross-division agent coordination"
+
+  data-analytics-reporter:
+    division: "Specialized"
+    covers_roles:
+      - "data-engineer"
+    coverage_strength: "partial"
+    gaps:
+      - "Pre-analysis focus, not full data engineering"
+      - "No stream processing expertise"
+    notes: "Data pipelines and ETL infrastructure"
+
+  lsp-index-engineer:
+    division: "Specialized"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "LSP tooling niche, not production"
+    notes: "Language Server Protocol specialist"
+
+  polymath:
+    division: "Specialized"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Exploration and clarification, not production"
+    notes: "Pre-flight alignment specialist"
+
+  # Support Division (6 agents)
+  support-analytics-reporter:
+    division: "Support"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Post-analysis dashboards, not production roles"
+    notes: "KPI reporting and BI"
+
+  support-executive-summary-generator:
+    division: "Support"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Executive summaries, not production"
+    notes: "Consultant-grade reporting"
+
+  support-finance-tracker:
+    division: "Support"
+    covers_roles:
+      - "cost-optimizer"
+    coverage_strength: "partial"
+    gaps:
+      - "Financial planning focus, not cloud FinOps"
+    notes: "Budget and cash flow management"
+
+  support-infrastructure-maintainer:
+    division: "Support"
+    covers_roles:
+      - "sre-reliability-engineer"
+      - "incident-responder"
+    coverage_strength: "partial"
+    gaps:
+      - "No formal SLO/error budget management"
+      - "No chaos engineering"
+      - "Limited observability focus"
+    notes: "Infrastructure and reliability, partial SRE coverage"
+
+  support-legal-compliance-checker:
+    division: "Support"
+    covers_roles:
+      - "compliance-auditor"
+    coverage_strength: "full"
+    gaps: []
+    notes: "Full compliance and legal coverage"
+
+  support-support-responder:
+    division: "Support"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Customer support, not incident response"
+    notes: "User-facing support"
+
+  # Testing Division (7 agents)
+  testing-api-tester:
+    division: "Testing"
+    covers_roles:
+      - "security-engineer"
+    coverage_strength: "minimal"
+    gaps:
+      - "API security only, not comprehensive security"
+      - "No OWASP/STRIDE expertise"
+      - "Limited to testing context"
+    notes: "Partial security coverage via API testing"
+
+  testing-evidence-collector:
+    division: "Testing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Visual QA, not production roles"
+    notes: "Screenshot evidence collection"
+
+  testing-performance-benchmarker:
+    division: "Testing"
+    covers_roles:
+      - "sre-reliability-engineer"
+    coverage_strength: "partial"
+    gaps:
+      - "Load testing focus, not SLO management"
+      - "No incident response"
+    notes: "Performance testing, partial SRE coverage"
+
+  testing-reality-checker:
+    division: "Testing"
+    covers_roles:
+      - "incident-responder"
+    coverage_strength: "partial"
+    gaps:
+      - "Production readiness certification"
+      - "Not operational incident response"
+    notes: "Go/no-go quality gates"
+
+  testing-test-results-analyzer:
+    division: "Testing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Test analysis, not production"
+    notes: "Quality metrics and reporting"
+
+  testing-tool-evaluator:
+    division: "Testing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "Tool assessment, not production"
+    notes: "Technology evaluation"
+
+  testing-workflow-optimizer:
+    division: "Testing"
+    covers_roles: []
+    coverage_strength: "none"
+    gaps:
+      - "QA process, not production"
+    notes: "Test pipeline optimization"
+
+# Missing-but-Referenced Agents
+missing_agents:
+  engineering-security-engineer:
+    referenced_in:
+      - ".planning/config/intent-teams.yaml (harden intent)"
+      - ".planning/config/intent-teams.yaml (security-only intent)"
+    expected_division: "Engineering"
+    should_cover_roles:
+      - "security-engineer"
+    priority: critical
+    impact: "OWASP/STRIDE expertise missing - critical security gap"
+    
+  product-technical-writer:
+    referenced_in:
+      - ".planning/config/intent-teams.yaml (document intent)"
+    expected_division: "Product"
+    should_cover_roles:
+      - "runbook-maintainer"
+    priority: important
+    impact: "Documentation workflows incomplete"
+
+# Coverage Analysis Summary
+coverage_summary:
+  total_agents: 53
+  agent_limit: 52
+  over_limit_by: 1
+  
+  full_coverage:
+    count: 2
+    agents:
+      - "engineering-backend-architect"
+      - "engineering-senior-developer"
+      - "support-legal-compliance-checker"
+      - "engineering-frontend-developer"
+    
+  partial_coverage:
+    count: 12
+    agents:
+      - "design-ui-designer"
+      - "design-ux-architect"
+      - "engineering-ai-engineer"
+      - "engineering-devops-automator"
+      - "engineering-mobile-app-builder"
+      - "engineering-rapid-prototyper"
+      - "engineering-laravel-specialist"
+      - "project-management-studio-operations"
+      - "project-manager-senior"
+      - "data-analytics-reporter"
+      - "support-infrastructure-maintainer"
+      - "support-finance-tracker"
+      - "testing-api-tester"
+      - "testing-performance-benchmarker"
+      - "testing-reality-checker"
+      
+  no_coverage:
+    count: 37
+    agents:
+      - "All 6 Design agents (branding/visual focus)"
+      - "All 8 Marketing agents"
+      - "All 3 Product agents"
+      - "3 of 5 Project Management agents"
+      - "All 6 Spatial Computing agents (specialized)"
+      - "3 of 4 Specialized agents"
+      - "3 of 6 Support agents"
+      - "4 of 7 Testing agents (specialized testing)"
+
+# Critical Gaps Identified
+critical_gaps:
+  - role: "security-engineer"
+    severity: critical
+    reason: "No dedicated OWASP/STRIDE security engineer"
+    partial_coverage_from: "testing-api-tester (minimal)"
+    recommendation: "Create engineering-security-engineer agent"
+    
+  - role: "data-scientist"
+    severity: important
+    reason: "No formal statistical modeling agent"
+    partial_coverage_from: "engineering-ai-engineer (limited)"
+    recommendation: "Enhance data-analytics-reporter or create new agent"
+    
+  - role: "chaos-engineer"
+    severity: important
+    reason: "No chaos engineering expertise"
+    partial_coverage_from: "None"
+    recommendation: "Consider expanding support-infrastructure-maintainer scope"
+    
+  - role: "observability-engineer"
+    severity: important
+    reason: "No OpenTelemetry/tracing specialist"
+    partial_coverage_from: "support-infrastructure-maintainer (limited)"
+    recommendation: "Enhance infrastructure agent capabilities"
+    
+  - role: "ai-ethics-reviewer"
+    severity: nice-to-have
+    reason: "No bias/fairness specialist"
+    partial_coverage_from: "None"
+    recommendation: "Optional for AI-heavy projects only"
+    
+  - role: "penetration-tester"
+    severity: nice-to-have
+    reason: "No offensive security capability"
+    partial_coverage_from: "None"
+    recommendation: "Optional - covered by security reviews"
+
+# Limit Enforcement Status
+limit_status:
+  current_count: 53
+  maximum_allowed: 52
+  overage: 1
+  overage_severity: warning
+  recommendation: "Remove one agent to comply with 52-agent limit"
+  candidates_for_removal:
+    - agent: "polymath"
+      reason: "Exploration agent, could be merged with other workflow"
+    - agent: "marketing-reddit-community-builder"
+      reason: "Highly specialized, limited general utility"
+    - agent: "terminal-integration-specialist"
+      reason: "Very specialized spatial computing niche"
