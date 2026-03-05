@@ -1,0 +1,132 @@
+{
+  "description": "Sample review findings for deduplication testing. Addresses AUTH-03 (Finding Consolidation).",
+  "version": "1.0.0",
+  "last_updated": "2026-03-05",
+  "findings": [
+    {
+      "id": "SEC-001",
+      "file": "src/auth/login.js",
+      "line": 45,
+      "severity": "BLOCKER",
+      "rule": "owasp-top-10",
+      "message": "SQL injection vulnerability in user authentication",
+      "agent": "security-engineer",
+      "timestamp": "2026-03-05T10:00:00Z"
+    },
+    {
+      "id": "STYLE-001",
+      "file": "src/auth/login.js",
+      "line": 45,
+      "severity": "WARNING",
+      "rule": "code-style",
+      "message": "Function exceeds 50 lines, consider refactoring",
+      "agent": "code-reviewer",
+      "timestamp": "2026-03-05T10:05:00Z"
+    },
+    {
+      "id": "SEC-002",
+      "file": "src/api/users.js",
+      "line": 120,
+      "severity": "BLOCKER",
+      "rule": "vulnerability-assessment",
+      "message": "Missing input validation on user ID parameter",
+      "agent": "security-engineer",
+      "timestamp": "2026-03-05T10:10:00Z"
+    },
+    {
+      "id": "STYLE-002",
+      "file": "src/api/users.js",
+      "line": 120,
+      "severity": "SUGGESTION",
+      "rule": "code-style",
+      "message": "Consider using destructuring for cleaner code",
+      "agent": "code-reviewer",
+      "timestamp": "2026-03-05T10:15:00Z"
+    },
+    {
+      "id": "UI-001",
+      "file": "src/components/LoginForm.jsx",
+      "line": 32,
+      "severity": "WARNING",
+      "rule": "accessibility",
+      "message": "Form input missing associated label",
+      "agent": "frontend-developer",
+      "timestamp": "2026-03-05T10:20:00Z"
+    },
+    {
+      "id": "TEST-001",
+      "file": "src/auth/login.js",
+      "line": 45,
+      "severity": "SUGGESTION",
+      "rule": "test-coverage",
+      "message": "Add unit tests for authentication logic",
+      "agent": "qa-automation",
+      "timestamp": "2026-03-05T10:25:00Z"
+    },
+    {
+      "id": "PERF-001",
+      "file": "src/api/users.js",
+      "line": 200,
+      "severity": "WARNING",
+      "rule": "frontend-performance",
+      "message": "Large bundle size detected in user dashboard",
+      "agent": "frontend-developer",
+      "timestamp": "2026-03-05T10:30:00Z"
+    },
+    {
+      "id": "SEC-003",
+      "file": "src/api/users.js",
+      "line": 200,
+      "severity": "BLOCKER",
+      "rule": "owasp-top-10",
+      "message": "Sensitive data exposure in API response",
+      "agent": "security-engineer",
+      "timestamp": "2026-03-05T10:35:00Z"
+    },
+    {
+      "id": "UNIQUE-001",
+      "file": "src/utils/helpers.js",
+      "line": 15,
+      "severity": "SUGGESTION",
+      "rule": "language-idioms",
+      "message": "Use Array.prototype.map instead of for loop",
+      "agent": "code-reviewer",
+      "timestamp": "2026-03-05T10:40:00Z"
+    },
+    {
+      "id": "REL-001",
+      "file": "src/services/database.js",
+      "line": 88,
+      "severity": "WARNING",
+      "rule": "service-level-objectives",
+      "message": "Database query exceeds 500ms threshold",
+      "agent": "sre-chaos",
+      "timestamp": "2026-03-05T10:45:00Z"
+    }
+  ],
+  "expected_deduplication": {
+    "by_file_line": {
+      "src/auth/login.js:45": {
+        "expected_kept": "SEC-001",
+        "reason": "BLOCKER severity highest among 3 findings at this location"
+      },
+      "src/api/users.js:120": {
+        "expected_kept": "SEC-002",
+        "reason": "BLOCKER severity higher than SUGGESTION"
+      },
+      "src/api/users.js:200": {
+        "expected_kept": "SEC-003",
+        "reason": "BLOCKER severity higher than WARNING"
+      }
+    }
+  },
+  "domain_filtering_tests": {
+    "security_engineer_should_keep": ["SEC-001", "SEC-002", "SEC-003"],
+    "security_engineer_should_filter": ["STYLE-001", "UI-001"],
+    "frontend_developer_should_keep": ["UI-001", "PERF-001"],
+    "frontend_developer_should_filter": ["SEC-001", "SEC-002"],
+    "code_reviewer_should_keep": ["STYLE-001", "STYLE-002", "UNIQUE-001"],
+    "code_reviewer_should_filter": ["SEC-001", "UI-001"]
+  },
+  "severity_order": ["BLOCKER", "WARNING", "SUGGESTION"]
+}
