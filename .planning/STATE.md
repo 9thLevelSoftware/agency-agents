@@ -4,14 +4,14 @@ milestone: v5.0
 milestone_name: — Production-Grade Architecture
 status: planning
 last_updated: "2026-03-05"
-last_session: "2026-03-05 — Completed 36-03 plan (Polymath integration with /legion:start)"
+last_session: "2026-03-05 — Completed 37-03 plan (Review panel deduplication and authority filtering)"
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 5
+  completed_plans: 5
   total_requirements: 32
-  completed_requirements: 6
+  completed_requirements: 8
 ---
 
 # Project State
@@ -26,7 +26,7 @@ Milestone: v5.0 — Production-Grade Architecture
 Status: **Ready to Build** — Requirements defined, roadmap created
 Last activity: 2026-03-05 — Milestone v5.0 initialized (32 requirements, 5 phases)
 
-Progress: [█         ] 12% (5 phases planned, 1 plan executed, 2 requirements delivered)
+Progress: [██        ] 15% (5 phases planned, 2 plans executed, 4 requirements delivered)
 
 ## Shipped Milestones
 
@@ -60,6 +60,20 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
 **Next:** Phase 37 — select next phase from v5.0 roadmap
 
 ## Recent Activity
+
+### Completed: Plan 37-03 — Review Panel Deduplication and Authority Filtering
+- Updated `skills/review-panel/SKILL.md` — Enhanced deduplication and filtering
+  - Step 2: Location-based deduplication by file:line with line range overlap detection
+  - Step 2.5: Deduplication report with statistics (raw findings, unique locations, merged count)
+  - Step 3: Out-of-domain critique filtering with domain ownership mapping
+  - Severity escalation rules (BLOCKER > WARNING > SUGGESTION)
+  - Authority Filtering Report showing filtered findings statistics
+- Updated `skills/review-loop/SKILL.md` — Authority integration
+  - Enhanced Step 2 with 2a (dedup), 2b (filtering), 2c (priority ordering)
+  - Authority-Aware Fix Assignment routing fixes to domain owners
+  - Section 8: Authority Conflict Resolution (3 conflict types with escalation path)
+- Status: ✓ Complete, 3 commits, all verification criteria passed
+- Requirements satisfied: AUTH-03, AUTH-04
 
 ### Completed: Plan 37-02 — Wave Executor Authority Injection
 - Updated `skills/wave-executor/SKILL.md` — Authority constraint injection and two-wave pattern
