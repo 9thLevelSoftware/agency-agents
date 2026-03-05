@@ -288,11 +288,25 @@ Step 1: Parse findings
     - Suggested Fix
     - Reviewer agent ID
 
-Step 2: Deduplicate across reviewers
-  When multiple reviewers flag overlapping issues:
-  - Same file + same line/section: keep the highest severity finding, discard lower
-  - Same file + different lines: keep both as separate findings
-  - Reviewers disagree on severity for the same issue: escalate to BLOCKER
+Step 2: Deduplicate and filter findings
+
+After parsing findings from all reviewers:
+
+2a. Location-based deduplication (same as review-panel Section 3, Step 2):
+    - Group by file:line
+    - Keep highest severity per location
+    - Escalate when reviewers disagree
+
+2b. Authority-based filtering (same as review-panel Section 3, Step 3):
+    - Load active reviewers from panel composition
+    - Build domain ownership map
+    - Filter out-of-domain critiques
+    - Log filtered findings for transparency
+
+2c. Priority ordering:
+    - Sort findings: BLOCKER first, then WARNING, then SUGGESTION
+    - Within severity: domain owner findings first, then general
+    - This ensures most critical, authoritative feedback is addressed first
 
 Step 2.5: Filter by confidence
   - HIGH-confidence findings (80%+): pass through to triage
@@ -456,6 +470,24 @@ Step 5: Collect fix results
   Unresolved: {count unfixed findings, or "none"}
 
   {adapter.commit_signature}"
+
+### Authority-Aware Fix Assignment
+
+When assigning fixes to agents:
+1. Identify the domain of each finding
+2. If finding has a domain owner on the panel:
+   - Assign fix to domain owner agent
+   - Rationale: Owner has authority, should implement the fix
+3. If finding is general domain (no owner):
+   - Assign to original implementer or generalist agent
+   - Use agent-registry recommendation
+4. Never assign a domain-specific fix to an agent outside that domain
+   - Exception: If domain owner is unavailable, escalate to user
+
+Example assignments:
+- Security finding → security-engineer (owner)
+- Performance finding → performance-benchmarker (owner)
+- Code style finding → engineering-senior-developer or original author
 ```
 
 ---
@@ -776,6 +808,40 @@ Step 4: Present stale loop report to user
 
   **Do not auto-proceed.** Wait for explicit user decision.
 ```
+
+---
+
+## Section 8: Authority Conflict Resolution
+
+Handle conflicts that arise from authority boundaries during review.
+
+### Conflict Types
+
+**Type 1: Domain owner disagrees with general reviewer**
+- Scenario: security-engineer says "OK", code-reviewer says "security issue"
+- Resolution: Trust domain owner. Filter code-reviewer finding.
+- Rationale: Domain owner has specialist expertise
+
+**Type 2: Two agents claim same domain**
+- Scenario: Both security-engineer and backend-architect critique auth logic
+- Resolution: Both are owners (backend-architect for API design, security-engineer for security)
+- Action: Keep both findings, flag as "overlapping domain expertise"
+- User decision: Accept both, or specify primary owner for future
+
+**Type 3: Finding outside all panel expertise**
+- Scenario: Finding about mobile architecture, but no mobile-developer on panel
+- Resolution: Keep finding, flag as "outside panel expertise"
+- Action: Suggest adding mobile-developer to panel for re-review
+
+### Escalation Path
+
+If authority filtering produces unexpected results:
+1. Document the conflict: which findings were filtered, why
+2. Present to user: "{N} findings filtered by authority rules. Review?"
+3. User options:
+   - Accept filtering (default)
+   - Override: include filtered findings
+   - Add domain owner to panel and re-run review
 
 ---
 
