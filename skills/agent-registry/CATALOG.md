@@ -53,7 +53,7 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 | engineering-senior-developer | `agents/engineering-senior-developer.md` | Stack-agnostic senior implementation lead for production-grade software delivery across web, backend, and platform systems | full-stack, architecture, refactoring, reliability, code-quality |
 | engineering-laravel-specialist | `agents/engineering-laravel-specialist.md` | Laravel/Livewire/FluxUI implementation specialist for high-fidelity product delivery, performance, and maintainable PHP architecture | laravel, livewire, fluxui, php, blade |
 
-### Marketing Division (8 agents)
+### Marketing Division (6 agents)
 
 | ID | File | Specialty | Task Types |
 |----|------|-----------|------------|
@@ -61,9 +61,7 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 | marketing-content-creator | `agents/marketing-content-creator.md` | Expert content strategist and creator for multi-platform campaigns, editorial calendars, compelling copy, and brand storytelling | content-strategy, copywriting, editorial-calendar, brand-storytelling, multi-platform |
 | marketing-growth-hacker | `agents/marketing-growth-hacker.md` | Expert growth strategist specializing in rapid user acquisition through data-driven experimentation, viral loops, and conversion funnels | growth-hacking, user-acquisition, viral-loops, conversion-funnels, experimentation |
 | marketing-instagram-curator | `agents/marketing-instagram-curator.md` | Expert Instagram marketing specialist focused on visual storytelling, community building, and multi-format content optimization | instagram, visual-content, community-building, reels, aesthetic-curation |
-| marketing-reddit-community-builder | `agents/marketing-reddit-community-builder.md` | Expert Reddit marketing specialist focused on authentic community engagement, value-driven content creation, and long-term relationship building | reddit, community-engagement, authentic-marketing, subreddit-strategy, value-content |
 | marketing-social-media-strategist | `agents/marketing-social-media-strategist.md` | Cross-platform social media strategist deciding which platforms, what content mix, and how to allocate resources across all social channels | cross-platform-strategy, platform-selection, content-mix, social-media-audit, channel-allocation |
-| marketing-tiktok-strategist | `agents/marketing-tiktok-strategist.md` | Expert TikTok marketing specialist focused on viral content creation, algorithm optimization, and community building | tiktok, short-form-video, viral-content, algorithm-optimization, trend-riding |
 | marketing-twitter-engager | `agents/marketing-twitter-engager.md` | Expert Twitter marketing specialist focused on real-time engagement, thought leadership building, and community-driven growth | twitter, real-time-engagement, thought-leadership, community-growth, social-listening |
 
 ### Product Division (3 agents)
@@ -193,7 +191,7 @@ Reverse mapping from common project needs to recommended agents.
 
 ### Content & Marketing
 - **Strategy**: marketing-social-media-strategist, marketing-growth-hacker, marketing-content-creator
-- **Platform-specific**: marketing-twitter-engager, marketing-instagram-curator, marketing-tiktok-strategist, marketing-reddit-community-builder
+- **Platform-specific**: marketing-twitter-engager, marketing-instagram-curator
 - **Support**: design-visual-storyteller, design-brand-guardian, marketing-app-store-optimizer
 
 ### Quality & Testing
