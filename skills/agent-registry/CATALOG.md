@@ -15,7 +15,7 @@ intent_mappings:
 
 # Agent Catalog
 
-Complete catalog of all 52 built-in agents across 9 divisions, plus any custom agents created via `/legion:agent`. Also contains the Task Type Index (reverse mapping from project need to recommended agents).
+Complete catalog of all 53 built-in agents across 9 divisions, plus any custom agents created via `/legion:agent`. Also contains the Task Type Index (reverse mapping from project need to recommended agents).
 
 The recommendation algorithm and team assembly patterns are in `SKILL.md` in this directory.
 
@@ -40,7 +40,7 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 | design-visual-storyteller | `agents/design-visual-storyteller.md` | Expert visual communication specialist creating compelling visual narratives, multimedia content, and brand storytelling through design | visual-narratives, multimedia-content, brand-storytelling, infographics, presentation-design |
 | design-whimsy-injector | `agents/design-whimsy-injector.md` | Expert creative specialist adding personality, delight, and playful elements to brand experiences with memorable joyful interactions | microinteractions, delight-design, animation, creative-direction, personality |
 
-### Engineering Division (8 agents)
+### Engineering Division (9 agents)
 
 | ID | File | Specialty | Task Types |
 |----|------|-----------|------------|
@@ -48,10 +48,11 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 | engineering-backend-architect | `agents/engineering-backend-architect.md` | Senior backend architect specializing in scalable system design, database architecture, API development, and cloud infrastructure | backend, api-development, database-design, microservices, cloud-architecture |
 | engineering-devops-automator | `agents/engineering-devops-automator.md` | Expert DevOps engineer specializing in infrastructure automation, CI/CD pipeline development, and cloud operations | ci-cd, infrastructure, automation, deployment, cloud-ops |
 | engineering-frontend-developer | `agents/engineering-frontend-developer.md` | Expert frontend developer specializing in modern web technologies, React/Vue/Angular frameworks, UI implementation, and performance optimization | frontend, react, web-performance, responsive-design, spa |
+| engineering-laravel-specialist | `agents/engineering-laravel-specialist.md` | Laravel/Livewire/FluxUI implementation specialist for high-fidelity product delivery, performance, and maintainable PHP architecture | laravel, livewire, fluxui, php, blade |
 | engineering-mobile-app-builder | `agents/engineering-mobile-app-builder.md` | Specialized mobile application developer with expertise in native iOS/Android development and cross-platform frameworks | mobile-ios, mobile-android, cross-platform, react-native, flutter |
 | engineering-rapid-prototyper | `agents/engineering-rapid-prototyper.md` | Specialized in ultra-fast proof-of-concept development and MVP creation using efficient tools and frameworks | prototyping, mvp, rapid-development, proof-of-concept, hackathon |
+| engineering-security-engineer | `agents/engineering-security-engineer.md` | Expert security engineer specializing in application security, OWASP Top 10 remediation, STRIDE threat modeling, and secure code review | owasp, stride, security-audit, vulnerability-assessment, secure-code-review |
 | engineering-senior-developer | `agents/engineering-senior-developer.md` | Stack-agnostic senior implementation lead for production-grade software delivery across web, backend, and platform systems | full-stack, architecture, refactoring, reliability, code-quality |
-| engineering-laravel-specialist | `agents/engineering-laravel-specialist.md` | Laravel/Livewire/FluxUI implementation specialist for high-fidelity product delivery, performance, and maintainable PHP architecture | laravel, livewire, fluxui, php, blade |
 
 ### Marketing Division (6 agents)
 
@@ -64,12 +65,13 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 | marketing-social-media-strategist | `agents/marketing-social-media-strategist.md` | Cross-platform social media strategist deciding which platforms, what content mix, and how to allocate resources across all social channels | cross-platform-strategy, platform-selection, content-mix, social-media-audit, channel-allocation |
 | marketing-twitter-engager | `agents/marketing-twitter-engager.md` | Expert Twitter marketing specialist focused on real-time engagement, thought leadership building, and community-driven growth | twitter, real-time-engagement, thought-leadership, community-growth, social-listening |
 
-### Product Division (3 agents)
+### Product Division (4 agents)
 
 | ID | File | Specialty | Task Types |
 |----|------|-----------|------------|
 | product-feedback-synthesizer | `agents/product-feedback-synthesizer.md` | Expert in collecting, analyzing, and synthesizing user feedback from multiple channels to extract actionable product insights | user-feedback, sentiment-analysis, product-insights, feature-requests, feedback-triage |
 | product-sprint-prioritizer | `agents/product-sprint-prioritizer.md` | Expert product manager specializing in agile sprint planning, feature prioritization, and resource allocation | sprint-planning, prioritization, backlog-grooming, resource-allocation, roadmap |
+| product-technical-writer | `agents/product-technical-writer.md` | Expert technical writer specializing in API documentation, user guides, README generation, and developer documentation | api-docs, user-guides, readme, technical-writing, documentation |
 | product-trend-researcher | `agents/product-trend-researcher.md` | Expert market intelligence analyst specializing in emerging trends, competitive analysis, and opportunity assessment | market-research, competitive-analysis, trend-identification, opportunity-assessment, industry-intelligence |
 
 ### Project Management Division (5 agents)
@@ -181,6 +183,7 @@ Reverse mapping from common project needs to recommended agents.
 
 ### API Development
 - **Primary**: engineering-backend-architect, engineering-ai-engineer, engineering-senior-developer
+- **Documentation**: product-technical-writer
 - **Testing**: testing-api-tester, testing-performance-benchmarker
 - **Coordination**: project-manager-senior
 
@@ -196,6 +199,7 @@ Reverse mapping from common project needs to recommended agents.
 
 ### Quality & Testing
 - **Core**: testing-api-tester, testing-evidence-collector, testing-reality-checker
+- **Security**: engineering-security-engineer
 - **Analysis**: testing-test-results-analyzer, testing-performance-benchmarker
 - **Process**: testing-workflow-optimizer, testing-tool-evaluator
 
@@ -213,6 +217,12 @@ Reverse mapping from common project needs to recommended agents.
 - **visionOS/macOS**: visionos-spatial-engineer, macos-spatial-metal-engineer, terminal-integration-specialist
 - **WebXR/Immersive**: xr-immersive-developer, xr-cockpit-interaction-specialist
 - **Interface Design**: xr-interface-architect, design-ux-architect
+
+### Documentation
+- **Technical Writing**: product-technical-writer
+- **Developer Docs**: product-technical-writer, engineering-frontend-developer
+- **API Documentation**: product-technical-writer, engineering-backend-architect
+- **README Generation**: product-technical-writer
 
 ### Research & Analysis
 - **Product**: product-trend-researcher, product-feedback-synthesizer, product-sprint-prioritizer
