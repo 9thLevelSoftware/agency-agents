@@ -850,3 +850,96 @@ AGENTS_DIR is resolved once per command via workflow-common Agent Path Resolutio
 ```
 
 If an agent-id is ambiguous, check agent-registry.md Section 1 for the canonical file path.
+
+---
+
+## Section 6: INTENT-BASED PLAN FILTERING
+
+When build command detects filter_plans mode intents (--just-document, --skip-frontend, etc.), apply filtering before wave execution.
+
+### 6.1 Filter Predicates
+
+**Agent-based filter:**
+```javascript
+function createAgentFilter(excludeAgents) {
+  return (plan) => {
+    const planAgent = extractAssignedAgent(plan);
+    return !excludeAgents.includes(planAgent);
+  };
+}
+```
+
+**File-based filter:**
+```javascript
+function createFileFilter(patterns) {
+  return (plan) => {
+    const files = plan.frontmatter.files_modified || [];
+    return !files.some(file => 
+      patterns.some(pattern => minimatch(file, pattern))
+    );
+  };
+}
+```
+
+**Task-type filter:**
+```javascript
+function createTaskFilter(includeTypes, excludeTypes) {
+  return (plan) => {
+    const planTypes = detectTaskTypes(plan.content);
+    
+    if (includeTypes && !planTypes.some(t => includeTypes.includes(t))) {
+      return false;
+    }
+    
+    if (excludeTypes && planTypes.some(t => excludeTypes.includes(t))) {
+      return false;
+    }
+    
+    return true;
+  };
+}
+```
+
+### 6.2 Filter Execution
+
+```markdown
+## Step 3.5: APPLY INTENT FILTERS (conditional)
+
+If intent flags with mode: "filter_plans" detected:
+
+1. Load filter criteria from intent-teams.yaml
+2. Build filter predicates:
+   - Agent filters (exclude_agents)
+   - File filters (exclude_file_patterns)
+   - Task filters (include_task_types, exclude_task_types)
+
+3. Apply filters:
+   ```
+   filteredPlans = allPlans.filter(plan => 
+     agentFilter(plan) && 
+     fileFilter(plan) && 
+     taskFilter(plan)
+   );
+   ```
+
+4. Validate results:
+   - If filteredPlans.length === 0:
+     - ERROR: "No plans remain after applying filters: {intents}"
+     - SUGGEST: "This phase may be focused on excluded areas. Use /legion:plan to view all plans."
+     - EXIT
+   
+   - If filteredPlans.length < allPlans.length:
+     - LOG: "Filtered {original} plans → {filtered} plans"
+     - LOG: "Excluded: {list of excluded plan names}"
+
+5. Proceed with filteredPlans in Step 4 (Wave Execution)
+```
+
+### 6.3 Task Type Detection
+
+Detect task types from plan content:
+- Parse objective and tasks sections
+- Match keywords against intent-teams.yaml task_types taxonomy
+- Cache results for performance
+
+This enables INTENT-02 (--just-document) and INTENT-03 (--skip-frontend) by filtering plans before execution.
