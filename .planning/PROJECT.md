@@ -20,6 +20,17 @@ Turn a collection of 52 isolated agent personalities into a functional AI legion
 
 10 commands, 18 skills, 52 agents across 9 divisions. See [roadmap](ROADMAP.md) for milestone history.
 
+## Current Milestone: v5.0 — Production-Grade Architecture
+
+**Goal:** Integrate proven architectural concepts from production-grade orchestration patterns while preserving Legion's multi-runtime flexibility and 52-agent versatility.
+
+**Target features:**
+- **Polymath Integration** — Pre-flight alignment via `/legion:explore` command with dedicated exploration agent
+- **Strict Authority Boundaries** — Domain ownership matrix preventing agent conflicts during parallel execution
+- **Intent-Driven Partial Execution** — Semantic flags for targeted operations (`--just-harden`, `--just-document`, `--skip-frontend`)
+- **Adaptive Environment Mapping** — Enhanced brownfield detection with workspace path enforcement
+- **Roster Gap Analysis** — Verify coverage for DevOps/SRE and security audit roles
+
 ### Next Milestone Goals
 
 To be defined via `/gsd:new-milestone` or `/legion:start`.
