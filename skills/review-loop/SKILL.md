@@ -530,6 +530,36 @@ Step 2: Determine what to re-review
     still need attention)
   - Do NOT re-review the entire phase — scope to changed and unresolved areas
 
+### Cycle Comparison (for Observability)
+
+Before dispatching the re-review, compare current cycle findings against the previous cycle:
+
+1. **Fingerprint each finding using two-tier strategy**:
+   - **Location fingerprint** (for cross-cycle identity matching): `{file}:{line_range}:{issue_summary_hash}`
+     Used by Cycle Delta to determine if the same finding exists across cycles, regardless of severity changes.
+   - **Full fingerprint** (for exact-match stale-loop detection): `{file}:{line_range}:{severity}:{issue_summary_hash}`
+     Preserves existing stale-loop behavior in Section 6, Step 1.5 — do NOT modify the existing stale-loop fingerprint.
+2. **Classify each finding using location fingerprints**:
+   - `resolved`: location fingerprint present in cycle N-1, absent in cycle N (fix was applied)
+   - `new`: location fingerprint absent in cycle N-1, present in cycle N (regression or newly discovered)
+   - `unchanged`: location fingerprint present in both cycles AND severity unchanged
+   - `downgraded`: location fingerprint present in both cycles AND severity LOWER in cycle N (partial fix)
+   - `upgraded`: location fingerprint present in both cycles AND severity HIGHER in cycle N (issue worsened)
+3. **Store the classification** for use in REVIEW.md generation (Step 7):
+   ```
+   cycle_delta:
+     cycle: {N}
+     vs_cycle: {N-1}
+     findings_resolved: [{fingerprint, file, issue}]
+     findings_new: [{fingerprint, file, issue}]
+     findings_unchanged: [{fingerprint, file, issue}]
+     findings_downgraded: [{fingerprint, file, issue, old_severity, new_severity}]
+     findings_upgraded: [{fingerprint, file, issue, old_severity, new_severity}]
+   ```
+4. **Accumulate deltas**: If more than 2 cycles, maintain a list of cycle_delta records to show full progression.
+
+The location fingerprint is derived from the existing deduplication key by dropping the severity component. The full fingerprint remains unchanged for stale-loop detection. This is NOT a new matching algorithm — it is a decomposition of the existing fingerprint into two tiers.
+
 Step 3: Spawn review agents for re-review
   - Use the SAME review agent personalities from the initial review (consistency)
   - Modify the review prompt to include the cycle context:
@@ -612,6 +642,67 @@ Step 1: Generate review summary file
 
   ## Suggestions (Not Required)
   {List any SUGGESTION-severity findings that were noted but not required for approval}
+
+  ## Cycle Delta
+
+  > This section tracks finding progression across review cycles.
+  > Omitted for single-cycle reviews where no re-review occurred.
+
+  ### Progression Summary
+
+  | Metric | Cycle 1 | Cycle 2 | ... | Final |
+  |--------|---------|---------|-----|-------|
+  | Total findings | {count} | {count} | ... | {count} |
+  | BLOCKER | {count} | {count} | ... | {count} |
+  | MUST-FIX | {count} | {count} | ... | {count} |
+  | SUGGESTION | {count} | {count} | ... | {count} |
+
+  ### Findings Resolved (fixed between cycles)
+  | Finding | File | Resolved In |
+  |---------|------|-------------|
+  | {issue summary} | {file path} | Cycle {N} |
+
+  ### Findings New (appeared in later cycles)
+  | Finding | File | Appeared In | Severity |
+  |---------|------|-------------|----------|
+  | {issue summary} | {file path} | Cycle {N} | {severity} |
+
+  ### Findings Unchanged (persisted across all cycles)
+  | Finding | File | Severity | Cycles Present |
+  |---------|------|----------|----------------|
+  | {issue summary} | {file path} | {severity} | {1, 2, ...N} |
+
+  ### Severity Changes
+  | Finding | File | From | To | Cycle |
+  |---------|------|------|----|-------|
+  | {issue summary} | {file path} | {old severity} | {new severity} | {N} |
+
+  **Cycle Delta generation rules:**
+  - If only 1 review cycle occurred (passed on first try), omit the entire "Cycle Delta" section
+  - If 2+ cycles occurred, populate from the accumulated cycle_delta records (Section 6)
+  - Empty subsections (e.g., no severity changes) should be omitted rather than shown empty
+  - The Progression Summary table always shows all cycles that ran
+
+  **Cycle Delta verification (for test authors):**
+
+  To verify cycle delta output is correct, check:
+  1. Sum of (findings_resolved + findings_new + findings_unchanged + findings_downgraded + findings_upgraded) equals total unique location fingerprints across both cycles (no finding lost or double-counted)
+  2. All findings_resolved entries had a location fingerprint in at least one prior cycle
+  3. All findings_new entries had a location fingerprint in NO prior cycle
+  4. Progression Summary row counts match the sum of detailed findings per severity
+  5. Severity Changes entries (downgraded/upgraded) have different from/to values
+  6. Single-cycle reviews produce NO Cycle Delta section at all
+  7. findings_unchanged entries have identical severity in both cycles
+
+  Sample test scenario 1 (basic):
+  - Cycle 1: 5 findings (2 BLOCKER, 2 MUST-FIX, 1 SUGGESTION)
+  - Cycle 2: 4 findings (1 BLOCKER resolved, 1 new MUST-FIX added)
+  - Expected: findings_resolved=1, findings_new=1, findings_unchanged=3, findings_downgraded=0, findings_upgraded=0
+
+  Sample test scenario 2 (severity change):
+  - Cycle 1: 3 findings (1 BLOCKER in file.js:10, 1 MUST-FIX in file.js:20, 1 SUGGESTION in file.js:30)
+  - Cycle 2: 3 findings (1 MUST-FIX in file.js:10 [was BLOCKER], 1 MUST-FIX in file.js:20, 1 SUGGESTION in file.js:30)
+  - Expected: findings_resolved=0, findings_new=0, findings_unchanged=2, findings_downgraded=1 (file.js:10 BLOCKER→MUST-FIX), findings_upgraded=0
 
 Step 2: Mark phase complete in state files
   Follow execution-tracker.md Section 4 (Phase Completion Tracking):
@@ -696,6 +787,46 @@ Step 1: Generate escalation report
   rework, or are they targeted fixes that need a different approach?}
   {Specific guidance on what the user should investigate or change}
 
+  ## Cycle Delta
+
+  > This section tracks finding progression across review cycles.
+  > Omitted for single-cycle reviews where no re-review occurred.
+
+  ### Progression Summary
+
+  | Metric | Cycle 1 | Cycle 2 | ... | Final |
+  |--------|---------|---------|-----|-------|
+  | Total findings | {count} | {count} | ... | {count} |
+  | BLOCKER | {count} | {count} | ... | {count} |
+  | MUST-FIX | {count} | {count} | ... | {count} |
+  | SUGGESTION | {count} | {count} | ... | {count} |
+
+  ### Findings Resolved (fixed between cycles)
+  | Finding | File | Resolved In |
+  |---------|------|-------------|
+  | {issue summary} | {file path} | Cycle {N} |
+
+  ### Findings New (appeared in later cycles)
+  | Finding | File | Appeared In | Severity |
+  |---------|------|-------------|----------|
+  | {issue summary} | {file path} | Cycle {N} | {severity} |
+
+  ### Findings Unchanged (persisted across all cycles)
+  | Finding | File | Severity | Cycles Present |
+  |---------|------|----------|----------------|
+  | {issue summary} | {file path} | {severity} | {1, 2, ...N} |
+
+  ### Severity Changes
+  | Finding | File | From | To | Cycle |
+  |---------|------|------|----|-------|
+  | {issue summary} | {file path} | {old severity} | {new severity} | {N} |
+
+  **Cycle Delta generation rules:**
+  - If only 1 review cycle occurred (passed on first try), omit the entire "Cycle Delta" section
+  - If 2+ cycles occurred, populate from the accumulated cycle_delta records (Section 6)
+  - Empty subsections (e.g., no severity changes) should be omitted rather than shown empty
+  - The Progression Summary table always shows all cycles that ran
+
 Step 2: Update STATE.md
   - Status: "Phase {N} review escalated — {count} unresolved blocker(s) after {max_cycles} cycles"
   - Last Activity: "Phase {N} review escalated ({date})"
@@ -773,6 +904,46 @@ Step 1: Generate stale loop report
   - Would a different fix agent (different specialty) have more success?
   - Is manual intervention the fastest path to resolution?
   - Specific guidance on what to investigate or change
+
+  ## Cycle Delta
+
+  > This section tracks finding progression across review cycles.
+  > Omitted for single-cycle reviews where no re-review occurred.
+
+  ### Progression Summary
+
+  | Metric | Cycle 1 | Cycle 2 | ... | Final |
+  |--------|---------|---------|-----|-------|
+  | Total findings | {count} | {count} | ... | {count} |
+  | BLOCKER | {count} | {count} | ... | {count} |
+  | MUST-FIX | {count} | {count} | ... | {count} |
+  | SUGGESTION | {count} | {count} | ... | {count} |
+
+  ### Findings Resolved (fixed between cycles)
+  | Finding | File | Resolved In |
+  |---------|------|-------------|
+  | {issue summary} | {file path} | Cycle {N} |
+
+  ### Findings New (appeared in later cycles)
+  | Finding | File | Appeared In | Severity |
+  |---------|------|-------------|----------|
+  | {issue summary} | {file path} | Cycle {N} | {severity} |
+
+  ### Findings Unchanged (persisted across all cycles)
+  | Finding | File | Severity | Cycles Present |
+  |---------|------|----------|----------------|
+  | {issue summary} | {file path} | {severity} | {1, 2, ...N} |
+
+  ### Severity Changes
+  | Finding | File | From | To | Cycle |
+  |---------|------|------|----|-------|
+  | {issue summary} | {file path} | {old severity} | {new severity} | {N} |
+
+  **Cycle Delta generation rules:**
+  - If only 1 review cycle occurred (passed on first try), omit the entire "Cycle Delta" section
+  - If 2+ cycles occurred, populate from the accumulated cycle_delta records (Section 6)
+  - Empty subsections (e.g., no severity changes) should be omitted rather than shown empty
+  - The Progression Summary table always shows all cycles that ran
 
 Step 2: Update STATE.md
   - Status: "Phase {N} review stale — {count} finding(s) unchanged after {stale_count} cycles"
