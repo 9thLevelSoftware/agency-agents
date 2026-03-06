@@ -9,9 +9,9 @@
   {
     "name": "marketing-campaign",
     "prompt": "Design a TikTok and Instagram growth campaign with viral referral loop",
-    "expectedTop": "marketing-tiktok-strategist",
+    "expectedTop": "marketing-growth-hacker",
     "expectedConfidence": "high",
-    "mustInclude": ["marketing-growth-hacker"]
+    "mustInclude": ["marketing-instagram-curator"]
   },
   {
     "name": "ambiguous-low-confidence",

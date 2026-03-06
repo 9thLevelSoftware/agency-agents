@@ -9,8 +9,8 @@ Guide the user through structured exploration to crystallize raw ideas into clea
 </objective>
 
 <execution_context>
-@skills/questioning-flow/SKILL.md — for structured choice patterns and Stage 3 workflow preferences
-@agents/polymath.md — the agent to spawn for exploration (research-first, structured choices, NO open-ended questions)
+skills/questioning-flow/SKILL.md
+agents/polymath.md
 </execution_context>
 
 <context>
