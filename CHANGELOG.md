@@ -5,6 +5,27 @@ All notable changes to the Legion plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.0] - 2026-03-05
+
+### Added
+- **`/legion:explore` command** — Polymath-driven codebase exploration with breadth-first discovery, curiosity-driven deep dives, and structured insight reports.
+- **Authority boundaries** — YAML domain matrix defining autonomous vs. human-approval-required decisions per agent division, with escalation protocol enforcement.
+- **Intent-driven execution** — Flag-based task filtering (`--just-harden`, `--just-document`, `--skip-frontend`, `--just-security`) for scoped phase execution without full rebuild.
+- **Two-wave parallelism** — Wave executor enhanced with parallel dispatch within dependency waves, doubling throughput for multi-plan phases.
+- **Environment mapping** — Automatic detection of runtime environment with path enforcement, adapter diagnostics, and platform-specific configuration validation.
+- **`engineering-security-engineer` agent** — New specialist for security hardening, threat modeling, and vulnerability assessment (Engineering division, 53 agents total).
+- **`product-technical-writer` agent** — New specialist for API documentation, user guides, and technical content (Product division).
+
+### Changed
+- Agent roster refined: removed 2 niche marketing agents, added 2 critical specialists (security-engineer, technical-writer) — net count 51 → 53.
+- All project state files, commands, skills, adapters, and documentation updated from 52 to 53 agent count.
+- Polymath agent (`agents/polymath.md`) added as cross-division generalist for exploration workflows.
+
+### Stats
+- 5 phases, 22 plans, 32 requirements fulfilled
+- 124 commits, 332 files changed, +66,764 / -3,861 lines
+- 377+ tests passing
+
 ## [3.0.2] - 2026-03-04
 
 ### Fixed

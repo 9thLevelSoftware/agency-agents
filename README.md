@@ -1,12 +1,12 @@
 # Legion
 
-Orchestrate 52 AI specialist personalities across 9 AI CLI runtimes.
+Orchestrate 53 AI specialist personalities across 9 AI CLI runtimes.
 
 > *"My name is Legion, for we are many."*
 
 ## What It Does
 
-Turn 52 isolated agent personalities into a coordinated legion. Type `/legion:start`, describe what you want, and the system assembles the right team, plans the work, executes in parallel, and runs quality checks — with each agent operating in full character.
+Turn 53 isolated agent personalities into a coordinated legion. Type `/legion:start`, describe what you want, and the system assembles the right team, plans the work, executes in parallel, and runs quality checks — with each agent operating in full character.
 
 ## Installation
 
@@ -119,7 +119,7 @@ Guides you through an adaptive conversation (5-8 exchanges) to capture project v
 1. Pre-flight check — detects existing projects and offers to reinitialize or continue
 2. Brownfield detection — if an existing codebase is found, offers architecture analysis via the `codebase-mapper` skill, producing `.planning/CODEBASE.md` with framework detection, risk areas, and conventions
 3. Vision exploration — 3-stage adaptive conversation via `questioning-flow`: vision → requirements → constraints, targeting 5-8 natural exchanges
-4. Agent recommendation — `agent-registry` scores all 52 agents to recommend 2-4 per phase based on keyword match and division affinity
+4. Agent recommendation — `agent-registry` scores all 53 agents to recommend 2-4 per phase based on keyword match and division affinity
 5. Document generation — produces `PROJECT.md`, `ROADMAP.md`, and `STATE.md` using questioning-flow templates
 6. Portfolio registration — registers the project in the global portfolio via `portfolio-manager` at `~/.claude/legion/portfolio.md`
 
@@ -130,7 +130,7 @@ Guides you through an adaptive conversation (5-8 exchanges) to capture project v
 
 #### `/legion:plan <N>` — Phase Planning
 
-Decomposes a roadmap phase into wave-structured plans with a default max of 3 tasks each (configurable via settings). Recommends agents from the 52-agent registry for each plan and gets your confirmation.
+Decomposes a roadmap phase into wave-structured plans with a default max of 3 tasks each (configurable via settings). Recommends agents from the 53-agent registry for each plan and gets your confirmation.
 
 **Key steps:**
 1. Parse or auto-detect the next unplanned phase from STATE.md
@@ -240,7 +240,7 @@ Run any task outside the normal phase workflow with automatic agent selection. N
 
 #### `/legion:advise <topic>` — Expert Consultation
 
-Get read-only strategic advice from any of the 52 agent personalities. The advisor can explore your codebase and ask clarifying questions but cannot modify any files.
+Get read-only strategic advice from any of the 53 agent personalities. The advisor can explore your codebase and ask clarifying questions but cannot modify any files.
 
 **Key steps:**
 1. Parse the topic (architecture, UX, marketing strategy, etc.) — provides a topic reference table spanning Engineering, Design, Business, Marketing, Testing, Product, and Spatial Computing
@@ -294,7 +294,7 @@ Handles the full milestone lifecycle: define milestone groupings, track status, 
 
 #### `/legion:agent` — Agent Creator
 
-Create a new specialist agent when the 52 existing personalities don't cover your needs. Guided conversation produces a validated agent .md file and registers it in the catalog.
+Create a new specialist agent when the 53 existing personalities don't cover your needs. Guided conversation produces a validated agent .md file and registers it in the catalog.
 
 **Key steps:**
 1. Stage 1: Agent Identity — adaptive conversation via `agent-creator` to define role, specialty, and division (infers kebab-case name like `{division}-{specialty}`)
@@ -318,7 +318,7 @@ Three capabilities shipped in v2.0 that extend the core workflow with read-only 
 Lightweight expert consultation without the overhead of phase workflows or the risk of code changes.
 
 - **Read-only by design** — advisors are spawned as Explore agents (tool-level enforcement: no Write, no Edit, no Bash)
-- **Topic-based agent selection** — the registry algorithm scores all 52 agents against the topic and recommends the best match
+- **Topic-based agent selection** — the registry algorithm scores all 53 agents against the topic and recommends the best match
 - **Full personality injection** — the advisor operates in complete character with its specialist expertise, communication style, and hard rules
 - **Project-aware** — loads PROJECT.md context when available, but works without it for pure domain expertise
 - **Interactive follow-up** — after initial advice, continue with follow-up questions, switch topics, or end the session
@@ -354,7 +354,7 @@ Legion didn't invent its patterns from scratch. It cherry-picked the best ideas 
 
 #### The Agent Personality Foundation — [msitarzewski/agency-agents](https://github.com/msitarzewski/agency-agents)
 
-Legion now ships 52 built-in personalities: 51 originated in the agency-agents repository by msitarzewski, plus 1 new Legion-native specialization (`engineering-laravel-specialist`). These are not generic role labels — they are structured character sheets (current range 85-348 lines) with deep expertise, communication styles, hard rules, and personality quirks across 9 divisions. Legion builds orchestration, planning, and review workflows on top of this personality foundation.
+Legion now ships 53 built-in personalities: 51 originated in the agency-agents repository by msitarzewski, plus 2 new Legion-native specializations (`engineering-laravel-specialist`, `engineering-security-engineer`). These are not generic role labels — they are structured character sheets (current range 85-348 lines) with deep expertise, communication styles, hard rules, and personality quirks across 9 divisions. Legion builds orchestration, planning, and review workflows on top of this personality foundation.
 
 #### From [GSD (Get Shit Done)](https://github.com/gsd-build/get-shit-done)
 
@@ -394,7 +394,7 @@ Atomic commits per completed plan (from Shipyard's `execution-tracker`) means ev
 
 Best Practice's `.claude/` directory structure (commands → skills → agents) is the canonical way to build Claude Code plugins. We adopted it wholesale: commands are entry points, skills are reusable logic, agents are personalities. Clean separation of concerns.
 
-Best Practice's agent frontmatter schema (YAML with name, description, color, division) became our agent contract. Every one of our 52 agents follows this structure, which means the `agent-registry.md` can programmatically catalog and recommend agents based on structured metadata rather than parsing free-form text.
+Best Practice's agent frontmatter schema (YAML with name, description, color, division) became our agent contract. Every one of our 53 agents follows this structure, which means the `agent-registry.md` can programmatically catalog and recommend agents based on structured metadata rather than parsing free-form text.
 
 **Left behind:** Best Practice's RPI workflow (too domain-specific) and custom hooks infrastructure. We kept the architecture patterns and dropped the opinionated workflows.
 
@@ -460,7 +460,7 @@ Puzld.ai's DPO (Direct Preference Optimization) extraction pattern — capturing
 
 Beyond combining these twelve projects, Legion introduced several original patterns:
 
-- **Personality-first agents**: The 52 agent personalities are not role labels — they are 85-348 line character sheets with expertise, communication style, hard rules, and personality quirks, all in a standardized emoji-headed format. When an agent is spawned, it receives its *complete personality* as system instructions, not a generic "you are a backend developer" prompt.
+- **Personality-first agents**: The 53 agent personalities are not role labels — they are 85-348 line character sheets with expertise, communication style, hard rules, and personality quirks, all in a standardized emoji-headed format. When an agent is spawned, it receives its *complete personality* as system instructions, not a generic "you are a backend developer" prompt.
 
 - **Hybrid agent selection**: The workflow recommends agents based on task analysis (keyword matching, division affinity, past performance), but the user always confirms or overrides. No black-box assignment.
 
@@ -479,13 +479,13 @@ Legion intentionally optimizes for orchestration ergonomics (few commands, markd
 | Command surface | 15-33+ command sets | 11 commands | Faster onboarding, but less granular command specialization |
 | State storage | JSON/DB/hybrid state | Markdown-only `.planning/` | Human-readable and git-native, but less strict schema enforcement |
 | Setup model | CLI bootstrap + config | `npx` installer | Simpler install path, but runtime capabilities can vary more |
-| Agent model | Generic role prompts | 52 full personalities | Higher domain specificity, but larger context footprint |
+| Agent model | Generic role prompts | 53 full personalities | Higher domain specificity, but larger context footprint |
 | Runtime coverage | Single-runtime focus | 9 runtime adapters | Broader portability, but feature parity differs by runtime tier |
 | Memory strategy | Hook-based/global memory | Project-local explicit memory | Better project isolation, but requires explicit integration points |
 
-Current repository metrics: 11 commands, 22 skills, 52 agent personalities, and 9 runtime adapters.
+Current repository metrics: 11 commands, 22 skills, 53 agent personalities, and 9 runtime adapters.
 
-## The 52 Agents
+## The 53 Agents
 
 Agents are organized across 9 divisions, each with deep specialist personalities:
 
@@ -528,7 +528,7 @@ legion/                     <- Project root
 │   ├── workflow-common/SKILL.md      <- Compatibility shim for legacy references
 │   ├── agent-registry/
 │   │   ├── SKILL.md               <- Recommendation algorithm + team patterns
-│   │   └── CATALOG.md             <- 52 agent catalog + task-type index
+│   │   └── CATALOG.md             <- 53 agent catalog + task-type index
 │   ├── questioning-flow/SKILL.md   <- 3-stage adaptive conversation
 │   ├── phase-decomposer/SKILL.md   <- Phase decomposition with domain detection
 │   ├── wave-executor/SKILL.md      <- Parallel execution with personality injection
@@ -537,7 +537,7 @@ legion/                     <- Project root
 │   ├── review-panel/SKILL.md       <- Dynamic multi-reviewer composition with rubrics
 │   ├── plan-critique/SKILL.md      <- Pre-mortem analysis + assumption hunting
 │   └── + 12 more (portfolio, milestone, memory, agents, GitHub, brownfield, marketing, design, spec pipeline, and workflow-common extensions)
-├── agents/                 <- 52 personality .md files (flat, with division in frontmatter)
+├── agents/                 <- 53 personality .md files (flat, with division in frontmatter)
 │   ├── engineering-senior-developer.md
 │   ├── design-ui-designer.md
 │   ├── marketing-content-creator.md
@@ -558,7 +558,7 @@ legion/                     <- Project root
 - **CLI-agnostic**: Works with 9 AI CLI runtimes — skills, commands, and agents adapt via per-runtime adapters (support tiers listed below)
 - **Human-readable state**: All planning files are markdown, readable without tools
 - **Full personality injection**: Agents are spawned with their complete .md as instructions
-- **Standardized format**: All 52 agents use Format A — emoji section headings, "Your" pronouns, current range 85-348 lines (minimum 80)
+- **Standardized format**: All 53 agents use Format A — emoji section headings, "Your" pronouns, current range 85-348 lines (minimum 80)
 - **Balanced cost**: Opus for planning, Sonnet for execution, Haiku for checks
 - **Default max 3 tasks per plan (configurable)**: Keeps work focused and reviewable
 - **Hybrid selection**: Workflow recommends agents, user confirms or overrides
@@ -584,7 +584,7 @@ These activate automatically when their prerequisites are met:
 <!-- legion-metrics:start -->
 - Commands: 11
 - Skills: 22
-- Agents: 52
+- Agents: 53
 - Agent personality line range (current): 85-348
 <!-- legion-metrics:end -->
 
