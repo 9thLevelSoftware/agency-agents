@@ -1,19 +1,3 @@
----
-gsd_state_version: 1.0
-milestone: null
-milestone_name: null
-status: idle
-last_updated: "2026-03-05"
-progress:
-  total_phases: 0
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  total_requirements: 0
-  completed_requirements: 0
-last_session: "2026-03-05 — v5.0 milestone completed and archived"
----
-
 # Project State
 
 ## Project Reference
@@ -22,9 +6,15 @@ last_session: "2026-03-05 — v5.0 milestone completed and archived"
 
 ## Current Position
 
-Milestone: None (between milestones)
-Status: **Idle** — v5.0 shipped, next milestone not yet defined
-Last activity: 2026-03-05 — v5.0 milestone completed and archived
+- **Phase**: 1 of 12 (executed, pending review)
+- **Milestone**: v6.0 — Discipline & Intelligence
+- **Status**: Phase 1 complete — all 3 plans executed successfully
+- **Last Activity**: Phase 1 execution (2026-03-06)
+
+## Progress
+```
+[#.........] 10% — 3/30 plans complete
+```
 
 ## Shipped Milestones
 
@@ -49,14 +39,13 @@ Last activity: 2026-03-05 — v5.0 milestone completed and archived
 - Plugin manifest at `.claude-plugin/plugin.json` — name: `legion`, version: `3.0.0`
 - Repository: `https://github.com/9thLevelSoftware/legion`
 
-## Next Steps
-
-Run `/gsd:new-milestone` or `/legion:start` to define the next milestone.
-
-Candidate features from v5.0 backlog (v2 requirements):
-- **POLY-07/08/09:** Advanced Polymath modes (onboard, compare, debate)
-- **AUTH-06/07:** Conflict resolution automation (escalation, agent-to-agent communication)
-- **INTENT-07/08:** Enhanced intent routing (natural language parsing, context-aware suggestions)
+## Recent Decisions
+- **Execution mode**: Autonomous — trusted workflow, 5th milestone cycle
+- **Planning depth**: Deep Analysis — 12 phases from exploration
+- **Cost profile**: Premium — Opus for planning and execution, Sonnet for checks
+- **Scope**: One big v6.0 milestone covering all Tier 1/2/3 + backlog items
+- **Ordering**: Foundation → Features (discipline infrastructure before advanced features)
+- **ROI boundaries**: Follow FEEDBACK-ROI-ANALYSIS.md "worth doing" lines
 
 ## Session Continuity
 
@@ -66,7 +55,6 @@ Candidate features from v5.0 backlog (v2 requirements):
 - /legion: namespace for all commands (v3.0 rebrand)
 - Plugin name: legion
 - Minimal state: PROJECT.md + ROADMAP.md + STATE.md
-- Balanced cost: Opus planning, Sonnet execution
 - Hybrid agent selection: recommend → confirm
 - Wave-based execution with max 3 tasks per plan
 - Plugin-relative paths: `commands/`, `skills/`, `agents/` at root
@@ -78,14 +66,16 @@ Candidate features from v5.0 backlog (v2 requirements):
 - Polymath engine: research-first exploration with structured choice protocol
 - Cherry-pick from 10 inspiration sources, don't wholesale adopt any
 - Maintain Legion's core identity: personality-first, wave execution, human-readable state
-- Anti-patterns documented as guardrails (no agent inflation, no 50-iteration loops, no full automation without checkpoints)
+- Anti-patterns documented as guardrails
 - Specificity hierarchy: tool/framework > subdomain > broad domain > general for conflict resolution
 - BLOCKER severity overrides domain ownership per authority conflict resolution rules
-- Authority constraints injected proactively into agent prompts, not just reactive filtering
+- Authority constraints injected proactively into agent prompts
 - Two-wave pattern: Wave A (Build+Analysis) → Architecture Gate → Wave B (Execution+Remediation) → Production Readiness Gate
 - Directory mapping extraction: Priority-based resolution (explicit/inferred/default)
-- Dual-format output: Human-readable CODEBASE.md section + machine-readable YAML file
+
+## Next Action
+Run `/legion:review` to verify Phase 1: Plan Schema Hardening
 
 ---
 
-*Last updated: 2026-03-05 — v5.0 archived, awaiting next milestone*
+*Last updated: 2026-03-06 — Phase 1 executed*
