@@ -207,6 +207,7 @@ After both passes complete:
 Step 1: Merge findings
   Combine:
   - Schema conformance violations (Section 5)
+  - Wave file overlap BLOCKERs (Section 6)
   - Pre-mortem critical risks (Section 1)
   - Assumption critical/warning items (Section 2)
   Deduplicate: if a pre-mortem finding and an assumption point to the same
@@ -218,7 +219,7 @@ Step 2: Compute critique verdict
     → "Plan looks solid. Proceed to execution."
   - CAUTION: 1-2 critical items (including schema warnings), all have clear mitigations
     → "Plan has addressable risks. Review mitigations before proceeding."
-  - REWORK: Any schema BLOCKER OR 3+ critical items OR any item without clear mitigation
+  - REWORK: Any schema BLOCKER OR any wave overlap BLOCKER OR 3+ critical items OR any item without clear mitigation
     → "Plan needs revision before execution."
 
 Step 3: Present consolidated critique
@@ -409,6 +410,58 @@ Result: Rule 2 BLOCKER — "skills/critique/SKILL.md in both files_modified and 
 - **Wave 2+ plans**: May reference Wave 1 outputs in expected_artifacts. This is valid.
 - **Empty files_forbidden**: `files_forbidden: []` is valid and passes. Only missing field triggers warning for code plans.
 - **Legacy plans (pre-v6.0)**: Schema check reports findings but does NOT block execution of archived plans. Apply exemption: if plan's phase number predates v6.0, downgrade BLOCKERs to WARNINGs.
+
+---
+
+## Section 6: Wave File Overlap Detection (DSC-04)
+
+Detects when two or more plans in the same wave have overlapping `files_modified` entries. Overlapping files in the same wave means two agents would modify the same file concurrently, causing merge conflicts or data loss.
+
+### When to Run
+
+- Runs as part of plan-critique after Section 5 (schema conformance) and before Section 1 (pre-mortem)
+- Also runnable standalone on a phase directory
+
+### Algorithm
+
+```
+Step 1: Collect all plan files in the phase directory
+  Read all {NN}-{PP}-PLAN.md files.
+  Parse YAML frontmatter for: wave number, files_modified list.
+
+Step 2: Group plans by wave number
+  Build a map: wave_number -> [{ plan_id, files_modified }]
+  Only waves with 2+ plans need overlap checking.
+
+Step 3: For each wave with multiple plans, check for overlaps
+  For each pair of plans (A, B) in the same wave:
+    Compare files_modified lists using PREFIX MATCHING:
+      a. Exact path match: "skills/foo/SKILL.md" == "skills/foo/SKILL.md" -> overlap
+      b. Directory prefix: if plan A has "skills/foo/" (trailing /) and plan B has
+         "skills/foo/SKILL.md", the directory covers the file -> overlap
+      c. Reverse directory: if plan B has "skills/foo/" and plan A has a file
+         under that directory -> overlap
+    If any overlap found: record as BLOCKER finding.
+
+Step 4: Format findings
+  For each overlap:
+  - Severity: BLOCKER
+  - Message: "Plans {NN}-{PP1} and {NN}-{PP2} both modify {file} in Wave {N}"
+  - Mitigation: "Move one plan to a different wave, or merge into a single plan"
+```
+
+### Integration with Section 3 (Critique Report)
+
+Wave overlap BLOCKERs are included in the "Schema Conformance" table in Section 3 Step 3:
+- Add a new row type: "Wave Overlap" with plan pair and file(s)
+- Any wave overlap BLOCKER triggers automatic REWORK verdict (same as schema BLOCKERs)
+
+### Edge Cases
+
+- **Single-plan waves**: Skip (no overlap possible)
+- **Plans with empty files_modified**: Skip (nothing to overlap)
+- **Plans across different waves**: No overlap check (waves are sequential)
+- **Directory-level entries** in files_modified (e.g., "agents/"): Use prefix matching — any file under that directory overlaps with the directory entry
 
 ---
 
