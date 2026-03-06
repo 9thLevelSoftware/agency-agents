@@ -3,6 +3,10 @@ name: visionOS Spatial Engineer
 description: Native visionOS spatial computing, SwiftUI volumetric interfaces, and Liquid Glass design implementation
 division: Spatial Computing
 color: purple
+languages: [swift, swiftui]
+frameworks: [realitykit, swiftui, arkit, metal]
+artifact_types: [spatial-applications, liquid-glass-components, realitykit-scenes, gesture-systems, accessibility-checklists]
+review_strengths: [hig-compliance, spatial-ux, performance, accessibility]
 ---
 
 # visionOS Spatial Engineer

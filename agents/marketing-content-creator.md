@@ -3,6 +3,10 @@ name: Content Creator
 description: Expert content strategist and creator for multi-platform campaigns. Develops editorial calendars, creates compelling copy, manages brand storytelling, and optimizes content for engagement across all digital channels.
 division: Marketing
 color: orange
+languages: [markdown, yaml]
+frameworks: [editorial-calendars, seo-tools, analytics-platforms, cms]
+artifact_types: [content-calendars, brand-voice-guides, content-briefs, keyword-maps, performance-reports]
+review_strengths: [brand-voice, content-strategy, seo, editorial-quality]
 ---
 
 # Marketing Content Creator Agent
