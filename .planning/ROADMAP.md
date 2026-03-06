@@ -15,7 +15,7 @@
 
 - [x] Phase 1: Plan Schema Hardening (3 plans)
 - [x] Phase 2: Wave Safety (2 plans)
-- [ ] Phase 3: Control Modes (3 plans)
+- [x] Phase 3: Control Modes (3 plans)
 - [ ] Phase 4: Observability (2 plans)
 - [ ] Phase 5: Agent Metadata Enrichment (3 plans)
 - [ ] Phase 6: Recommendation Engine v2 (3 plans)
@@ -55,10 +55,10 @@
 **Requirements**: CTL-01, CTL-02, CTL-03
 **Recommended Agents**: engineering-senior-developer, testing-reality-checker, design-ux-architect
 **Success Criteria**:
-- [ ] `settings.json` schema includes `control_mode` with 4 preset values
-- [ ] Each preset maps to specific authority matrix rule adjustments (documented)
-- [ ] Settings schema docs updated with mode descriptions and examples
-- [ ] Tests validate mode-to-authority mapping
+- [x] `settings.json` schema includes `control_mode` with 4 preset values
+- [x] Each preset maps to specific authority matrix rule adjustments (documented)
+- [x] Settings schema docs updated with mode descriptions and examples
+- [x] Tests validate mode-to-authority mapping
 **Plans**: 3
 
 ### Phase 4: Observability
@@ -169,7 +169,7 @@
 |-------|-------|-----------|--------|
 | 1 — Plan Schema Hardening | 3 | 3 | Complete |
 | 2 — Wave Safety | 2 | 2 | Complete |
-| 3 — Control Modes | 3 | 0 | Not started |
+| 3 — Control Modes | 3 | 3 | Complete |
 | 4 — Observability | 2 | 0 | Not started |
 | 5 — Agent Metadata Enrichment | 3 | 0 | Not started |
 | 6 — Recommendation Engine v2 | 3 | 0 | Not started |
