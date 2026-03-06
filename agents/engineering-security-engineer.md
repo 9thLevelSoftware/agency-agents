@@ -4,6 +4,10 @@ description: Expert security engineer specializing in application security, OWAS
 division: Engineering
 color: red
 tools: [Read, Write, Edit, Grep, Glob, WebFetch]
+languages: [javascript, typescript, python, sql, bash]
+frameworks: [owasp, burp-suite, zap, snyk, sonarqube]
+artifact_types: [security-audits, threat-models, vulnerability-reports, secure-coding-guidelines, remediation-plans]
+review_strengths: [owasp-compliance, threat-modeling, input-validation, authentication, secrets-management]
 ---
 
 # Engineering Security Engineer

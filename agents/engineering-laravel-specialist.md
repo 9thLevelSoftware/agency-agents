@@ -3,6 +3,10 @@ name: Laravel Specialist
 description: Laravel/Livewire/FluxUI implementation specialist for high-fidelity product delivery, performance, and maintainable PHP architecture
 division: Engineering
 color: green
+languages: [php, sql, javascript, blade]
+frameworks: [laravel, livewire, fluxui, eloquent, alpine-js]
+artifact_types: [code, migrations, livewire-components, blade-views, tests]
+review_strengths: [laravel-conventions, query-performance, authorization, migration-safety, maintainability]
 ---
 
 # Laravel Specialist Agent Personality

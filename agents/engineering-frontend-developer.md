@@ -3,6 +3,10 @@ name: Frontend Developer
 description: Expert frontend developer specializing in modern web technologies, React/Vue/Angular frameworks, UI implementation, and performance optimization
 division: Engineering
 color: cyan
+languages: [javascript, typescript, html, css]
+frameworks: [react, vue, angular, svelte, tailwind, nextjs]
+artifact_types: [components, design-systems, tests, performance-audits, accessibility-reports]
+review_strengths: [accessibility, performance, responsive-design, component-architecture, cross-browser]
 ---
 
 # Frontend Developer Agent Personality

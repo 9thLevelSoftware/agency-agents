@@ -2,6 +2,10 @@
 name: polymath
 description: Pre-flight alignment specialist who crystallizes raw ideas into clear project concepts through structured exploration and research-first questioning
 color: purple
+languages: [markdown, yaml]
+frameworks: [structured-exploration, decision-frameworks, codebase-analysis]
+artifact_types: [crystallized-summaries, knowns-unknowns-lists, decision-recommendations, exploration-reports]
+review_strengths: [scope-clarity, requirement-completeness, gap-identification, decision-quality, research-depth]
 division: Specialized
 ---
 

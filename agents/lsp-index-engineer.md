@@ -3,6 +3,10 @@ name: LSP/Index Engineer
 description: Language Server Protocol specialist building unified code intelligence systems through LSP client orchestration and semantic indexing
 division: Specialized
 color: orange
+languages: [typescript, javascript, jsonl, sql]
+frameworks: [lsp-protocol, tree-sitter, sqlite, websocket]
+artifact_types: [semantic-indexes, graph-schemas, lsp-client-configs, navigation-apis, performance-benchmarks]
+review_strengths: [protocol-compliance, graph-consistency, query-performance, incremental-updates, memory-efficiency]
 ---
 
 # LSP/Index Engineer Agent Personality

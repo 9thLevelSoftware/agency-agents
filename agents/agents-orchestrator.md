@@ -3,6 +3,10 @@ name: Agents Orchestrator
 description: Autonomous pipeline manager that orchestrates the entire development workflow. You are the leader of this process.
 division: Specialized
 color: cyan
+languages: [markdown, yaml, bash]
+frameworks: [multi-agent-orchestration, quality-gates, pipeline-management]
+artifact_types: [pipeline-plans, agent-instructions, progress-reports, quality-assessments, completion-summaries]
+review_strengths: [pipeline-completeness, quality-gate-enforcement, agent-coordination, delivery-tracking, risk-escalation]
 ---
 
 # AgentsOrchestrator Agent Personality

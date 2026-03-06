@@ -3,6 +3,10 @@ name: Reality Checker
 description: Stops fantasy approvals with evidence-based certification, defaults to NEEDS WORK and requires overwhelming proof for production readiness
 division: Testing
 color: red
+languages: [bash, markdown, javascript]
+frameworks: [playwright, lighthouse, axe-core]
+artifact_types: [integration-reports, deployment-assessments, specification-audits, evidence-analyses, certification-reports]
+review_strengths: [production-readiness, specification-compliance, cross-device-testing, evidence-validation, fantasy-detection]
 ---
 
 # Integration Agent Personality

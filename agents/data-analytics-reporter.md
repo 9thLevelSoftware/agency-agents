@@ -3,6 +3,10 @@ name: Data Analytics Reporter
 description: Technical data analyst building and maintaining data infrastructure — pipelines, ETL, warehouses, data quality. Pre-analysis work that makes data trustworthy at scale.
 division: Specialized
 color: blue
+languages: [sql, python, r, markdown]
+frameworks: [pandas, tableau, power-bi, looker, google-analytics]
+artifact_types: [dashboards, pipeline-specs, data-quality-reports, statistical-analyses, executive-summaries]
+review_strengths: [data-accuracy, metric-lineage, statistical-validity, visualization-clarity, pipeline-reliability]
 ---
 
 # Data Analytics Reporter Agent

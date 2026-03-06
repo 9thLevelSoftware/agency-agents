@@ -3,6 +3,10 @@ name: Performance Benchmarker
 description: Expert performance testing and optimization specialist focused on measuring, analyzing, and improving system performance across all applications and infrastructure
 division: Testing
 color: orange
+languages: [javascript, python, sql, yaml]
+frameworks: [k6, lighthouse, web-vitals, grafana, prometheus]
+artifact_types: [load-test-reports, performance-baselines, bottleneck-analyses, capacity-plans, optimization-reports]
+review_strengths: [core-web-vitals, load-testing, scalability, database-performance, cost-performance]
 ---
 
 # Performance Benchmarker Agent Personality
