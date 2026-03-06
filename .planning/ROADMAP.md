@@ -13,7 +13,7 @@
 
 ## Phases
 
-- [ ] Phase 1: Plan Schema Hardening (3 plans)
+- [x] Phase 1: Plan Schema Hardening (3 plans)
 - [ ] Phase 2: Wave Safety (2 plans)
 - [ ] Phase 3: Control Modes (3 plans)
 - [ ] Phase 4: Observability (2 plans)
