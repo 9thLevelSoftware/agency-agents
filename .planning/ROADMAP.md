@@ -88,10 +88,10 @@
 **Requirements**: AGT-02, AGT-03, AGT-04
 **Recommended Agents**: engineering-backend-architect, testing-evidence-collector, data-analytics-reporter
 **Success Criteria**:
-- [ ] `recommendation-engine.js` scores against `languages`, `frameworks`, `artifact_types` fields
-- [ ] OUTCOMES.md schema includes `task_type` field per outcome record
-- [ ] Recommendations weighted by archetype success rate from historical outcomes
-- [ ] Recommendation engine tests cover new scoring paths with >90% coverage
+- [x] `recommendation-engine.js` scores against `languages`, `frameworks`, `artifact_types` fields
+- [x] OUTCOMES.md schema includes `task_type` field per outcome record
+- [x] Recommendations weighted by archetype success rate from historical outcomes
+- [x] Recommendation engine tests cover new scoring paths with >90% coverage
 **Plans**: 3
 
 ### Phase 7: Validation & Conformance
@@ -172,7 +172,7 @@
 | 3 — Control Modes | 3 | 3 | Complete ✓ |
 | 4 — Observability | 3 | 3 | Complete ✓ |
 | 5 — Agent Metadata Enrichment | 3 | 3 | Complete ✓ (reviewed) |
-| 6 — Recommendation Engine v2 | 3 | 3 | Complete |
+| 6 — Recommendation Engine v2 | 3 | 3 | Complete ✓ |
 | 7 — Validation & Conformance | 3 | 0 | Not started |
 | 8 — Codebase Mapper Enrichment | 2 | 0 | Not started |
 | 9 — Polymath Advanced Modes | 3 | 0 | Not started |
