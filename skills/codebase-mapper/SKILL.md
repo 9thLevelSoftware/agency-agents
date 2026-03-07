@@ -698,6 +698,20 @@ If no recognized import patterns: "No recognized import patterns detected."}
 
 ## Test Coverage Map
 
+**Test convention**: {dominant convention, e.g., "co-located .test.ts files"}
+**Coverage**: {pct}% — {HIGH|MEDIUM|LOW}
+**Source**: {e.g., "coverage-summary.json (2026-03-01)" or "Estimated from test file matching"}
+
+### Files Without Tests
+| Source File | Lines | Risk Note |
+|-------------|-------|-----------|
+| {file} | {lines} | {e.g., "Large file, high fan-in"} |
+
+### Critical Untested Files
+| File | Lines | Fan-in | Risk Score | Risk Level | Recommendation |
+|------|-------|--------|-----------|-----------|----------------|
+| {file} | {lines} | {count} | {score} | {CRITICAL/HIGH/MEDIUM/LOW} | {recommendation} |
+
 {Section 9 output — test convention, coverage ratio, files without tests.
 If no test convention detected: "No test convention detected."}
 
@@ -937,6 +951,8 @@ Step 4: Execute analysis
   If Sections 8-14 are available in this SKILL.md, also run:
   - Section 8 (Dependency Graph)
   - Section 9 (Test Coverage Map)
+  - Section 9.4 (Coverage Tool Integration)
+  - Section 9.5 (Critical File Coverage Correlation)
   - Section 10 (API Surface Detection)
   - Section 11 (Config & Environment Surface)
   - Section 13 (Pattern Library Extraction)
@@ -1145,6 +1161,96 @@ Output for CODEBASE.md `## Test Coverage Map` section:
 ## Test Coverage Map
 No test convention detected. No files matching common test patterns (.test., .spec., __tests__/, test/, _test.go, Test*.java) were found.
 ```
+
+### 9.4: Coverage Tool Integration (MAP-02)
+
+**Purpose**: Read existing coverage reports to extract actual code coverage percentages. This is READ-ONLY — never run test suites or coverage tools (that's invasive and could fail).
+
+#### 9.4.1: Coverage Report Detection
+
+Search for existing coverage report files in standard locations:
+
+| Tool | Report Locations | Format |
+|------|-----------------|--------|
+| nyc/istanbul (Node.js) | `coverage/coverage-summary.json`, `coverage/lcov.info`, `.nyc_output/` | JSON summary or LCOV |
+| jest (Node.js) | `coverage/coverage-summary.json` | JSON summary |
+| pytest-cov (Python) | `htmlcov/`, `.coverage`, `coverage.xml` | XML (Cobertura) or SQLite |
+| go test (Go) | `coverage.out`, `cover.out` | Go cover profile |
+| SimpleCov (Ruby) | `coverage/.last_run.json`, `coverage/.resultset.json` | JSON |
+| cargo-tarpaulin (Rust) | `tarpaulin-report.json`, `cobertura.xml` | JSON or Cobertura XML |
+
+Detection protocol:
+```
+Step 1: Glob for each report location pattern above
+Step 2: If any found, read the most recent report
+Step 3: Extract aggregate coverage percentage (format-specific)
+Step 4: Report source, date (file mtime), and percentage
+```
+
+#### 9.4.2: Coverage Percentage Extraction
+
+Define extraction logic for each supported format:
+
+- **JSON summary (nyc/jest)**: Read `total.lines.pct` from the JSON object
+- **LCOV**: Parse LF/LH lines, compute `(sum LH / sum LF) * 100`
+- **Cobertura XML**: Extract `line-rate` attribute from root `<coverage>` element, multiply by 100
+- **Go cover profile**: Count lines with "1" suffix vs "0" suffix, compute `(count_1 / (count_0 + count_1)) * 100`
+
+#### 9.4.3: Coverage Quality Classification
+
+| Coverage | Quality | Interpretation |
+|----------|---------|---------------|
+| >= 80% | HIGH | Well-tested codebase |
+| 50-79% | MEDIUM | Partial coverage — gaps may exist in critical paths |
+| < 50% | LOW | Significant testing gaps — risk of undetected regressions |
+
+#### 9.4.4: Graceful Degradation
+
+- If no coverage reports found: fall back to Section 9.2 sample-based ratio
+  - Report: "No coverage reports found. Coverage estimated from test file matching: {ratio}% ({HIGH|MEDIUM|LOW})"
+- If coverage report is >30 days old: use the data but warn "Coverage report is {N} days old"
+- If report parsing fails: skip and use sample-based ratio from Section 9.2
+- Never run test suites or coverage tools — only read existing report files
+
+### 9.5: Critical File Coverage Correlation (MAP-02)
+
+**Purpose**: Cross-reference untested files (from Section 9.2) with dependency importance (from Section 8 fan-in) and complexity (from Section 4.1) to identify the highest-risk coverage gaps.
+
+#### 9.5.1: Critical File Identification
+
+```
+Step 1: Check if the file appears in Section 8 fan-in list
+  - If yes: fan_in_score = import count (higher = more critical)
+  - If no: fan_in_score = 0
+
+Step 2: Check if the file appears in Section 4.1 large files list
+  - If yes: complexity_score = line count
+  - If no: complexity_score = 0
+
+Step 3: Compute risk score
+  risk = (fan_in_score * 10) + (complexity_score / 100)
+
+Step 4: Classify risk
+  - risk >= 30: CRITICAL (high fan-in + large file, no tests)
+  - risk >= 10: HIGH (significant fan-in or large file, no tests)
+  - risk > 0: MEDIUM (some coupling or complexity, no tests)
+  - risk == 0: LOW (isolated small file, no tests)
+```
+
+#### 9.5.2: Output
+
+Ranked table of critical untested files (top 5, sorted by risk score descending):
+
+| File | Lines | Fan-in | Risk Score | Risk Level | Recommendation |
+|------|-------|--------|-----------|-----------|----------------|
+| {file} | {lines} | {imported_by_count} | {score} | {CRITICAL/HIGH/MEDIUM/LOW} | {e.g., "Add unit tests — 5 files depend on this"} |
+
+#### 9.5.3: Graceful Degradation
+
+- If Section 8 fan-in data not available: use complexity_score only (risk = complexity_score / 100)
+- If Section 4.1 data not available: use fan_in_score only (risk = fan_in_score * 10)
+- If neither available: skip correlation, use basic untested files list from Section 9.2
+- Never block on missing cross-reference data
 
 ---
 

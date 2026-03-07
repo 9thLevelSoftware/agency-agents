@@ -254,3 +254,196 @@ describe('Dependency Risk — calibration logic', () => {
     );
   });
 });
+
+// --- Test Coverage Enrichment — SKILL.md specification (MAP-02) ---
+
+describe('Test Coverage Enrichment — SKILL.md specification', () => {
+  test('Section 9.4 exists (Coverage Tool Integration)', () => {
+    assert.ok(
+      skillContent.includes('### 9.4: Coverage Tool Integration (MAP-02)'),
+      'Section 9.4 header must exist with MAP-02 tag'
+    );
+  });
+
+  test('Section 9.4 defines coverage report detection for nyc, jest, pytest-cov, go test, SimpleCov, cargo-tarpaulin', () => {
+    assert.ok(
+      skillContent.includes('#### 9.4.1: Coverage Report Detection'),
+      'Subsection 9.4.1 must exist'
+    );
+    const tools = [
+      'nyc/istanbul (Node.js)',
+      'jest (Node.js)',
+      'pytest-cov (Python)',
+      'go test (Go)',
+      'SimpleCov (Ruby)',
+      'cargo-tarpaulin (Rust)',
+    ];
+    for (const tool of tools) {
+      assert.ok(
+        skillContent.includes(`| ${tool} |`),
+        `Coverage report detection table must include ${tool}`
+      );
+    }
+  });
+
+  test('Section 9.4 includes extraction logic for JSON summary, LCOV, Cobertura XML, Go cover formats', () => {
+    assert.ok(
+      skillContent.includes('#### 9.4.2: Coverage Percentage Extraction'),
+      'Subsection 9.4.2 must exist'
+    );
+    const formats = [
+      'JSON summary (nyc/jest)',
+      'LCOV',
+      'Cobertura XML',
+      'Go cover profile',
+    ];
+    for (const fmt of formats) {
+      assert.ok(
+        skillContent.includes(fmt),
+        `Extraction logic must cover format: ${fmt}`
+      );
+    }
+  });
+
+  test('Section 9.4 includes quality classification thresholds (>=80 HIGH, 50-79 MEDIUM, <50 LOW)', () => {
+    assert.ok(
+      skillContent.includes('#### 9.4.3: Coverage Quality Classification'),
+      'Subsection 9.4.3 must exist'
+    );
+    assert.ok(
+      skillContent.includes('>= 80%'),
+      'Must define HIGH threshold at >= 80%'
+    );
+    assert.ok(
+      skillContent.includes('50-79%'),
+      'Must define MEDIUM threshold at 50-79%'
+    );
+    assert.ok(
+      skillContent.includes('< 50%'),
+      'Must define LOW threshold at < 50%'
+    );
+  });
+
+  test('Section 9.4 includes graceful degradation to sample-based ratio', () => {
+    assert.ok(
+      skillContent.includes('#### 9.4.4: Graceful Degradation'),
+      'Subsection 9.4.4 must exist'
+    );
+    assert.ok(
+      skillContent.includes('No coverage reports found. Coverage estimated from test file matching'),
+      'Must include fallback message for missing coverage reports'
+    );
+    assert.ok(
+      skillContent.includes('Never run test suites or coverage tools'),
+      'Must explicitly state never-run guarantee'
+    );
+  });
+
+  test('Section 9.5 exists (Critical File Coverage Correlation)', () => {
+    assert.ok(
+      skillContent.includes('### 9.5: Critical File Coverage Correlation (MAP-02)'),
+      'Section 9.5 header must exist with MAP-02 tag'
+    );
+  });
+
+  test('Section 9.5 defines risk scoring formula using fan-in and complexity', () => {
+    assert.ok(
+      skillContent.includes('#### 9.5.1: Critical File Identification'),
+      'Subsection 9.5.1 must exist'
+    );
+    assert.ok(
+      skillContent.includes('fan_in_score * 10'),
+      'Risk formula must include fan_in_score * 10'
+    );
+    assert.ok(
+      skillContent.includes('complexity_score / 100'),
+      'Risk formula must include complexity_score / 100'
+    );
+    assert.ok(
+      skillContent.includes('risk >= 30: CRITICAL'),
+      'Must define CRITICAL threshold at risk >= 30'
+    );
+    assert.ok(
+      skillContent.includes('risk >= 10: HIGH'),
+      'Must define HIGH threshold at risk >= 10'
+    );
+  });
+
+  test('Section 9.5 includes ranked output table format', () => {
+    assert.ok(
+      skillContent.includes('#### 9.5.2: Output'),
+      'Subsection 9.5.2 must exist'
+    );
+    const columns = ['File', 'Lines', 'Fan-in', 'Risk Score', 'Risk Level', 'Recommendation'];
+    for (const col of columns) {
+      assert.ok(
+        skillContent.includes(col),
+        `Output table must include column: ${col}`
+      );
+    }
+    assert.ok(
+      skillContent.includes('top 5, sorted by risk score descending'),
+      'Must specify top 5 sorted by risk score'
+    );
+  });
+
+  test('Section 9.5 includes graceful degradation for missing cross-reference data', () => {
+    assert.ok(
+      skillContent.includes('#### 9.5.3: Graceful Degradation'),
+      'Subsection 9.5.3 must exist'
+    );
+    assert.ok(
+      skillContent.includes('Section 8 fan-in data not available'),
+      'Must handle missing Section 8 fan-in data'
+    );
+    assert.ok(
+      skillContent.includes('Section 4.1 data not available'),
+      'Must handle missing Section 4.1 data'
+    );
+    assert.ok(
+      skillContent.includes('Never block on missing cross-reference data'),
+      'Must state never-block guarantee'
+    );
+  });
+});
+
+// --- Test Coverage Enrichment — CODEBASE.md template (MAP-02) ---
+
+describe('Test Coverage Enrichment — CODEBASE.md template', () => {
+  test('Template Test Coverage Map includes Source field', () => {
+    assert.ok(
+      skillContent.includes('**Source**:'),
+      'Test Coverage Map template must include Source field'
+    );
+  });
+
+  test('Template includes Critical Untested Files subsection', () => {
+    assert.ok(
+      skillContent.includes('### Critical Untested Files'),
+      'Template must include Critical Untested Files subsection'
+    );
+  });
+
+  test('Critical Untested Files table has required columns (File, Lines, Fan-in, Risk Score, Risk Level, Recommendation)', () => {
+    // Extract the Critical Untested Files table area
+    const critIdx = skillContent.indexOf('### Critical Untested Files');
+    assert.ok(critIdx !== -1, 'Critical Untested Files section must exist');
+    const tableArea = skillContent.substring(critIdx, critIdx + 300);
+    const columns = ['File', 'Lines', 'Fan-in', 'Risk Score', 'Risk Level', 'Recommendation'];
+    for (const col of columns) {
+      assert.ok(
+        tableArea.includes(col),
+        `Critical Untested Files table must include column: ${col}`
+      );
+    }
+  });
+
+  test('Template preserves graceful degradation placeholder', () => {
+    assert.ok(
+      skillContent.includes(
+        'No test convention detected. No files matching common test patterns (.test., .spec., __tests__/, test/, _test.go, Test*.java) were found.'
+      ),
+      'Must preserve graceful degradation placeholder text'
+    );
+  });
+});
