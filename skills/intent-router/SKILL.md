@@ -766,7 +766,7 @@ function parseNaturalLanguage(input) {
   }
 
   // LOW confidence: top 3 suggestions
-  const top3 = candidates.slice(0, 3).map((c, i) => `${i + 1}. ${c.label}`).join('  ');
+  const top3 = candidates.slice(0, 3).map((c, i) => `${i + 1}. ${c.label}`).join('\n');
   return {
     command: null,
     flags: [],
@@ -820,8 +820,10 @@ function scoreCandidate(input, patterns) {
 
   for (const [keyword, weight] of Object.entries(patterns.keywords)) {
     totalWeight += weight;
-    // Check if keyword appears in input (supports multi-word keywords)
-    if (input.includes(keyword)) {
+    // Check if keyword appears as a whole word in input (supports multi-word keywords)
+    // Word boundaries prevent substring false positives (e.g., "start" matching "restart")
+    const keywordRegex = new RegExp('\\b' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+    if (keywordRegex.test(input)) {
       matchedWeight += weight;
     }
   }
@@ -1128,8 +1130,8 @@ function detectLifecyclePosition(stateData) {
     return 'planned_not_built';
   }
 
-  // Build done, needs review
-  if (status.includes('built') || status.includes('executed')) {
+  // Build done, needs review (check before "complete" to catch "executed, pending review")
+  if (status.includes('pending review') || status.includes('built') || status.includes('executed')) {
     return 'needs_review';
   }
 
@@ -1143,14 +1145,9 @@ function detectLifecyclePosition(stateData) {
     return 'review_failed';
   }
 
-  // Phase complete, more phases remain
-  if (status.includes('complete') && phase < totalPhases) {
-    return 'phase_complete';
-  }
-
-  // Phase complete and next phase not yet planned
+  // Phase complete (covers both "more phases remain" and "needs planning" scenarios)
   if (status.includes('complete')) {
-    return 'needs_planning';
+    return 'phase_complete';
   }
 
   // Fallback
@@ -1164,14 +1161,13 @@ function detectLifecyclePosition(stateData) {
 |----------|---------------|-------------|
 | `no_project` | No STATE.md or no phase info | Project not initialized |
 | `just_started` | Phase 1, status contains "initialized" | Just ran /legion:start |
-| `needs_planning` | Current phase status = "complete" and next phase not planned | Ready for next phase planning |
 | `planned_not_built` | Current phase status contains "planned" | Plans exist, need execution |
 | `building` | Current phase status contains "executing" or "in progress" | Build in progress |
-| `needs_review` | Current phase status contains "built" or "executed" | Build done, needs review |
+| `needs_review` | Current phase status contains "pending review", "built", or "executed" | Build done, needs review (checked before "complete" to avoid false match) |
 | `review_in_progress` | Current phase status contains "reviewing" | Review cycle active |
 | `review_failed` | Current phase status contains "needs work" or "rework" | Review found issues |
-| `phase_complete` | Current phase status = "complete", not last phase | Phase done, next phase available |
-| `milestone_complete` | All phases complete | Ready for milestone wrap-up |
+| `phase_complete` | Current phase status contains "complete" (not milestone) | Phase done, covers "needs planning" scenario too |
+| `milestone_complete` | All phases complete (phase == totalPhases) | Ready for milestone wrap-up |
 
 ---
 

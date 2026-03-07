@@ -83,20 +83,26 @@ If $ARGUMENTS contains intent flags (--just-*):
    - Get: security-only template (agents, domains)
    - Domains: ["security", "owasp", "stride", "authentication", "authorization"]
 
-## Natural Language Intent Detection
+## Step 0.7: NATURAL LANGUAGE INTENT DETECTION
 
 If $ARGUMENTS contains text that does NOT match any `--just-*` flags (i.e., no structured intent flags were parsed in Step 0.5), treat the arguments as natural language input and attempt NL routing via intent-router Section 7.
 
-1. **Check for NL input**: If `parseIntentFlags($ARGUMENTS)` returned no flags (rawFlags is empty) AND $ARGUMENTS is not empty AND $ARGUMENTS does not start with `--`:
+a. **Check for NL input**: If `parseIntentFlags($ARGUMENTS)` returned no flags (rawFlags is empty) AND $ARGUMENTS is not empty AND $ARGUMENTS does not start with `--`:
    - Concatenate arguments into a single string: `nlInput = $ARGUMENTS.join(' ')`
    - Call: `parseNaturalLanguage(nlInput)` from intent-router Section 7
 
-2. **Route based on confidence**:
+b. **Route based on confidence**:
    - **HIGH (>= 0.8)**: Proceed as if the equivalent flags were passed.
      - If result routes to `/legion:review` with flags: inject those flags and continue to Step 0.5 logic
      - If result routes to a different command (e.g., `/legion:build`): display cross-command suggestion:
        `"Your input '{nlInput}' matches {result.command}. Did you mean to run {result.command} instead?"`
-       EXIT without executing review.
+       Use adapter.ask_user with options:
+       - "Yes, run {result.command} instead"
+       - "No, proceed with standard review"
+       - "Cancel"
+       If "Yes": EXIT and advise user to run {result.command}
+       If "No": proceed with standard review (no intent flags)
+       If "Cancel": EXIT without executing review.
    - **MEDIUM (0.5-0.79)**: Confirm with user via adapter.ask_user:
      `"Did you mean: {result.fallbackSuggestion}?"` with options: ["Yes, proceed", "No, standard review", "Cancel"]
      - If confirmed: inject parsed flags and continue
@@ -104,9 +110,9 @@ If $ARGUMENTS contains text that does NOT match any `--just-*` flags (i.e., no s
    - **LOW (< 0.5)**: Display suggestions and ask user:
      `"{result.fallbackSuggestion}"` with options to pick a suggestion or proceed with standard review
 
-3. **No match**: If NL parsing returns confidence 0 or no candidates, proceed with standard review (no intent flags).
+c. **No match**: If NL parsing returns confidence 0 or no candidates, proceed with standard review (no intent flags).
 
- 1. DETERMINE TARGET PHASE
+1. DETERMINE TARGET PHASE
    - Check $ARGUMENTS for --phase N flag (e.g., `/legion:review --phase 4`)
    - If no flag: read STATE.md to determine current phase
      - Use the phase number from "Phase: N of M" in Current Position

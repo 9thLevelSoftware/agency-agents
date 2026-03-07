@@ -263,6 +263,7 @@ command_routes:
       qa: 0.9
       verify: 0.7
       validate: 0.6
+      fix: 0.4
     phrases:
       - "review {the}? {code|changes|work}"
       - "run {the}? {tests|review}"
@@ -354,16 +355,16 @@ context_rules:
         reason: "Orient yourself with the project overview"
 
   needs_planning:
+    # Alias — maps to same suggestions as phase_complete (for forward compatibility)
+    # The detection function routes to phase_complete directly; this entry exists
+    # so that any external code referencing "needs_planning" still resolves correctly.
     suggestions:
       - command: "/legion:plan {next_phase}"
         description: "Plan Phase {next_phase}: {phase_name}"
-        reason: "Phase {phase} complete, next phase ready for planning"
+        reason: "Phase {phase} complete and reviewed — move to next phase"
       - command: "/legion:status"
-        description: "Check overall progress"
-        reason: "Review completed work before planning next phase"
-      - command: "/legion:milestone"
-        description: "Check milestone status"
-        reason: "See how close you are to the milestone goal"
+        description: "View overall progress"
+        reason: "See milestone completion percentage"
 
   planned_not_built:
     suggestions:
@@ -433,3 +434,12 @@ context_rules:
       - command: "/legion:explore"
         description: "Explore ideas for the next milestone"
         reason: "Start thinking about what comes next"
+
+  unknown:
+    suggestions:
+      - command: "/legion:status"
+        description: "Check project status"
+        reason: "Project state is ambiguous — orient with the dashboard"
+      - command: "/legion:start"
+        description: "Initialize a new project"
+        reason: "If no project exists, start here"
