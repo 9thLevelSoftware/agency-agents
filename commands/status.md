@@ -16,6 +16,7 @@ Output: Dashboard display with next-action routing.
 skills/workflow-common-core/SKILL.md
 skills/execution-tracker/SKILL.md
 skills/milestone-tracker/SKILL.md
+skills/intent-router/SKILL.md
 </execution_context>
 
 <context>
@@ -257,6 +258,38 @@ If directory_mappings.status == "stale" OR directory_mappings.changes_detected:
              - Fix issues manually, then `/legion:review`
              - `/legion:quick <task>` to address specific issues
              - `/legion:plan {N}` to re-plan the phase"
+
+5b. CONTEXT-AWARE SUGGESTIONS (Context-Aware Next Actions)
+   Generate proactive next-action suggestions based on project lifecycle position.
+   Uses intent-router Section 8: getContextSuggestions().
+
+   a. Call `getContextSuggestions('.planning/STATE.md')` from intent-router Section 8
+   b. Receive the current lifecycle position and 2-3 ranked suggestions
+   c. Display the suggestions section in the dashboard output:
+
+   ## Suggested Next Actions
+
+   Based on your current position (Phase {N} {status}):
+
+   1. **`/legion:build`** — Execute Phase {N} plans
+      _Phase {N} is planned and ready for execution_
+
+   2. **`/legion:status`** — Review plan breakdown
+      _Verify plan structure looks correct_
+
+   Format rules:
+   - Show command in backtick code format, bolded
+   - Show description on same line after em-dash
+   - Show reason in italics on next line, indented
+   - Number suggestions by priority (1, 2, 3)
+   - Maximum 3 suggestions displayed
+   - If no suggestions available (degraded state): "Run `/legion:status` for orientation or `/legion:start` to begin a new project."
+
+   Graceful degradation:
+   - If intent-router skill loading fails: skip this section silently (no error output)
+   - If STATE.md is unparseable: skip this section silently
+   - If getContextSuggestions() returns empty suggestions: show the default fallback message
+   - Never let suggestion generation block or delay the dashboard display
 
 6. DISPLAY NEXT ACTION
    Output:

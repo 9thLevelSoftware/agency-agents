@@ -1,7 +1,7 @@
 # Intent Teams Registry
 # Maps semantic intent flags to agent team templates and validation rules
 # Version: 2.0.0
-# Requirements Validated: INTENT-05, INTENT-06, INTENT-07
+# Requirements Validated: INTENT-05, INTENT-06, INTENT-07, INTENT-08
 
 intents:
   harden:
@@ -328,3 +328,108 @@ command_routes:
       - "crystallize {the|an}? idea"
       - "brainstorm {about|on}?"
       - "investigate {the|a}? {problem|issue|option}"
+
+# Context Rules
+# Maps project lifecycle positions to ranked action suggestions
+# Used by intent-router Section 8: getContextSuggestions()
+# Placeholders {phase}, {phase_name}, {next_phase} are interpolated at runtime from STATE.md
+
+context_rules:
+  no_project:
+    suggestions:
+      - command: "/legion:start"
+        description: "Initialize a new project"
+        reason: "No project state found — start here"
+      - command: "/legion:explore"
+        description: "Explore and crystallize an idea first"
+        reason: "Pre-flight alignment before formal project setup"
+
+  just_started:
+    suggestions:
+      - command: "/legion:plan 1"
+        description: "Plan Phase 1: {phase_name}"
+        reason: "Project initialized, ready for first phase planning"
+      - command: "/legion:status"
+        description: "View project dashboard"
+        reason: "Orient yourself with the project overview"
+
+  needs_planning:
+    suggestions:
+      - command: "/legion:plan {next_phase}"
+        description: "Plan Phase {next_phase}: {phase_name}"
+        reason: "Phase {phase} complete, next phase ready for planning"
+      - command: "/legion:status"
+        description: "Check overall progress"
+        reason: "Review completed work before planning next phase"
+      - command: "/legion:milestone"
+        description: "Check milestone status"
+        reason: "See how close you are to the milestone goal"
+
+  planned_not_built:
+    suggestions:
+      - command: "/legion:build"
+        description: "Execute Phase {phase} plans"
+        reason: "Phase {phase} is planned and ready for execution"
+      - command: "/legion:status"
+        description: "Review plan breakdown before building"
+        reason: "Verify plan structure looks correct"
+
+  building:
+    suggestions:
+      - command: "/legion:build"
+        description: "Resume Phase {phase} execution"
+        reason: "Build is in progress — continue where you left off"
+      - command: "/legion:status"
+        description: "Check build progress"
+        reason: "See which plans are complete and which remain"
+
+  needs_review:
+    suggestions:
+      - command: "/legion:review"
+        description: "Review Phase {phase} output"
+        reason: "Build complete, quality review is the next step"
+      - command: "/legion:status"
+        description: "Check what was built before reviewing"
+        reason: "Orient on build outputs before starting review"
+
+  review_in_progress:
+    suggestions:
+      - command: "/legion:review"
+        description: "Continue Phase {phase} review"
+        reason: "Review cycle is active — continue the process"
+      - command: "/legion:status"
+        description: "Check review findings so far"
+        reason: "See current review status and findings"
+
+  review_failed:
+    suggestions:
+      - command: "/legion:build"
+        description: "Fix review findings for Phase {phase}"
+        reason: "Review found issues that need to be addressed"
+      - command: "/legion:review"
+        description: "Re-run review after fixes"
+        reason: "Verify fixes resolve the review findings"
+      - command: "/legion:status"
+        description: "See what needs fixing"
+        reason: "Review the specific issues found"
+
+  phase_complete:
+    suggestions:
+      - command: "/legion:plan {next_phase}"
+        description: "Plan Phase {next_phase}: {phase_name}"
+        reason: "Phase {phase} complete and reviewed — move to next phase"
+      - command: "/legion:status"
+        description: "View overall progress"
+        reason: "See milestone completion percentage"
+
+  milestone_complete:
+    suggestions:
+      - command: "/legion:milestone"
+        description: "Complete and archive the milestone"
+        reason: "All phases done — wrap up the milestone"
+      - command: "/legion:status"
+        description: "View final milestone dashboard"
+        reason: "Review everything accomplished in this milestone"
+      - command: "/legion:explore"
+        description: "Explore ideas for the next milestone"
+        reason: "Start thinking about what comes next"

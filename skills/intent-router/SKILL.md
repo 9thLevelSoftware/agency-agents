@@ -982,6 +982,358 @@ function loadNLPatterns() {
 
 ---
 
+## Section 8: Context-Aware Suggestions
+
+Detect project lifecycle position from STATE.md and return ranked next-action suggestions. Used by `/legion:status` to show proactive recommendations, and by the NL parser (Section 7) to augment low-confidence fallbacks.
+
+---
+
+### 8.1 getContextSuggestions(statePath)
+
+```javascript
+/**
+ * Read project state and return context-aware action suggestions
+ * @param {string} statePath - Path to STATE.md (default: '.planning/STATE.md')
+ * @returns {Object} {
+ *   currentPosition: { phase, status, lastActivity },
+ *   suggestions: [
+ *     { command: '/legion:build', description: 'Execute Phase 5 plans', priority: 1, reason: 'Phase 5 is planned but not yet built' },
+ *     { command: '/legion:status', description: 'Check progress dashboard', priority: 2, reason: 'Good starting point for session orientation' }
+ *   ],
+ *   rawState: { ... }
+ * }
+ */
+function getContextSuggestions(statePath = '.planning/STATE.md') {
+  try {
+    // 1. Read and parse STATE.md
+    const stateData = parseStateMd(statePath);
+
+    // 2. Detect lifecycle position
+    const position = detectLifecyclePosition(stateData);
+
+    // 3. Map position to suggestions (from intent-teams.yaml context_rules)
+    const suggestions = mapPositionToSuggestions(position, stateData);
+
+    return {
+      currentPosition: {
+        phase: stateData.phase || null,
+        status: stateData.status || 'unknown',
+        lastActivity: stateData.lastActivity || null
+      },
+      suggestions,
+      rawState: stateData
+    };
+  } catch (error) {
+    // Graceful degradation — never throw
+    return {
+      currentPosition: { phase: null, status: 'unknown', lastActivity: null },
+      suggestions: [
+        { command: '/legion:start', description: 'Initialize a new project', priority: 1, reason: 'Unable to read project state' },
+        { command: '/legion:status', description: 'Check project status', priority: 2, reason: 'Retry after resolving state issues' }
+      ],
+      rawState: {}
+    };
+  }
+}
+```
+
+### parseStateMd(statePath)
+
+```javascript
+/**
+ * Parse STATE.md into structured data
+ * @param {string} statePath - Path to STATE.md
+ * @returns {Object} { phase, totalPhases, status, lastActivity, nextAction, phaseName }
+ */
+function parseStateMd(statePath) {
+  if (!fs.existsSync(statePath)) {
+    return { exists: false };
+  }
+
+  const content = fs.readFileSync(statePath, 'utf8');
+  const lines = content.split('\n');
+
+  const result = { exists: true };
+
+  for (const line of lines) {
+    // Extract "Phase: N of M"
+    const phaseMatch = line.match(/Phase:\s*(\d+)\s*of\s*(\d+)/i);
+    if (phaseMatch) {
+      result.phase = parseInt(phaseMatch[1], 10);
+      result.totalPhases = parseInt(phaseMatch[2], 10);
+    }
+
+    // Extract "Status: <value>"
+    const statusMatch = line.match(/^Status:\s*(.+)/i);
+    if (statusMatch) {
+      result.status = statusMatch[1].trim().toLowerCase();
+    }
+
+    // Extract "Last Activity: <value>"
+    const activityMatch = line.match(/^Last Activity:\s*(.+)/i);
+    if (activityMatch) {
+      result.lastActivity = activityMatch[1].trim();
+    }
+
+    // Extract "Next Action: <value>"
+    const nextMatch = line.match(/^Next Action:\s*(.+)/i);
+    if (nextMatch) {
+      result.nextAction = nextMatch[1].trim();
+    }
+  }
+
+  return result;
+}
+```
+
+---
+
+### 8.2 Project Lifecycle Position Detection
+
+Parse STATE.md to determine where the project sits in its lifecycle. The position drives which suggestions are shown.
+
+```javascript
+/**
+ * Detect project lifecycle position from parsed state data
+ * @param {Object} stateData - Output from parseStateMd()
+ * @returns {string} Lifecycle position identifier
+ */
+function detectLifecyclePosition(stateData) {
+  // No STATE.md or empty
+  if (!stateData.exists) {
+    return 'no_project';
+  }
+
+  const status = (stateData.status || '').toLowerCase();
+  const phase = stateData.phase || 0;
+  const totalPhases = stateData.totalPhases || 0;
+
+  // Just initialized
+  if (phase === 1 && status.includes('initialized')) {
+    return 'just_started';
+  }
+
+  // All phases complete
+  if (phase === totalPhases && status.includes('complete')) {
+    return 'milestone_complete';
+  }
+
+  // Build in progress
+  if (status.includes('executing') || status.includes('in progress')) {
+    return 'building';
+  }
+
+  // Plans exist, not yet built
+  if (status.includes('planned')) {
+    return 'planned_not_built';
+  }
+
+  // Build done, needs review
+  if (status.includes('built') || status.includes('executed')) {
+    return 'needs_review';
+  }
+
+  // Review active
+  if (status.includes('reviewing')) {
+    return 'review_in_progress';
+  }
+
+  // Review found issues
+  if (status.includes('needs work') || status.includes('rework')) {
+    return 'review_failed';
+  }
+
+  // Phase complete, more phases remain
+  if (status.includes('complete') && phase < totalPhases) {
+    return 'phase_complete';
+  }
+
+  // Phase complete and next phase not yet planned
+  if (status.includes('complete')) {
+    return 'needs_planning';
+  }
+
+  // Fallback
+  return 'unknown';
+}
+```
+
+**Lifecycle Position Reference:**
+
+| Position | Detection Rule | Description |
+|----------|---------------|-------------|
+| `no_project` | No STATE.md or no phase info | Project not initialized |
+| `just_started` | Phase 1, status contains "initialized" | Just ran /legion:start |
+| `needs_planning` | Current phase status = "complete" and next phase not planned | Ready for next phase planning |
+| `planned_not_built` | Current phase status contains "planned" | Plans exist, need execution |
+| `building` | Current phase status contains "executing" or "in progress" | Build in progress |
+| `needs_review` | Current phase status contains "built" or "executed" | Build done, needs review |
+| `review_in_progress` | Current phase status contains "reviewing" | Review cycle active |
+| `review_failed` | Current phase status contains "needs work" or "rework" | Review found issues |
+| `phase_complete` | Current phase status = "complete", not last phase | Phase done, next phase available |
+| `milestone_complete` | All phases complete | Ready for milestone wrap-up |
+
+---
+
+### 8.3 Position-to-Suggestion Mapping
+
+Map each lifecycle position to 2-3 ranked action suggestions. Suggestions are loaded from the `context_rules` section of `intent-teams.yaml` and interpolated with runtime state data.
+
+```javascript
+/**
+ * Load context rules from intent-teams.yaml and map position to suggestions
+ * @param {string} position - Lifecycle position from detectLifecyclePosition()
+ * @param {Object} stateData - Parsed STATE.md data for interpolation
+ * @returns {Array} Ranked suggestion objects
+ */
+function mapPositionToSuggestions(position, stateData) {
+  const rules = loadContextRules();
+  const positionRules = rules[position];
+
+  // Unknown position or missing rules — return safe defaults
+  if (!positionRules || !positionRules.suggestions) {
+    return [
+      { command: '/legion:status', description: 'Check project status', priority: 1, reason: 'Default orientation action' },
+      { command: '/legion:start', description: 'Initialize a project', priority: 2, reason: 'Start here if no project exists' }
+    ];
+  }
+
+  return positionRules.suggestions.map((suggestion, index) => ({
+    command: suggestion.command,
+    description: interpolate(suggestion.description, stateData),
+    priority: index + 1,
+    reason: interpolate(suggestion.reason, stateData)
+  }));
+}
+
+/**
+ * Load context_rules from intent-teams.yaml
+ * @returns {Object} Position-to-suggestions mapping
+ */
+function loadContextRules() {
+  const config = loadIntentTeams();  // Reuses Section 3 loader
+  return config.context_rules || {};
+}
+
+/**
+ * Interpolate template strings with state data
+ * @param {string} template - String with {phase}, {phase_name}, {next_phase} placeholders
+ * @param {Object} stateData - Data for interpolation
+ * @returns {string} Interpolated string
+ *
+ * Supported placeholders:
+ *   {phase}      — Current phase number
+ *   {phase_name} — Current phase name (from ROADMAP.md)
+ *   {next_phase} — Next phase number (phase + 1)
+ */
+function interpolate(template, stateData) {
+  if (!template) return '';
+
+  return template
+    .replace(/\{phase\}/g, stateData.phase || '?')
+    .replace(/\{phase_name\}/g, stateData.phaseName || 'current phase')
+    .replace(/\{next_phase\}/g, (stateData.phase || 0) + 1);
+}
+```
+
+---
+
+### 8.4 Graceful Degradation
+
+Context-aware suggestions must never cause errors or block the status dashboard. The system degrades through multiple levels:
+
+| Failure Mode | Behavior | Result |
+|-------------|----------|--------|
+| STATE.md does not exist | Return `position: 'no_project'` | Suggests `/legion:start` |
+| STATE.md is malformed (no parseable fields) | Return `position: 'unknown'` | Generic safe defaults |
+| intent-teams.yaml missing `context_rules` | Use hardcoded fallback suggestions | `/legion:status` + `/legion:start` |
+| Position detected but no matching rule | Use default suggestions | `/legion:status` + `/legion:start` |
+| Any unexpected error | Catch in `getContextSuggestions()` | Return valid empty-state response |
+
+**Key invariant**: `getContextSuggestions()` always returns a valid object with a non-empty `suggestions` array. Callers never need to null-check the response.
+
+```javascript
+// Fallback behavior demonstration
+const result = getContextSuggestions('/nonexistent/STATE.md');
+// Always returns:
+// {
+//   currentPosition: { phase: null, status: 'unknown', lastActivity: null },
+//   suggestions: [ ... at least 1 suggestion ... ],
+//   rawState: {}
+// }
+```
+
+---
+
+### 8.5 Integration with NL Parser
+
+When `parseNaturalLanguage()` (Section 7) returns LOW confidence (< 0.5), augment the fallback suggestions with context-aware suggestions. This provides users with relevant next actions even when their input is ambiguous.
+
+```javascript
+/**
+ * Augment low-confidence NL results with context-aware suggestions
+ * @param {Object} nlResult - Output from parseNaturalLanguage()
+ * @returns {Object} Enhanced result with context suggestions merged in
+ */
+function augmentWithContextSuggestions(nlResult) {
+  if (nlResult.confidence >= 0.5) {
+    return nlResult;  // HIGH/MEDIUM confidence — no augmentation needed
+  }
+
+  // Get context-aware suggestions
+  const contextResult = getContextSuggestions();
+
+  if (contextResult.suggestions.length === 0) {
+    return nlResult;  // No context available
+  }
+
+  // Build enhanced fallback message
+  const contextLines = contextResult.suggestions
+    .slice(0, 3)
+    .map((s, i) => `${i + 1}. ${s.command} — ${s.description}`)
+    .join('  ');
+
+  const position = contextResult.currentPosition;
+  const positionLabel = position.phase
+    ? `Phase ${position.phase} (${position.status})`
+    : 'no active project';
+
+  // Merge: show NL suggestions first, then context suggestions
+  const originalSuggestion = nlResult.fallbackSuggestion || '';
+  const contextBlock = `\n\nBased on your current position (${positionLabel}):\n${contextLines}`;
+
+  return {
+    ...nlResult,
+    fallbackSuggestion: originalSuggestion + contextBlock,
+    contextSuggestions: contextResult.suggestions
+  };
+}
+```
+
+**Usage in NL parser flow (Section 7.4):**
+
+```javascript
+function handleNLResult(result, currentCommand) {
+  // Augment LOW confidence results with context
+  const enhanced = augmentWithContextSuggestions(result);
+
+  if (enhanced.confidence >= 0.8) {
+    // HIGH: auto-route (unchanged)
+    return executeWithFlags(enhanced.flags);
+  }
+
+  if (enhanced.confidence >= 0.5) {
+    // MEDIUM: confirm with user (unchanged)
+    return confirmAndExecute(enhanced);
+  }
+
+  // LOW: show combined NL + context suggestions
+  console.log(enhanced.fallbackSuggestion);
+}
+```
+
+---
+
 ## Appendix: Intent Reference
 
 | Intent | Mode | Primary Agents | Use Case |
