@@ -6,6 +6,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const CATALOG_PATH = path.join(ROOT, 'skills', 'agent-registry', 'CATALOG.md');
+const AGENTS_DIR = path.join(ROOT, 'agents');
 
 const STOP_WORDS = new Set([
   'a', 'an', 'and', 'the', 'to', 'for', 'of', 'in', 'on', 'with', 'without',
@@ -86,6 +87,82 @@ function parseCatalog() {
   return agents;
 }
 
+function parseYamlArray(line) {
+  const match = line.match(/\[([^\]]*)\]/);
+  if (!match) return [];
+  return match[1].split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
+}
+
+function parseAgentMetadata() {
+  const metadataMap = {};
+  let files;
+  try {
+    files = fs.readdirSync(AGENTS_DIR).filter((f) => f.endsWith('.md'));
+  } catch {
+    return metadataMap;
+  }
+
+  for (const file of files) {
+    const id = file.replace(/\.md$/, '');
+    let content;
+    try {
+      content = fs.readFileSync(path.join(AGENTS_DIR, file), 'utf8');
+    } catch {
+      continue;
+    }
+
+    const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    if (!fmMatch) {
+      metadataMap[id] = { languages: [], frameworks: [], artifact_types: [], review_strengths: [] };
+      continue;
+    }
+
+    const fm = fmMatch[1];
+    const fields = { languages: [], frameworks: [], artifact_types: [], review_strengths: [] };
+    for (const fieldName of Object.keys(fields)) {
+      const re = new RegExp(`^${fieldName}:\\s*(.+)$`, 'm');
+      const m = fm.match(re);
+      if (m) fields[fieldName] = parseYamlArray(m[1]);
+    }
+    metadataMap[id] = fields;
+  }
+
+  return metadataMap;
+}
+
+function metadataScore(agent, concepts, promptLower) {
+  if (!agent.metadata) return 0;
+  let score = 0;
+  const meta = agent.metadata;
+  const allFields = [
+    { values: meta.languages, exact: 3 },
+    { values: meta.frameworks, exact: 3 },
+    { values: meta.artifact_types, exact: 2 },
+    { values: meta.review_strengths, exact: 2 },
+  ];
+
+  for (const concept of concepts) {
+    let matched = false;
+    for (const field of allFields) {
+      if (field.values.includes(concept)) {
+        score += field.exact;
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) {
+      for (const field of allFields) {
+        if (field.values.some((v) => v.includes(concept) || concept.includes(v))) {
+          score += 1;
+          break;
+        }
+      }
+    }
+  }
+
+  return score;
+}
+
 function extractConcepts(prompt) {
   const lower = prompt.toLowerCase();
   const rawTokens = lower.split(/\s+/).map(normalizeToken).filter((token) => token && !STOP_WORDS.has(token));
@@ -158,20 +235,26 @@ function needsCoordinator(candidates) {
 
 function classifyConfidence(topCandidate) {
   if (!topCandidate) return 'low';
-  if (topCandidate.semantic >= 6 || (topCandidate.semantic >= 4 && topCandidate.heuristic >= 8)) return 'high';
-  if (topCandidate.semantic >= 2 || topCandidate.heuristic >= 5) return 'medium';
+  const effectiveSemantic = (topCandidate.metadataBoost >= 6)
+    ? Math.max(topCandidate.semantic, 4)
+    : topCandidate.semantic;
+  if (effectiveSemantic >= 6 || (effectiveSemantic >= 4 && topCandidate.heuristic >= 8)) return 'high';
+  if (effectiveSemantic >= 2 || topCandidate.heuristic >= 5) return 'medium';
   return 'low';
 }
 
 function recommendAgents({ prompt, topN = 4, memoryScores = {} }) {
   const agents = parseCatalog();
+  const agentMetadata = parseAgentMetadata();
   const promptLower = prompt.toLowerCase();
   const concepts = extractConcepts(prompt);
 
   const scored = agents.map((agent) => {
+    agent.metadata = agentMetadata[agent.id] || { languages: [], frameworks: [], artifact_types: [], review_strengths: [] };
     const semantic = semanticScore(agent, concepts);
     const heuristic = heuristicScore(agent, concepts, promptLower);
     const baseline = semantic + heuristic;
+    const metaBoost = baseline > 0 ? metadataScore(agent, concepts, promptLower) : 0;
     const memoryBoost = baseline > 0 ? Number(memoryScores[agent.id] || 0) : 0;
 
     return {
@@ -179,8 +262,9 @@ function recommendAgents({ prompt, topN = 4, memoryScores = {} }) {
       division: agent.division,
       semantic,
       heuristic,
+      metadataBoost: metaBoost,
       memoryBoost,
-      total: baseline + memoryBoost,
+      total: baseline + metaBoost + memoryBoost,
     };
   });
 
@@ -266,6 +350,7 @@ function recommendAgents({ prompt, topN = 4, memoryScores = {} }) {
       division: item.division,
       semanticScore: item.semantic,
       heuristicScore: item.heuristic,
+      metadataScore: item.metadataBoost,
       memoryBoost: item.memoryBoost,
       totalScore: item.total,
     })),
@@ -285,6 +370,8 @@ if (require.main === module) {
 module.exports = {
   recommendAgents,
   parseCatalog,
+  parseAgentMetadata,
+  metadataScore,
 };
 
 

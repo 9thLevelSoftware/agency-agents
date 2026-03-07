@@ -19,5 +19,40 @@
     "expectedTop": "agents-orchestrator",
     "expectedConfidence": "low",
     "mustInclude": []
+  },
+  {
+    "name": "typescript-react-frontend",
+    "prompt": "Build a React TypeScript frontend with component library and accessibility testing",
+    "expectedTop": "engineering-frontend-developer",
+    "expectedConfidence": "high",
+    "mustInclude": []
+  },
+  {
+    "name": "python-ml-pipeline",
+    "prompt": "Build a Python machine learning pipeline with model training and evaluation",
+    "expectedTop": "engineering-ai-engineer",
+    "expectedConfidence": "high",
+    "mustInclude": []
+  },
+  {
+    "name": "laravel-php-app",
+    "prompt": "Build a Laravel PHP application with Livewire components and Eloquent migrations",
+    "expectedTop": "engineering-laravel-specialist",
+    "expectedConfidence": "high",
+    "mustInclude": []
+  },
+  {
+    "name": "swift-visionos-spatial",
+    "prompt": "Build a Swift visionOS spatial computing app with RealityKit and Metal rendering",
+    "expectedTop": "visionos-spatial-engineer",
+    "expectedConfidence": "high",
+    "mustInclude": []
+  },
+  {
+    "name": "review-security-audit",
+    "prompt": "Perform a security audit with OWASP compliance review and threat modeling",
+    "expectedTop": "engineering-security-engineer",
+    "expectedConfidence": "high",
+    "mustInclude": []
   }
 ]
