@@ -39,6 +39,13 @@ Adapters bridge Legion's generic workflow concepts to the specific tools and con
 | `detection.primary` | string | Primary detection method (tool probe, env var, etc.) |
 | `detection.secondary` | string | Fallback detection method |
 
+### Limits & Quirks (YAML frontmatter)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `max_prompt_size` | integer | Maximum prompt size in tokens that this CLI reliably handles. Used by wave-executor to warn when agent prompts approach the limit. Approximate values acceptable -- use the CLI's documented context window or practical safe limit. |
+| `known_quirks` | list of strings | CLI-specific behavioral quirks that skills and commands should account for. Examples: "no-parallel-agents", "no-streaming", "prompt-prefix-only", "no-mcp-support". Empty list `[]` is valid for CLIs with no known quirks. |
+
 ## Required Sections (markdown body)
 
 ### Tool Mappings
@@ -103,9 +110,10 @@ To add support for a new AI CLI:
 
 1. Copy an existing adapter as a template (prefer one with similar capabilities)
 2. Fill in all required YAML frontmatter fields
-3. Complete the Tool Mappings table — every row must have a value
-4. Write the Interaction Protocol section
-5. Write the Execution Protocol section
-6. Add a detection entry in `skills/workflow-common/SKILL.md` under '## CLI Detection and Adapter Loading → ### Detection Protocol' (Steps 2 and 3)
-7. Test by running `/legion:quick <simple task>` on the target CLI
+3. Populate `max_prompt_size` with the CLI's documented context window (or a conservative practical limit) and `known_quirks` with any behavioral quirks that affect Legion workflows (use `[]` if none)
+4. Complete the Tool Mappings table — every row must have a value
+5. Write the Interaction Protocol section
+6. Write the Execution Protocol section
+7. Add a detection entry in `skills/workflow-common/SKILL.md` under '## CLI Detection and Adapter Loading → ### Detection Protocol' (Steps 2 and 3)
+8. Test by running `/legion:quick <simple task>` on the target CLI
 

@@ -12,6 +12,10 @@ capabilities:
 detection:
   primary: "CURSOR_VERSION environment variable is set"
   secondary: ".cursor/settings.json exists in CWD or parent directories"
+max_prompt_size: 128000
+known_quirks:
+  - "ide-embedded-agent"
+  - "tab-completion-conflicts"
 ---
 
 # Cursor Adapter

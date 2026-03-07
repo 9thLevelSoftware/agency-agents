@@ -12,6 +12,12 @@ capabilities:
 detection:
   primary: "AIDER_VERSION environment variable is set"
   secondary: ".aider.conf.yml or .aider/ directory exists in CWD"
+max_prompt_size: 128000
+known_quirks:
+  - "no-agent-spawning"
+  - "no-parallel-execution"
+  - "single-session-only"
+  - "no-mcp-support"
 ---
 
 # Aider Adapter

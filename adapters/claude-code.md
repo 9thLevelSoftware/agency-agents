@@ -12,6 +12,8 @@ capabilities:
 detection:
   primary: "TeamCreate tool is available in the tool list"
   secondary: "~/.claude/ directory exists"
+max_prompt_size: 180000
+known_quirks: []
 ---
 
 # Claude Code Adapter

@@ -12,6 +12,11 @@ capabilities:
 detection:
   primary: "COPILOT_CLI_VERSION environment variable is set"
   secondary: ".github/copilot/ directory exists or gh copilot command is available"
+max_prompt_size: 64000
+known_quirks:
+  - "no-agent-spawning"
+  - "prompt-prefix-only"
+  - "short-context-window"
 ---
 
 # GitHub Copilot CLI Adapter

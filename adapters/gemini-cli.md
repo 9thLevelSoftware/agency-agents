@@ -12,6 +12,9 @@ capabilities:
 detection:
   primary: "GEMINI_CLI_VERSION environment variable is set"
   secondary: "GEMINI.md file exists in CWD or ~/.gemini/ directory exists"
+max_prompt_size: 1000000
+known_quirks:
+  - "no-structured-messaging"
 ---
 
 # Google Gemini CLI Adapter

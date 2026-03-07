@@ -12,6 +12,10 @@ capabilities:
 detection:
   primary: "Q_CLI_VERSION environment variable is set"
   secondary: "~/.aws/q/ directory exists or q command is available"
+max_prompt_size: 128000
+known_quirks:
+  - "no-agent-spawning"
+  - "aws-scoped-context"
 ---
 
 # Amazon Q Developer CLI Adapter

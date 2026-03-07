@@ -12,6 +12,10 @@ capabilities:
 detection:
   primary: "CODEX_VERSION environment variable is set"
   secondary: "AGENTS.md file exists at ~/.codex/AGENTS.md"
+max_prompt_size: 128000
+known_quirks:
+  - "sandbox-execution-only"
+  - "no-interactive-prompts"
 ---
 
 # OpenAI Codex CLI Adapter

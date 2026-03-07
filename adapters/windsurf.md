@@ -12,6 +12,10 @@ capabilities:
 detection:
   primary: "WINDSURF_VERSION environment variable is set"
   secondary: ".windsurf/rules/ directory exists in CWD"
+max_prompt_size: 128000
+known_quirks:
+  - "ide-embedded-agent"
+  - "cascade-flow-model"
 ---
 
 # Windsurf Adapter
