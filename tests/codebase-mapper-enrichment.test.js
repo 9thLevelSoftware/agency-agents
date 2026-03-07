@@ -1,14 +1,15 @@
 'use strict';
 
 /**
- * Codebase Mapper Enrichment Tests — Dependency Risk (MAP-01)
+ * Codebase Mapper Enrichment Tests — Phase 8
  *
- * Validates that SKILL.md contains the Section 4.6 specification for
- * package-level dependency risk assessment, and that the CODEBASE.md
- * template includes the corresponding output sections.
+ * Validates SKILL.md specifications for:
+ * - Section 4.6: Package-Level Dependency Risk (MAP-01)
+ * - Sections 9.4/9.5: Coverage Tool Integration & Critical File Correlation (MAP-02)
+ * - CODEBASE.md template updates for both enrichments
  */
 
-const { describe, test } = require('node:test');
+const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
@@ -27,7 +28,7 @@ const skillContent = fs.readFileSync(SKILL_PATH, 'utf8');
 
 // --- Dependency Risk — SKILL.md specification ---
 
-describe('Dependency Risk — SKILL.md specification', () => {
+test.describe('Dependency Risk — SKILL.md specification', () => {
   test('Section 4.6 exists in codebase-mapper SKILL.md', () => {
     assert.ok(
       skillContent.includes('### 4.6: Package-Level Dependency Risk (MAP-01)'),
@@ -120,7 +121,7 @@ describe('Dependency Risk — SKILL.md specification', () => {
 
 // --- Dependency Risk — CODEBASE.md template ---
 
-describe('Dependency Risk — CODEBASE.md template', () => {
+test.describe('Dependency Risk — CODEBASE.md template', () => {
   test('Template includes ## Dependency Risk section', () => {
     assert.ok(
       skillContent.includes('## Dependency Risk'),
@@ -191,7 +192,7 @@ describe('Dependency Risk — CODEBASE.md template', () => {
 
 // --- Dependency Risk — calibration logic ---
 
-describe('Dependency Risk — calibration logic', () => {
+test.describe('Dependency Risk — calibration logic', () => {
   test('Risk calibration thresholds are relative to dependency count', () => {
     // Section 4.6.2 must state percentage-based thresholds
     assert.ok(
@@ -257,7 +258,7 @@ describe('Dependency Risk — calibration logic', () => {
 
 // --- Test Coverage Enrichment — SKILL.md specification (MAP-02) ---
 
-describe('Test Coverage Enrichment — SKILL.md specification', () => {
+test.describe('Test Coverage Enrichment — SKILL.md specification', () => {
   test('Section 9.4 exists (Coverage Tool Integration)', () => {
     assert.ok(
       skillContent.includes('### 9.4: Coverage Tool Integration (MAP-02)'),
@@ -409,7 +410,7 @@ describe('Test Coverage Enrichment — SKILL.md specification', () => {
 
 // --- Test Coverage Enrichment — CODEBASE.md template (MAP-02) ---
 
-describe('Test Coverage Enrichment — CODEBASE.md template', () => {
+test.describe('Test Coverage Enrichment — CODEBASE.md template', () => {
   test('Template Test Coverage Map includes Source field', () => {
     assert.ok(
       skillContent.includes('**Source**:'),

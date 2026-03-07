@@ -7,6 +7,12 @@
 **Requirements**: MAP-02
 **Date**: 2026-03-06
 
+## Before State
+
+- Section 9 ended at 9.3 (Output Format). Coverage was sample-based only (test file matching ratio).
+- CODEBASE.md Test Coverage Map template had no Source field or Critical Untested Files table.
+- Section 7.2 Re-Analysis Protocol did not reference coverage tool integration.
+
 ## What Was Done
 
 1. **Section 9.4 added to SKILL.md** — Coverage Tool Integration (MAP-02) with 4 subsections:

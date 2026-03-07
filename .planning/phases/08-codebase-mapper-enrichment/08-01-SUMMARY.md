@@ -7,6 +7,12 @@
 **Requirements**: MAP-01
 **Date**: 2026-03-06
 
+## Before State
+
+- Section 4 ended at 4.5 (Risk Summary). No package-level dependency analysis existed.
+- CODEBASE.md template had no Dependency Risk section.
+- Section 7.2 Re-Analysis Protocol did not reference dependency risk checks.
+
 ## What Was Done
 
 1. **Section 4.6 added to SKILL.md** — Package-Level Dependency Risk (MAP-01) with 6 subsections:

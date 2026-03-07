@@ -470,7 +470,7 @@ git log --since="90 days ago" --name-only --format="" \
 
 **When available:** Report top 10 most-changed files with change counts. Files appearing in both hotspots AND complexity indicators are high-priority risk areas.
 
-### 4.4: Dependency Risk
+### 4.4: Config & Hygiene Checks
 
 Check for warning signs in project configuration:
 
@@ -537,8 +537,10 @@ Risk calibration (relative to total dependency count):
 
 For Node.js projects, check transitive dependency count:
 ```bash
-npm ls --all --json 2>/dev/null | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); const count=(o)=>o.dependencies?Object.keys(o.dependencies).reduce((s,k)=>s+1+count(o.dependencies[k]),0):0; console.log(count(d))"
+npm ls --all --json 2>/dev/null | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); const count=(o)=>o.dependencies?Object.keys(o.dependencies).reduce((s,k)=>s+1+count(o.dependencies[k]),0):0; console.log(count(d))"
 ```
+
+> **Note:** Uses file descriptor `0` (stdin) for cross-platform compatibility (works on both Unix and Windows).
 
 Thresholds (calibrated to direct dependency count):
 - Ratio > 50 transitive per direct dep: HIGH (bloated dependency tree)
@@ -551,14 +553,16 @@ For other ecosystems: skip heavy dependency check (no reliable cross-ecosystem t
 
 #### 4.6.4: Unmaintained Package Heuristic
 
-For Node.js projects, check the `time` field in `package-lock.json` for packages not updated in >2 years:
+For Node.js projects, use the npm registry to check when packages were last published:
 ```
-Read package-lock.json
 For each direct dependency in package.json:
-  Find its entry in lockfile
-  Check resolved URL date or version publish date if available
-  Flag packages where latest version is >2 years old
+  Run: npm view {package} time --json 2>/dev/null
+  Extract the "modified" timestamp (last publish date)
+  Flag packages where last publish is >2 years old
+  If npm view fails for a package: skip that package silently
 ```
+
+**Alternative (no network):** If `npm view` is unavailable or slow, use the outdated data from Section 4.6.2 as a proxy — packages that are major-version-behind AND where the current version was released >2 years ago are likely unmaintained.
 
 For non-Node.js: Check lockfile modification dates as a rough proxy. If lockfile is >2 years old and manifest has been updated recently, flag as potential staleness.
 
@@ -712,8 +716,7 @@ If no recognized import patterns: "No recognized import patterns detected."}
 |------|-------|--------|-----------|-----------|----------------|
 | {file} | {lines} | {count} | {score} | {CRITICAL/HIGH/MEDIUM/LOW} | {recommendation} |
 
-{Section 9 output — test convention, coverage ratio, files without tests.
-If no test convention detected: "No test convention detected."}
+{Above populated by Sections 9.1-9.5. Graceful degradation placeholders are inline above.}
 
 ## API Surface
 
@@ -1148,13 +1151,16 @@ Output for CODEBASE.md `## Test Coverage Map` section:
 ## Test Coverage Map
 
 **Test convention**: {dominant convention, e.g., "co-located .test.ts files"}
-**Coverage**: {ratio}% of sampled files ({count}/{sample_size}) — {HIGH|MEDIUM|LOW}
+**Coverage**: {pct}% — {HIGH|MEDIUM|LOW}
+**Source**: {e.g., "coverage-summary.json (2026-03-01)" or "Estimated from test file matching"}
 
 ### Files Without Tests
 | Source File | Lines | Risk Note |
 |-------------|-------|-----------|
 | {file} | {lines} | {e.g., "Large file, high fan-in"} |
 ```
+
+When coverage tool data is available (Section 9.4), `{pct}` is the tool-reported percentage and `**Source**` names the report file. When falling back to sample-based detection, `{pct}` is the sample ratio and `**Source**` is `"Estimated from test file matching"`.
 
 **Graceful degradation**: If no test convention is detected:
 ```
