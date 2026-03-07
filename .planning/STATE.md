@@ -6,14 +6,14 @@
 
 ## Current Position
 
-- **Phase**: 8 of 12 (complete)
+- **Phase**: 9 of 12 (executed, pending review)
 - **Milestone**: v6.0 — Discipline & Intelligence
-- **Status**: Phase 8 complete — review passed (2 cycles)
-- **Last Activity**: Phase 8 review passed (2026-03-06)
+- **Status**: Phase 9 complete — all plans executed successfully
+- **Last Activity**: Phase 9 execution (2026-03-06)
 
 ## Progress
 ```
-[########..] 83% — 25/30 plans complete (Phase 8 reviewed)
+[#########.] 93% — 28/30 plans complete (Phase 9 executed)
 ```
 
 ## Shipped Milestones
@@ -74,8 +74,8 @@
 - Directory mapping extraction: Priority-based resolution (explicit/inferred/default)
 
 ## Next Action
-Run `/legion:plan 9` to plan the next phase
+Run `/legion:review` to verify Phase 9: Polymath Advanced Modes
 
 ---
 
-*Last updated: 2026-03-06 — Phase 8 review passed*
+*Last updated: 2026-03-06 — Phase 9 executed*
