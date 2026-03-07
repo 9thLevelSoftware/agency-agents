@@ -1,11 +1,11 @@
 ---
 name: legion:explore
-description: Enter pre-flight alignment mode with Polymath to crystallize ideas before formal planning
+description: Enter pre-flight alignment mode with Polymath — crystallize ideas, onboard to codebases, compare approaches, or debate decisions
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
 ---
 
 <objective>
-Guide the user through structured exploration to crystallize raw ideas into clear project concepts. Spawn Polymath agent to conduct research-first, choice-driven clarification before committing to formal planning.
+Guide the user through structured exploration in one of four modes: crystallize (default — transform ideas into project concepts), onboard (guided codebase familiarization), compare (side-by-side approach evaluation), or debate (opposing viewpoint exploration). Spawn Polymath agent to conduct research-first, choice-driven clarification.
 </objective>
 
 <execution_context>
@@ -37,10 +37,26 @@ First, determine if exploration is appropriate given current state.
 - Look for `.planning/exploration-*.md` files
 - If found: Offer to resume from previous exploration or start fresh
 
-## 2. OPENING PROMPT
+## 2. MODE SELECTION
 
-Capture the raw concept that needs crystallization.
+Present mode selection before spawning the Polymath agent.
 
+- Use adapter.ask_user with structured choices:
+  ```
+  "Which exploration mode fits your goal?"
+  → Crystallize (default): Transform a raw idea into a clear project concept
+    Onboard: Get familiar with an existing codebase through guided exploration
+    Compare: Evaluate multiple approaches side-by-side with decision capture
+    Debate: Explore a question from opposing viewpoints with winner tracking
+  ```
+- Store selected mode in exploration state as `mode: crystallize|onboard|compare|debate`
+- Proceed to the mode-appropriate opening prompt in step 3
+
+## 3. OPENING PROMPT
+
+Capture the initial input based on selected mode.
+
+### Crystallize mode (default)
 - Display: "What are you exploring? Give me the raw idea — a sentence or two."
 - Wait for user's initial concept (this is the ONE open input — everything after is structured choices)
 - Capture this as the exploration topic
@@ -51,32 +67,64 @@ Capture the raw concept that needs crystallization.
 - "Redesign the checkout flow for our e-commerce app"
 - "Build a CLI tool for managing AWS resources"
 
-## 3. SPAWN POLYMATH AGENT
+### Onboard mode
+- If `.planning/CODEBASE.md` exists, present structured choices from the codebase analysis:
+  ```
+  "Which area do you want to explore?"
+  → Full codebase overview: Get oriented with the entire project
+    [Area 1 from CODEBASE.md]: [description]
+    [Area 2 from CODEBASE.md]: [description]
+    Specific file or directory: I know what I'm looking for
+  ```
+- If no CODEBASE.md exists: Display "Which codebase or area do you want to explore?"
+- Wait for user's selection or input
+- Capture as the onboard target
+
+### Compare mode
+- Display: "What alternatives are you evaluating?"
+- Wait for user's input naming the concepts/approaches to compare
+- Capture as the comparison topic
+
+### Debate mode
+- Display: "What question or decision are you exploring?"
+- Wait for user's input describing the debate topic
+- Capture as the debate question
+
+## 4. SPAWN POLYMATH AGENT
 
 Spawn the Polymath agent with the exploration context.
 
 ### Provide Polymath with:
 1. **The user's raw concept** — verbatim what they said
-2. **Access to tools**: Read, Write, Edit, Bash, Grep, Glob (standard set)
-3. **Explicit instruction**: "Use structured choices only. No open-ended questions. Research first, then ask."
-4. **Time limit reminder**: "Maximum 5-7 exchanges before decision point."
+2. **The selected mode** — crystallize, onboard, compare, or debate
+3. **Access to tools**: Read, Write, Edit, Bash, Grep, Glob (standard set)
+4. **Explicit instruction**: "Use structured choices only. No open-ended questions. Research first, then ask."
+5. **Time limit reminder**: "Maximum 5-7 exchanges before decision point."
 
 ### Spawn command structure
 ```
 Spawn agent: polymath
 Instructions: |
   You are Polymath, the crystallization specialist.
-  
-  Exploration topic: "{user's raw concept}"
-  
+
+  Mode: {selected_mode}
+  Exploration topic: "{user's raw concept or onboard target}"
+
   Your mission: Guide the user through structured exploration.
-  
+
+  MODE-SPECIFIC BRIEFING:
+  - crystallize: Transform a raw idea into a clear project concept. Use standard crystallize workflow.
+  - onboard: Guide codebase familiarization through progressive exploration. Use onboard workflow phases.
+  - compare: Evaluate alternatives side-by-side. Structure around criteria and trade-offs.
+  - debate: Explore opposing viewpoints. Track arguments for/against and determine winner.
+
   CRITICAL RULES:
   1. NO OPEN-ENDED QUESTIONS — only structured choices with arrow keys + Enter
   2. RESEARCH FIRST — use Grep/Glob/Read before asking anything
   3. TIME-BOXED — maximum 5-7 exchanges, then force decision
   4. SHOW YOUR WORK — reference research findings in choices
-  
+  5. FOLLOW MODE WORKFLOW — use the workflow phases defined for {selected_mode} mode
+
   Begin with Phase 1: Research (silent), then Phase 2: Opening Exchange.
 ```
 
@@ -85,7 +133,7 @@ Instructions: |
 - Command steps back and monitors
 - Command does NOT interfere with Polymath's structured choice flow
 
-## 4. POLYMATH CONDUCTS EXPLORATION
+## 5. POLYMATH CONDUCTS EXPLORATION
 
 Polymath executes its 5-phase workflow:
 
@@ -111,18 +159,43 @@ Only intervene if:
 - User is stuck for >60 seconds → Offer: "Need help deciding?"
 - Exchange count reaches 7 without decision point → Remind Polymath
 
-## 5. DECISION POINT
+## 6. DECISION POINT
 
 Polymath presents final structured choice after 5-7 exchanges.
 
-### Standard decision options:
+### Mode-specific decision options:
+
+#### Crystallize mode (default):
 > We've explored your concept. Time to decide:
 >
 > - [A] **Proceed to planning** — crystallized enough, ready for `/legion:start`
 > - [B] **Explore more** — specific area needs deeper investigation
 > - [C] **Park for now** — not ready, capture what we know and exit
 
-### If "Proceed to planning" selected:
+#### Onboard mode:
+> We've explored this area. Time to decide:
+>
+> - [A] **Familiarized** — I have a solid understanding, ready to work
+> - [B] **Explore deeper** — want to go deeper into a specific area
+> - [C] **Switch area** — want to explore a different part of the codebase
+
+#### Compare mode:
+> We've evaluated the alternatives. Time to decide:
+>
+> - [A] **Decision made** — I've chosen an approach, ready to proceed
+> - [B] **Need more options** — want to add or evaluate more alternatives
+> - [C] **Refine criteria** — the evaluation criteria need adjustment
+
+#### Debate mode:
+> We've examined the viewpoints. Time to decide:
+>
+> - [A] **Winner clear** — one side is convincingly stronger
+> - [B] **Need more evidence** — want to explore additional arguments
+> - [C] **Declare tie** — both sides have equal merit, capture the nuance
+
+### Crystallize mode outcomes:
+
+#### If "Proceed to planning" selected:
 - Save crystallized output to `.planning/exploration-{name}.md` (automatic — never skip)
   - Use a slugified version of the concept as {name} (e.g., "finance-dashboard")
   - Follow the document structure from polymath-engine Section 5
@@ -130,7 +203,7 @@ Polymath presents final structured choice after 5-7 exchanges.
 - Confirm readiness: "Ready to run `/legion:start` with this concept?"
 - If yes: Transition to `/legion:start` flow with pre-populated concept
 
-### If "Explore more" selected:
+#### If "Explore more" selected:
 - Save current exploration progress to `.planning/exploration-{name}.md` (automatic — capture partial state)
 - Ask: "Which area needs deeper exploration?"
 - Present specific sub-topics as structured choices:
@@ -139,17 +212,63 @@ Polymath presents final structured choice after 5-7 exchanges.
   - User/audience definition
   - Timeline/constraints
   - Dependencies
-- Loop back to step 4 with narrowed scope (limit 2-3 more exchanges)
+- Loop back to step 5 with narrowed scope (limit 2-3 more exchanges)
 - After narrowed exploration completes, update the saved exploration file with new findings
 
-### If "Park for now" selected:
+#### If "Park for now" selected:
 - Save crystallized output to `.planning/exploration-{name}.md` (automatic — always persist)
 - Display summary of what was crystallized
 - Exit gracefully with guidance on next steps
 
-## 6. HANDLE DECISION OUTCOME
+### Onboard mode outcomes:
 
-### Outcome: Proceed to planning
+#### If "Familiarized" selected:
+- Save onboard summary to `.planning/exploration-{name}.md` using onboard deliverable template
+- Display codebase overview, key files, architecture patterns, conventions discovered
+- Suggest next action: "Ready to work on this area, or explore a related part?"
+
+#### If "Explore deeper" selected:
+- Save current onboard progress to `.planning/exploration-{name}.md`
+- Present specific sub-areas as structured choices based on what was discovered
+- Loop back to step 5 with narrowed scope (limit 2-3 more exchanges)
+
+#### If "Switch area" selected:
+- Save current onboard progress to `.planning/exploration-{name}.md`
+- Return to step 3 (opening prompt) with onboard mode pre-selected
+- Previous exploration context is preserved for cross-reference
+
+### Compare mode outcomes:
+
+#### If "Decision made" selected:
+- Save comparison summary with winner and rationale to `.planning/exploration-{name}.md`
+- Display decision matrix and recommendation
+- Suggest next action: "Ready to proceed with the chosen approach?"
+
+#### If "Need more options" selected:
+- Save current comparison state
+- Return to evaluation with space for new alternatives
+
+#### If "Refine criteria" selected:
+- Save current comparison state
+- Present criteria adjustment choices, then re-evaluate
+
+### Debate mode outcomes:
+
+#### If "Winner clear" selected:
+- Save debate summary with winner, arguments, and evidence to `.planning/exploration-{name}.md`
+- Display final verdict with supporting arguments
+
+#### If "Need more evidence" selected:
+- Save current debate state
+- Continue with targeted research on weak points
+
+#### If "Declare tie" selected:
+- Save nuanced summary capturing both positions
+- Present: "How do you want to handle the tie?" with options for hybrid approach, defer, or external input
+
+## 7. HANDLE DECISION OUTCOME (all modes)
+
+### Outcome: Proceed to planning (crystallize) / Familiarized (onboard) / Decision made (compare) / Winner clear (debate)
 
 1. **Save exploration (automatic)**:
    - Write to `.planning/exploration-{name}.md` using polymath-engine Section 5 format
@@ -174,21 +293,21 @@ Polymath presents final structured choice after 5-7 exchanges.
    - Skip to brownfield detection or questioning stages as appropriate
    - Note: "Concept crystallized via `/legion:explore`"
 
-### Outcome: Explore more
+### Outcome: Explore more (crystallize) / Explore deeper (onboard) / Need more options (compare) / Need more evidence (debate)
 
 1. Identify specific area:
    - "Which area needs deeper exploration?"
-   - Present structured choices for sub-topics
+   - Present structured choices for sub-topics (mode-appropriate)
 
 2. Set scope:
    - "2-3 more exchanges on this topic, then decision"
 
-3. Loop back to step 4:
+3. Loop back to step 5:
    - Polymath continues with narrowed focus
    - Track additional exchanges
    - Force decision after 2-3 more exchanges (total max 10)
 
-### Outcome: Park for now
+### Outcome: Park for now (crystallize) / Switch area (onboard) / Refine criteria (compare) / Declare tie (debate)
 
 1. **Save exploration (automatic)**:
    - Write to `.planning/exploration-{name}.md` using polymath-engine Section 5 format
@@ -203,7 +322,7 @@ Polymath presents final structured choice after 5-7 exchanges.
 3. Exit message:
    - "Exploration parked. When you're ready, run `/legion:explore` again or go directly to `/legion:start` if clarity emerges."
 
-## 7. COMPLETION
+## 8. COMPLETION
 
 Display exploration summary:
 

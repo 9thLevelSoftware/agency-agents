@@ -112,6 +112,16 @@ Which describes your situation?
 | Dependency | External requirements | "Need API access?" |
 | Risk | Potential blockers | "Compliance requirements?" |
 
+**Onboard gap categories:**
+
+| Category | Description | Example |
+|----------|-------------|---------|
+| Architecture | Structural patterns unclear | "How do modules communicate?" |
+| Convention | Coding standards undefined | "What naming convention is used?" |
+| Dependency | Package purposes unknown | "Why is this library included?" |
+| Setup | Environment configuration unclear | "How to run this locally?" |
+| History | Design decision rationale missing | "Why was this pattern chosen?" |
+
 **Gap detection workflow:**
 
 1. **Track stated vs implied**
@@ -170,6 +180,16 @@ previous_choices:
 | 6 | Confirm | Verify understanding, surface any final gaps |
 | 7 | Decide | Proceed / Explore more / Park |
 
+**Onboard exchange pattern:**
+
+| Exchange # | Purpose | Typical Choices |
+|------------|---------|-----------------|
+| 1 | Depth selection | Overview / Architecture / Code walkthrough |
+| 2-3 | Area exploration | Directory focus, pattern investigation |
+| 4-5 | Deep dive | Specific files, data flow, dependency chains |
+| 6 | Knowledge check | Validate understanding of key concepts |
+| 7 | Decide | Familiarized / Explore deeper / Switch area |
+
 **Early exit conditions:**
 - User explicitly requests exit (save progress option)
 - Crystallization achieved early (offer early decision)
@@ -219,6 +239,51 @@ previous_choices:
 {Specific next step based on decision}
 ```
 
+**Onboard deliverable template** (saved to `.planning/exploration-{name}.md`):
+
+```markdown
+# Onboard Summary — {name}
+
+## Onboard Target
+{Codebase area or project that was explored during onboard session}
+
+## Codebase Overview
+{2-3 paragraph high-level description of what this project/area is and how it works — the core onboard output}
+
+## Key Files & Directories
+| Path | Purpose | Importance |
+|------|---------|------------|
+| [path] | [what it does] | Critical / Important / Reference |
+
+## Architecture Patterns
+- Pattern: [name] — [how it's used in this codebase]
+- Data flow: [how data moves through the system]
+- Key abstractions: [interfaces, base classes, extension points]
+
+## Conventions
+- Naming: [file, function, variable conventions]
+- Structure: [code organization patterns]
+- Style: [formatting, documentation patterns]
+
+## Dependencies
+| Package | Role | Critical? |
+|---------|------|-----------|
+| [name] | [why it's used] | Yes/No |
+
+## Knowledge Gaps
+- [Gap]: [category] — [what's unclear] — [suggested investigation]
+
+## Next Steps
+- [Immediate action items]
+- [Recommended files to read next]
+- [Related areas to explore]
+
+## Onboard Exploration Log
+| Exchange | Topic | Key Finding |
+|----------|-------|-------------|
+| [#] | [what was explored during onboard] | [what was learned] |
+```
+
 **Decision outcomes:**
 
 | Outcome | Trigger | Next Action |
@@ -253,6 +318,7 @@ previous_choices:
 ```yaml
 exploration:
   started_at: timestamp
+  mode: crystallize|onboard|compare|debate
   raw_concept: string
   exchange_count: number
   exchanges:
@@ -261,12 +327,30 @@ exploration:
       choices: [options]
       selected: option_id
   knowns: [list]
-  gaps: 
+  gaps:
     - category: string
       question: string
       status: open|answered|deferred|blocker
   research_findings: string
   decision: pending|proceed|explore_more|park
+```
+
+**Onboard-specific state extensions:**
+
+```yaml
+exploration:
+  mode: onboard
+  onboard:
+    target_area: string            # codebase area being explored
+    depth: overview|architecture|code_walkthrough
+    areas_explored: [list]         # directories/files already covered
+    areas_remaining: [list]        # directories/files not yet explored
+    patterns_found: [list]         # architecture patterns discovered
+    conventions_found: [list]      # coding conventions identified
+    validation_results:            # knowledge check outcomes
+      - topic: string
+        correct: boolean
+        correction: string|null
 ```
 
 ---
