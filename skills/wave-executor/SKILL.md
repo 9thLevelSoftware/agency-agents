@@ -773,6 +773,14 @@ Step 3: Generate the plan summary file
   ## Issues Encountered
   {Any problems, deviations, or warnings. If none: "None."}
 
+  ## Escalations
+  {If the agent raised any <escalation> blocks during execution, list them here.
+   If none: "None."}
+
+  | # | Severity | Type | Decision | Status | Resolution |
+  |---|----------|------|----------|--------|------------|
+  | 1 | {severity} | {type} | {decision text} | {pending/approved/rejected/deferred} | {resolution details or "Awaiting decision"} |
+
   ## Requirements Covered
   {List the requirement IDs from the plan's frontmatter}
   - {REQ-ID}: {brief description}
@@ -823,6 +831,183 @@ Examples:
 - `.planning/phases/04-parallel-execution/04-02-SUMMARY.md`
 
 The presence of a SUMMARY.md file is the signal used in Section 4, Step 2 to verify that a dependency plan completed. A failed plan still gets a SUMMARY.md (with Status: Failed) so that the dependency check correctly identifies and blocks dependent waves.
+
+---
+
+## Section 5.5: Escalation Detection & Routing
+
+After each agent completes a task, scan its output for `<escalation>` blocks and route them according to the escalation protocol defined in `.planning/config/escalation-protocol.yaml`.
+
+### Step 1: Detect Escalation Blocks
+
+```
+After receiving an agent's completion report (Section 5, Step 1):
+
+1. Scan the full agent output text for <escalation> ... </escalation> blocks
+2. For each escalation block found:
+   a. Parse the YAML-formatted content inside the block tags
+   b. Extract required fields: severity, type, decision, context
+   c. Extract optional fields if present: alternatives, affected_files, related_domain
+3. Validate each escalation block:
+   - All 4 required fields must be present
+   - severity must be one of: info | warning | blocker
+   - type must be one of: architecture | dependency | scope | schema | api | deletion | infrastructure | quality
+   - If any required field is missing or invalid, treat the escalation as severity: warning
+     and append a note: "Malformed escalation block — defaulted to warning severity"
+4. Collect all parsed escalation blocks into an escalation_list for this agent
+```
+
+### Step 2: Apply Control Mode Override
+
+```
+Before routing escalations, check the current control_mode profile
+(resolved by workflow-common-core Settings Resolution Protocol):
+
+1. Read the effective control_mode from the resolved settings profile
+2. Apply control_mode_behaviors from escalation-protocol.yaml:
+
+   autonomous mode:
+     - Override ALL escalation severities to "info"
+     - Agent proceeds with the action — escalations are logged only
+     - No user prompts, no task halting
+
+   guarded mode (default):
+     - Use declared severity as-is — no override
+     - Route according to severity_levels routing rules
+
+   advisory mode:
+     - Override ALL escalation severities to "info"
+     - Agents are read-only so nothing to halt
+     - Log all escalations for informational review
+
+   surgical mode:
+     - Use declared severity as-is, but floor is "warning" (never downgrade to info)
+     - Auto-generate blocker escalation_block for any file access not in plan files_modified:
+       severity: blocker
+       type: scope
+       decision: "Agent attempted to modify {file_path} which is not in files_modified."
+       context: "Surgical mode requires all file modifications to be pre-approved in the plan. This file was not listed."
+     - This auto-escalation happens even without an explicit <escalation> block from the agent
+
+3. Store the effective severity (after override) on each escalation_block
+```
+
+### Step 3: Route Escalations by Severity
+
+```
+For each escalation_block in the escalation_list (using effective severity after control mode override):
+
+  info:
+    1. Append to SUMMARY.md Escalations table with status: "logged"
+    2. Continue to next escalation or next agent — no interruption
+
+  warning:
+    1. Append to SUMMARY.md Escalations table with status: "logged"
+    2. Display escalation to orchestrator output with highlight:
+       "[ESCALATION WARNING] {type}: {decision}"
+    3. Continue to next escalation or next agent — no interruption
+
+  blocker:
+    1. Append to SUMMARY.md Escalations table with status: "pending"
+    2. Display full escalation details to user:
+
+       ## Escalation: {type}
+       **Severity**: BLOCKER
+       **Agent**: {agent_id}
+       **Decision needed**: {decision}
+       **Context**: {context}
+       **Alternatives**: {alternatives, if provided}
+       **Affected files**: {affected_files, if provided}
+
+    3. Prompt user via adapter.ask_user:
+       "How would you like to proceed? [A]pprove / [R]eject / [D]efer"
+
+    4. Record resolution:
+       - Approve: Update SUMMARY.md escalation status to "approved",
+         note what was approved. Agent may proceed with the action if
+         re-executed (blocker escalations do not auto-retry — the approved
+         action is recorded for reference in subsequent builds).
+       - Reject: Update SUMMARY.md escalation status to "rejected",
+         note the rejection reason. Agent must find an alternative approach
+         within its authorized scope.
+       - Defer: Update SUMMARY.md escalation status to "deferred",
+         note deferral rationale. Task remains incomplete — tracked for
+         future phase resolution.
+```
+
+### Step 4: Aggregate Escalation Counts
+
+```
+After processing all escalation_blocks for all agents in a wave:
+
+1. Count escalations by severity and type across all agents
+2. Include escalation counts in the Phase Decision Summary table (Section 5):
+   - "Escalations" column shows: "{blocker_count}B / {warning_count}W / {info_count}I"
+   - If no escalations: show "none"
+3. If any blocker escalations were rejected or deferred:
+   - Flag the affected plan as "Complete with Warnings" (not "Complete")
+   - Include rejected/deferred escalation details in the Issues Encountered section
+```
+
+### Escalation Detection Algorithm (pseudocode)
+
+```python
+def detect_and_route_escalations(agent_output, agent_id, control_mode, plan_files_modified):
+    """
+    Scan agent output for escalation blocks and route by severity.
+    Called after each agent completes (Section 5, Step 1).
+    """
+    escalation_list = []
+
+    # Step 1: Parse escalation blocks from agent output
+    escalation_blocks = extract_blocks(agent_output, tag="escalation")
+
+    for block in escalation_blocks:
+        parsed = parse_yaml(block.content)
+
+        # Validate required fields
+        required = ["severity", "type", "decision", "context"]
+        if not all(f in parsed for f in required):
+            parsed["severity"] = "warning"
+            parsed["_note"] = "Malformed escalation block - defaulted to warning"
+
+        valid_severities = ["info", "warning", "blocker"]
+        if parsed.get("severity") not in valid_severities:
+            parsed["severity"] = "warning"
+
+        escalation_list.append(parsed)
+
+    # Step 1b: Surgical mode auto-escalation for out-of-scope files
+    if control_mode == "surgical":
+        modified_files = extract_modified_files(agent_output)
+        for file_path in modified_files:
+            if file_path not in plan_files_modified:
+                escalation_list.append({
+                    "severity": "blocker",
+                    "type": "scope",
+                    "decision": f"Agent modified {file_path} not in files_modified",
+                    "context": "Surgical mode file scope violation",
+                    "_auto_generated": True
+                })
+
+    # Step 2: Apply control mode severity override
+    for escalation_block in escalation_list:
+        if control_mode == "autonomous" or control_mode == "advisory":
+            escalation_block["effective_severity"] = "info"
+        elif control_mode == "surgical":
+            if escalation_block["severity"] == "info":
+                escalation_block["effective_severity"] = "warning"
+            else:
+                escalation_block["effective_severity"] = escalation_block["severity"]
+        else:  # guarded (default)
+            escalation_block["effective_severity"] = escalation_block["severity"]
+
+    # Step 3: Route by effective severity
+    for escalation_block in escalation_list:
+        route_escalation(escalation_block, agent_id)
+
+    return escalation_list
+```
 
 ---
 

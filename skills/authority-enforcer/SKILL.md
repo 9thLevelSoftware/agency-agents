@@ -217,6 +217,44 @@ def inject_authority_constraints(agent_id, base_prompt, active_agents):
     if not profile.human_approval_required:
         # Omit the escalation protocol section from injected constraints
         pass  # Do not append the standard "Human Approval Required" block
+    else:
+        # Step 3b: Inject escalation format instructions
+        # When human approval is required, agents must use structured <escalation> blocks
+        # for any out-of-scope decisions. Format defined in escalation-protocol.yaml.
+        escalation_instructions = (
+            "\n## Escalation Protocol\n\n"
+            "When you encounter a decision that falls outside your autonomous scope "
+            "(architecture changes, unplanned dependencies, out-of-scope files, schema changes, "
+            "API contract changes, deletions, infrastructure changes, or quality gate overrides), "
+            "you MUST use a structured escalation block in your output.\n\n"
+            "**Format** — wrap in `<escalation>` tags with these required fields:\n\n"
+            "```\n"
+            "<escalation>\n"
+            "severity: info | warning | blocker\n"
+            "type: architecture | dependency | scope | schema | api | deletion | infrastructure | quality\n"
+            "decision: What decision is needed (one sentence)\n"
+            "context: Why you encountered this (2-3 sentences)\n"
+            "alternatives: What you would do if authorized (optional)\n"
+            "affected_files: Files that would be modified (optional)\n"
+            "</escalation>\n"
+            "```\n\n"
+            "**Severity guide:**\n"
+            "- `info` — observation only, you can continue working\n"
+            "- `warning` — notable concern, you continue but it will be highlighted\n"
+            "- `blocker` — you MUST stop the blocked action and work on other in-scope tasks\n\n"
+            "**Do not skip this.** Ad-hoc text descriptions of out-of-scope issues are not "
+            "sufficient. The wave-executor parses `<escalation>` blocks for automated routing.\n\n"
+            "Reference: `.planning/config/escalation-protocol.yaml`"
+        )
+        constraints.append(escalation_instructions)
+
+    # Step 3c: Add control mode context line
+    control_mode_name = profile.control_mode_name if hasattr(profile, 'control_mode_name') else "guarded"
+    constraints.append(
+        f"\n## Active Control Mode: {control_mode_name}\n\n"
+        f"Escalation behavior follows the `{control_mode_name}` profile. "
+        "See `.planning/config/escalation-protocol.yaml` for severity routing rules."
+    )
 
     # Step 4: Combine with base prompt
     if constraints:
@@ -382,7 +420,19 @@ Action:
   3. For each agent:
      - Load personality file
      - Inject authority constraints via injectAuthorityConstraints()
+     - Include escalation format instructions (from escalation-protocol.yaml)
      - Spawn with enhanced prompt
+```
+
+```yaml
+Integration Point: Escalation detection
+When: After agent completes a task (wave-executor Section 5.5)
+Action:
+  1. Wave-executor scans agent output for <escalation> blocks
+  2. Validates escalation block format against escalation-protocol.yaml
+  3. Routes by severity according to control mode behavior
+  4. Records escalations in SUMMARY.md Escalations section
+Reference: .planning/config/escalation-protocol.yaml
 ```
 
 ### With Review Panel

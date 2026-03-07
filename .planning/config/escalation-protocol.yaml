@@ -1,0 +1,223 @@
+# Escalation Protocol for Legion
+# Defines structured format, severity routing, and control mode behaviors
+# for out-of-scope agent decisions during wave execution
+version: "1.0"
+description: "Standardized escalation protocol for agent decisions that fall outside autonomous scope"
+
+# ============================================================================
+# ESCALATION BLOCK FORMAT
+# ============================================================================
+# Agents wrap escalations in <escalation> blocks within their task output.
+# The wave-executor detects and routes these blocks according to severity.
+
+escalation_format:
+  block_tag: "escalation"
+  required_fields:
+    - severity       # info | warning | blocker
+    - type           # one of the escalation_types below
+    - decision       # what decision is needed (one sentence)
+    - context        # why the agent encountered this (2-3 sentences)
+  optional_fields:
+    - alternatives   # what the agent would do if authorized
+    - affected_files # files that would be modified by the out-of-scope action
+    - related_domain # authority matrix domain this falls under
+
+  example: |
+    <escalation>
+    severity: blocker
+    type: dependency
+    decision: Add lodash as a utility dependency for deep merge operations.
+    context: The task requires deep-merging configuration objects. The current codebase has no deep merge utility and writing one from scratch would take significant effort. Lodash is not in the plan's declared dependencies.
+    alternatives: If approved, would add lodash@4.x and use _.merge in config resolution.
+    affected_files:
+      - package.json
+      - package-lock.json
+    related_domain: dependency
+    </escalation>
+
+# ============================================================================
+# SEVERITY LEVELS
+# ============================================================================
+# Each severity level defines how the escalation is routed during execution.
+
+severity_levels:
+  info:
+    description: "Non-blocking observation — agent continues execution"
+    routing:
+      - Log to SUMMARY.md Escalations section
+      - Continue execution without halting
+    review: "Human reviews post-build during SUMMARY.md inspection"
+    color: "blue"
+
+  warning:
+    description: "Notable concern — agent continues but issue is highlighted"
+    routing:
+      - Log to SUMMARY.md Escalations section
+      - Display to orchestrator with highlight in build output
+      - Continue execution without halting
+    review: "Highlighted in build output for immediate visibility"
+    color: "yellow"
+
+  blocker:
+    description: "Execution-halting issue — current task paused until resolved"
+    routing:
+      - Log to SUMMARY.md Escalations section with "status: pending"
+      - Halt current task (agent does not proceed with the blocked action)
+      - Agent continues other in-scope tasks if available
+      - Display to user via adapter.ask_user with Approve/Reject/Defer options
+      - Record resolution in SUMMARY.md
+    review: "Requires human decision before blocked task can proceed"
+    color: "red"
+
+# ============================================================================
+# ESCALATION TYPE TAXONOMY
+# ============================================================================
+# Aligned with CLAUDE.md "Human Approval Required" table.
+# Each type maps to a category of decision that exceeds agent autonomy.
+
+escalation_types:
+  architecture:
+    description: "New patterns, abstractions, or structural changes"
+    examples:
+      - "Introducing a new design pattern not present in the codebase"
+      - "Creating a new abstraction layer"
+      - "Restructuring module boundaries"
+    default_severity: warning
+
+  dependency:
+    description: "Unplanned package or library additions"
+    examples:
+      - "Adding a new npm package not listed in task instructions"
+      - "Upgrading a major version of an existing dependency"
+      - "Adding a new system-level dependency"
+    default_severity: blocker
+
+  scope:
+    description: "Modifications outside the task's files_modified list"
+    examples:
+      - "Needing to edit a shared utility not in the plan"
+      - "Discovering a bug in an unrelated file"
+      - "Updating imports in files outside task scope"
+    default_severity: warning
+
+  schema:
+    description: "Database schema changes"
+    examples:
+      - "Adding a new table or column"
+      - "Modifying an index or constraint"
+      - "Creating a migration file"
+    default_severity: blocker
+
+  api:
+    description: "Endpoint or API contract changes"
+    examples:
+      - "Adding a new endpoint"
+      - "Changing request/response shapes"
+      - "Modifying authentication requirements"
+    default_severity: blocker
+
+  deletion:
+    description: "Removing existing functionality"
+    examples:
+      - "Deleting a function, class, or module"
+      - "Removing a feature flag or configuration option"
+      - "Deprecating a public API"
+    default_severity: blocker
+
+  infrastructure:
+    description: "CI/CD or deployment configuration changes"
+    examples:
+      - "Modifying GitHub Actions workflows"
+      - "Changing Docker configuration"
+      - "Updating deployment scripts"
+    default_severity: blocker
+
+  quality:
+    description: "Overriding review findings or skipping quality gates"
+    examples:
+      - "Marking a BLOCKER finding as acceptable"
+      - "Skipping a verification step"
+      - "Ignoring a linting rule"
+    default_severity: blocker
+
+# ============================================================================
+# CONTROL MODE BEHAVIORS
+# ============================================================================
+# How each control_mode preset affects escalation routing.
+# Consumed by wave-executor when processing <escalation> blocks.
+
+control_mode_behaviors:
+  autonomous:
+    description: "Escalations logged but never halt execution"
+    behavior:
+      - All escalations treated as info severity regardless of declared severity
+      - Logged to SUMMARY.md for post-build review
+      - Agent proceeds with the action without waiting for approval
+    override_severity: info
+
+  guarded:
+    description: "Full escalation protocol — severity-based routing as defined above"
+    behavior:
+      - info escalations logged, execution continues
+      - warning escalations logged and highlighted, execution continues
+      - blocker escalations halt the current task, user prompted for decision
+    override_severity: null  # use declared severity as-is
+
+  advisory:
+    description: "All decisions logged as escalations — read-only mode"
+    behavior:
+      - All agent actions are informational (agents suggest, do not execute)
+      - Every out-of-scope observation logged as info-level escalation
+      - No halting (nothing to halt — agents are not modifying anything)
+    override_severity: info
+
+  surgical:
+    description: "Strict escalation — any out-of-scope file access is automatic blocker"
+    behavior:
+      - Any file not in the plan's files_modified triggers automatic blocker escalation
+      - Declared severity is respected but never downgraded below warning
+      - Out-of-scope file access auto-generates a blocker even without explicit <escalation> block
+    override_severity: null  # declared severity, but floor is warning
+    auto_escalate_file_scope: true
+
+# ============================================================================
+# ESCALATION RESOLUTION TRACKING
+# ============================================================================
+# How escalation outcomes are recorded after human decision.
+
+resolution:
+  statuses:
+    - pending    # escalation raised, awaiting human decision
+    - approved   # human approved the out-of-scope action
+    - rejected   # human rejected — agent must find alternative
+    - deferred   # decision postponed to a later phase or session
+
+  tracking:
+    location: "SUMMARY.md"
+    description: >
+      Escalation resolutions are recorded in the plan's SUMMARY.md file alongside
+      the original escalation. No separate registry file is maintained — escalations
+      live in the plan output where they occurred.
+
+  summary_format: |
+    ## Escalations
+    | # | Severity | Type | Decision | Status | Resolution |
+    |---|----------|------|----------|--------|------------|
+    | 1 | blocker | dependency | Add lodash for deep merge | approved | Human approved, added to dependencies |
+    | 2 | warning | scope | Edit shared utils file | deferred | Deferred to phase 12 |
+
+# ============================================================================
+# USAGE NOTES
+# ============================================================================
+
+usage:
+  - "Agents: wrap out-of-scope decisions in <escalation> blocks in your task output"
+  - "Wave-executor: scan agent output for <escalation> blocks after task completion"
+  - "Authority-enforcer: inject escalation format instructions into agent prompts"
+  - "Review-loop: use <escalation> blocks when max_cycles exhausted or loop stalls"
+  - "Control mode determines routing behavior — check control_mode_behaviors"
+
+maintenance:
+  - "Update escalation_types when CLAUDE.md 'Human Approval Required' table changes"
+  - "Update control_mode_behaviors when new control modes are added"
+  - "Version bump on breaking format changes"

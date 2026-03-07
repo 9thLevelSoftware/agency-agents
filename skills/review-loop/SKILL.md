@@ -838,7 +838,21 @@ Step 3: Cleanup coordination
   - Use adapter.shutdown_agents to gracefully terminate spawned agents
   - Use adapter.cleanup_coordination to clean up
 
-Step 4: Present escalation report to user
+Step 4: Generate structured escalation blocks
+  For each unresolved BLOCKER finding, generate one <escalation> block in the
+  REVIEW.md output so that the escalation is machine-parseable by wave-executor:
+
+  {For each unresolved BLOCKER:}
+  <escalation>
+  severity: blocker
+  type: quality
+  decision: Unresolved BLOCKER in {file_path} after {max_cycles} review cycles — {brief issue}.
+  context: The review loop ran {max_cycles} cycles but fix agents could not resolve this finding. {fix_attempt_count} fix attempts were made. The issue may require manual intervention or a different approach.
+  affected_files:
+    - {file_path}
+  </escalation>
+
+Step 5: Present escalation report to user
 
   ## Phase {N}: {phase_name} — Review Escalated
 
@@ -849,6 +863,11 @@ Step 4: Present escalation report to user
   |---|---------------|-----------------------|--------------|
   | 1 | path/file.md  | brief issue           | {3 attempts} |
   | 2 | path/other.md | brief issue           | {2 attempts} |
+
+  ### Escalation Blocks Generated
+  {count} `<escalation>` blocks (severity: blocker, type: quality) written to REVIEW.md
+  for each unresolved BLOCKER. These follow the structured escalation format defined in
+  `.planning/config/escalation-protocol.yaml`.
 
   ### Options
   1. **Fix manually** — address the remaining findings directly, then re-run `/legion:review`
@@ -955,7 +974,20 @@ Step 2: Update STATE.md
 Step 3: Cleanup coordination
   Same as Section 7, Step 4 — use adapter.shutdown_agents + adapter.cleanup_coordination
 
-Step 4: Present stale loop report to user
+Step 4: Generate structured escalation blocks for stale findings
+  For each persistent finding, generate one <escalation> block in the REVIEW.md output:
+
+  {For each persistent finding:}
+  <escalation>
+  severity: blocker
+  type: quality
+  decision: Persistent finding in {file_path} unchanged across {stale_count} review cycles — {brief issue}.
+  context: The review loop detected zero delta for {stale_count} consecutive cycles. Fix agents were unable to resolve this finding, suggesting the issue may require a different approach, a different agent specialty, or manual intervention.
+  affected_files:
+    - {file_path}
+  </escalation>
+
+Step 5: Present stale loop report to user
 
   ## Phase {N}: {phase_name} — Review Loop Stalled
 

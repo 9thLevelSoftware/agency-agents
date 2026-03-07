@@ -94,10 +94,33 @@ Explicit boundaries for what agents decide autonomously vs. what requires human 
 ### Escalation Protocol
 
 When an agent encounters a decision that falls outside its autonomous scope:
-1. **Stop** — do not proceed with the out-of-scope action
-2. **Document** — note what decision is needed and why in the task output
-3. **Continue** — work on other in-scope items while waiting for human input
-4. **Never rationalize** — "it's a small change" or "it's obviously fine" are not valid reasons to skip approval
+1. **Stop** -- do not proceed with the out-of-scope action
+2. **Document** -- use a structured `<escalation>` block in your task output:
+   ```
+   <escalation>
+   severity: info | warning | blocker
+   type: architecture | dependency | scope | schema | api | deletion | infrastructure | quality
+   decision: What decision is needed (one sentence)
+   context: Why you encountered this (2-3 sentences)
+   </escalation>
+   ```
+3. **Continue** -- work on other in-scope items while waiting for human input
+4. **Never rationalize** -- "it's a small change" or "it's obviously fine" are not valid reasons to skip approval
+
+#### Escalation Types
+
+| Type | Trigger |
+|------|---------|
+| `architecture` | New patterns, abstractions, structural changes |
+| `dependency` | Unplanned package/library additions |
+| `scope` | Modifications outside task's `files_modified` list |
+| `schema` | Database schema changes |
+| `api` | Endpoint or contract changes |
+| `deletion` | Removing existing functionality |
+| `infrastructure` | CI/CD or deployment changes |
+| `quality` | Overriding review findings or skipping gates |
+
+Full protocol specification: `.planning/config/escalation-protocol.yaml`
 
 ### Control Modes
 
