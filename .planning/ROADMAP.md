@@ -18,7 +18,7 @@
 - [x] Phase 3: Control Modes (3 plans)
 - [x] Phase 4: Observability (3 plans)
 - [x] Phase 5: Agent Metadata Enrichment (3 plans)
-- [ ] Phase 6: Recommendation Engine v2 (3 plans)
+- [x] Phase 6: Recommendation Engine v2 (3 plans)
 - [ ] Phase 7: Validation & Conformance (3 plans)
 - [ ] Phase 8: Codebase Mapper Enrichment (2 plans)
 - [ ] Phase 9: Polymath Advanced Modes (3 plans)
@@ -172,7 +172,7 @@
 | 3 — Control Modes | 3 | 3 | Complete ✓ |
 | 4 — Observability | 3 | 3 | Complete ✓ |
 | 5 — Agent Metadata Enrichment | 3 | 3 | Complete ✓ (reviewed) |
-| 6 — Recommendation Engine v2 | 3 | 0 | Not started |
+| 6 — Recommendation Engine v2 | 3 | 3 | Complete |
 | 7 — Validation & Conformance | 3 | 0 | Not started |
 | 8 — Codebase Mapper Enrichment | 2 | 0 | Not started |
 | 9 — Polymath Advanced Modes | 3 | 0 | Not started |
