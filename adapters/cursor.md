@@ -2,16 +2,16 @@
 cli: cursor
 cli_display_name: "Cursor"
 version: "1.0"
-support_tier: "beta"
+support_tier: "experimental"
 capabilities:
   parallel_execution: true
   agent_spawning: true
   structured_messaging: false
   native_task_tracking: false
-  read_only_agents: false
+  read_only_agents: true
 detection:
-  primary: "CURSOR_VERSION environment variable is set"
-  secondary: ".cursor/settings.json exists in CWD or parent directories"
+  primary: ".cursor/rules/legion.mdc exists in CWD"
+  secondary: ".cursor/rules/ exists in CWD or Background Agent is enabled"
 max_prompt_size: 128000
 known_quirks:
   - "ide-embedded-agent"
@@ -20,15 +20,15 @@ known_quirks:
 
 # Cursor Adapter
 
-Cursor supports async subagents with independent context windows. Subagents can run in the background while the parent continues. No inter-agent messaging — results are collected via file system. Background Agents work on separate branches in isolated VMs.
+Cursor supports project rules, Background Agents, and Review mode. Legion uses Cursor's native project-rules surface only. There are no native Legion `/legion:*` command files in Cursor, so the installed rule teaches Cursor how to route plain-language Legion requests to the authoritative workflow files under `.legion/commands/legion/`.
 
 ## Tool Mappings
 
 | Generic Concept | Implementation |
 |-----------------|---------------|
-| `spawn_agent_personality` | Spawn a subagent with the personality content as system prompt, plus the task description. Use Cursor's subagent spawning with custom system prompts. |
-| `spawn_agent_autonomous` | Spawn a subagent with the task prompt directly. |
-| `spawn_agent_readonly` | Spawn a subagent with explicit read-only instructions in the prompt. Cursor does not enforce read-only at the platform level. |
+| `spawn_agent_personality` | Read the matching Legion workflow from `.legion/commands/legion/`, then use Cursor's Background Agent or chat agent with the requested personality context. |
+| `spawn_agent_autonomous` | Execute the matching Legion workflow directly from the current session or a Background Agent. |
+| `spawn_agent_readonly` | Prefer Cursor Review mode or explicit read-only prompts; do not assume file writes are disabled unless Review mode is active. |
 | `coordinate_parallel` | Spawn multiple subagents asynchronously — Cursor supports parallel subagent execution. Each writes results to a file. |
 | `collect_results` | Each agent writes its structured result to `.planning/phases/{NN}/{NN}-{PP}-RESULT.md`. The coordinator polls for these files. |
 | `shutdown_agents` | No-op — subagents complete and return naturally. |
@@ -37,8 +37,8 @@ Cursor supports async subagents with independent context windows. Subagents can 
 | `model_planning` | `claude-opus-4-6` or `gpt-5.3-codex` (user-configured) |
 | `model_execution` | `claude-sonnet-4-6` (Cursor default) |
 | `model_check` | `claude-haiku-4-5` |
-| `global_config_dir` | `~/.legion/` |
-| `plugin_discovery_glob` | `{HOME}/.legion/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
+| `global_config_dir` | `.cursor/rules/` (workspace installs only) |
+| `plugin_discovery_glob` | `.cursor/rules/legion.mdc` |
 | `commit_signature` | `Co-Authored-By: Cursor Agent <noreply@cursor.com>` |
 
 ## Interaction Protocol
@@ -59,7 +59,7 @@ Parse the integer from the user's response. Re-prompt on invalid input (max 2 re
 
 ### Phase Initialization
 
-Write a wave checklist to `.planning/phases/{NN}/WAVE-CHECKLIST.md` (same format as other non-Teams CLIs).
+Read the matching Legion workflow from `.legion/commands/legion/` and write a wave checklist to `.planning/phases/{NN}/WAVE-CHECKLIST.md`.
 
 ### Wave Execution
 

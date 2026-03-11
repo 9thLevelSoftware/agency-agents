@@ -750,9 +750,8 @@
         <section class="grimoire-section reveal-section">
             <h2>Summon the Legion</h2>
             <p>
-                Install with npx, open any project, and speak:
-                <em>/legion:start</em><br>
-                The many will answer.
+                Install with npx, open any project, and use the runtime-native Legion entry point.<br>
+                Codex uses <em>/project:legion-start</em>; Gemini keeps <em>/legion:start</em>.
             </p>
             <div class="ritual-code" style="text-align: left; margin-bottom: 1.5rem;">
 <pre><span class="comment"># Install for Claude Code</span>
@@ -762,10 +761,11 @@
 <span class="command">npx</span> <span class="string">@9thlevelsoftware/legion</span> <span class="flag">--codex</span>      <span class="comment"># OpenAI Codex CLI</span>
 <span class="command">npx</span> <span class="string">@9thlevelsoftware/legion</span> <span class="flag">--cursor</span>     <span class="comment"># Cursor</span>
 <span class="command">npx</span> <span class="string">@9thlevelsoftware/legion</span> <span class="flag">--gemini</span>     <span class="comment"># Google Gemini CLI</span>
-<span class="comment"># + copilot, amazon-q, windsurf, opencode, aider</span>
+<span class="comment"># + copilot, kiro, windsurf, opencode, aider</span>
 
 <span class="comment"># Then, in any project directory:</span>
-<span class="command">/legion:start</span>            <span class="comment"># And the many awaken</span></pre>
+<span class="command">/project:legion-start</span>    <span class="comment"># Codex local install</span>
+<span class="command">/legion:start</span>            <span class="comment"># Gemini or Claude</span></pre>
             </div>
             <div class="grimoire-buttons">
                 <a href="https://github.com/9thLevelSoftware/legion" class="grimoire-btn" target="_blank" rel="noopener">

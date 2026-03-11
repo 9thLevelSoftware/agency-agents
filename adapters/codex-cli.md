@@ -20,7 +20,7 @@ known_quirks:
 
 # OpenAI Codex CLI Adapter
 
-Codex CLI supports agent spawning via `spawn_agents_on_csv` but lacks native inter-agent messaging or team coordination. Personality injection works by prefixing the agent prompt. Execution is sequential within waves.
+Codex CLI supports agent spawning via `spawn_agents_on_csv` and custom prompt commands via `.codex/prompts`, but lacks native inter-agent messaging or team coordination. Personality injection works by prefixing the agent prompt. Execution is sequential within waves.
 
 ## Tool Mappings
 
@@ -38,7 +38,7 @@ Codex CLI supports agent spawning via `spawn_agents_on_csv` but lacks native int
 | `model_execution` | `codex` (GPT-5.3-Codex or configured default) |
 | `model_check` | `o3-mini` (or configured lightweight model) |
 | `global_config_dir` | `~/.legion/` |
-| `plugin_discovery_glob` | `{HOME}/.legion/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
+| `plugin_discovery_glob` | `<home>/.legion/agents/agents-orchestrator.md` — **resolve `<home>` first**: run `echo $HOME` (bash) or use `os.homedir()` to get the absolute path, then substitute it into the glob pattern. Do NOT pass `~`, `$HOME`, `{HOME}`, or any variable literal to the Glob tool. |
 | `commit_signature` | `Co-Authored-By: Codex <noreply@openai.com>` |
 
 ## Interaction Protocol

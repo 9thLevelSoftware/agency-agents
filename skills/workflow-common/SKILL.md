@@ -26,20 +26,20 @@ Step 0: Check for override file
 Step 1: Tool probe (primary detection)
   - For each adapter in adapters/, check the detection.primary field:
     - Claude Code: TeamCreate tool is available
-    - Codex CLI: CODEX_VERSION environment variable is set
-    - Cursor: CURSOR_VERSION environment variable is set
-    - Copilot CLI: COPILOT_CLI_VERSION environment variable is set
-    - Gemini CLI: GEMINI_CLI_VERSION environment variable is set
-    - Amazon Q: Q_CLI_VERSION environment variable is set
-    - Windsurf: WINDSURF_VERSION environment variable is set
-    - OpenCode: OPENCODE_CONFIG_DIR environment variable is set
-    - Aider: AIDER_VERSION environment variable is set
+    - Codex CLI: `.codex/prompts/legion-start.md` or `~/.codex/prompts/legion-start.md` exists
+    - Cursor: `.cursor/rules/legion.mdc` exists
+    - Copilot CLI: `.github/skills/legion-start/SKILL.md`, `~/.copilot/skills/legion-start/SKILL.md`, `.github/agents/legion-orchestrator.agent.md`, or `~/.config/copilot/agents/legion-orchestrator.agent.md` exists
+    - Gemini CLI: `.gemini/commands/legion/start.toml` or `~/.gemini/commands/legion/start.toml` exists
+    - Kiro CLI: `.kiro/agents/legion-orchestrator.md`, `~/.kiro/agents/legion-orchestrator.md`, `.kiro/steering/legion.md`, or `~/.kiro/steering/AGENTS.md` exists
+    - Windsurf: `.windsurf/rules/legion.md` exists
+    - OpenCode: `.opencode/command/legion-start.md`, `~/.config/opencode/command/legion-start.md`, `.opencode/agent/legion-orchestrator.md`, or `~/.config/opencode/agent/legion-orchestrator.md` exists
+    - Aider: `.aider.conf.yml`, `AGENTS.md`, or `CONVENTIONS.md` exists
   - If exactly one primary matches: use that adapter
   - If multiple match: use the first match in the order above (Claude Code wins ties)
 
 Step 2: Secondary detection (fallback)
   - If no primary matched, check each adapter's detection.secondary field
-  - These are filesystem markers (e.g., ~/.claude/ directory, ~/.codex/AGENTS.md)
+  - These are additional filesystem markers or runtime-native configuration directories
   - Use the first match
 
 Step 3: Default
@@ -67,8 +67,7 @@ These resolve to the active adapter's Tool Mappings table at runtime.
 
 All commands use `adapter.ask_user` for user prompts. This maps to:
 - Claude Code: `AskUserQuestion` tool (structured questions with labeled options)
-- Codex CLI / Gemini CLI / Aider: plain numbered lists printed to stdout
-- Cursor: notification-based prompts
+- Codex CLI / Gemini CLI / Cursor / Windsurf / Aider / Kiro / OpenCode / Copilot CLI: plain numbered lists printed to stdout when the runtime does not offer a better structured question surface
 - Other CLIs: per adapter's Interaction Protocol section
 
 Commands reference `adapter.ask_user` in their process body. The `allowed-tools` frontmatter retains the Claude Code tool name (`AskUserQuestion`) for backward compatibility.

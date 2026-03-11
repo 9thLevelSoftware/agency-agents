@@ -36,7 +36,7 @@ Claude Code supports the full Legion feature set: parallel wave execution via Ag
 | `model_execution` | `sonnet` |
 | `model_check` | `haiku` |
 | `global_config_dir` | `~/.claude/legion/` |
-| `plugin_discovery_glob` | `{HOME}/.claude/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` before use — the Glob tool does not expand `~`) |
+| `plugin_discovery_glob` | `<home>/.claude/agents/agents-orchestrator.md` — **resolve `<home>` first**: run `echo $HOME` (bash) or use `os.homedir()` to get the absolute path, then substitute it into the glob pattern. Do NOT pass `~`, `$HOME`, `{HOME}`, or any variable literal to the Glob tool. |
 | `commit_signature` | `Co-Authored-By: Claude <noreply@anthropic.com>` |
 
 ## Prerequisites

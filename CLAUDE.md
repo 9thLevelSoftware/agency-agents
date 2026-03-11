@@ -1,6 +1,6 @@
 # Legion
 
-A multi-CLI plugin for orchestrating 53 AI specialist personalities as a coordinated legion. Works with Claude Code, OpenAI Codex CLI, Cursor, GitHub Copilot CLI, Google Gemini CLI, Amazon Q Developer, Windsurf, OpenCode, and Aider.
+A multi-CLI plugin for orchestrating 53 AI specialist personalities as a coordinated legion. Works with Claude Code, OpenAI Codex CLI, Cursor, GitHub Copilot CLI, Google Gemini CLI, Kiro CLI, Windsurf, OpenCode, and Aider.
 
 ## MANDATORY: User Interaction Rule
 

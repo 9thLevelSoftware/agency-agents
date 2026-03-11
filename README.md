@@ -6,7 +6,7 @@ Orchestrate 53 AI specialist personalities across 9 AI CLI runtimes.
 
 ## What It Does
 
-Turn 53 isolated agent personalities into a coordinated legion. Type `/legion:start`, describe what you want, and the system assembles the right team, plans the work, executes in parallel, and runs quality checks — with each agent operating in full character.
+Turn 53 isolated agent personalities into a coordinated legion. The native Legion entry point now depends on the runtime you install into. See the audited compatibility matrix in [docs/runtime-audit.md](docs/runtime-audit.md) before assuming `/legion:*` works everywhere.
 
 ## Installation
 
@@ -25,24 +25,25 @@ Replace `--claude` with your runtime of choice:
 | `--cursor` | Cursor |
 | `--copilot` | GitHub Copilot CLI |
 | `--gemini` | Google Gemini CLI |
-| `--amazon-q` | Amazon Q Developer |
+| `--kiro` | Kiro CLI (preferred) |
+| `--amazon-q` | Deprecated alias for `--kiro` |
 | `--windsurf` | Windsurf |
 | `--opencode` | OpenCode |
-| `--aider` | Aider |
+| `--aider` | Aider (manual-only; native install disabled) |
 
 ### Runtime Support Tiers
 
 | Runtime | Status | Notes |
 |---------|--------|-------|
-| Claude Code | Certified | Fully validated agent-team workflow including TeamCreate/SendMessage paths |
-| OpenAI Codex CLI | Beta | Validated sequential/subagent workflow; advanced coordination differs from Claude |
-| Cursor | Beta | Validated async subagent flow; structured inter-agent messaging not native |
-| Google Gemini CLI | Beta | Validated sequential adapter path; feature parity depends on CLI version |
-| GitHub Copilot CLI | Experimental | Adapter provided; behavior and env markers vary by installation |
-| Amazon Q Developer | Experimental | Single-session fallback model; no native subagent orchestration |
-| Windsurf | Experimental | Single-session fallback model; automation behavior may vary |
-| OpenCode | Experimental | Task-based parallel support expected; diagnostics recommended on first run |
-| Aider | Experimental | Single-agent fallback mode with reduced orchestration capabilities |
+| Claude Code | Certified | Control runtime with native Legion slash commands, agents, and skills |
+| OpenAI Codex CLI | Beta | Native prompt commands plus a Legion bridge skill; use `/project:legion-start` or `/prompts:legion-start` |
+| GitHub Copilot CLI | Beta | Native `/legion-start` skills plus a `legion-orchestrator` agent profile |
+| Google Gemini CLI | Beta | Native `/legion:start` custom commands in `.gemini/commands/legion/` |
+| Kiro CLI (formerly Amazon Q Developer CLI) | Beta | Native `@legion-orchestrator` custom agent plus steering files |
+| OpenCode | Beta | Native `/legion-start` custom commands plus a Legion subagent |
+| Cursor | Experimental | Local-only rules install in `.cursor/rules/`; plain-language Legion requests only |
+| Windsurf | Experimental | Local-only rules install in `.windsurf/rules/`; plain-language Legion requests only |
+| Aider | Experimental | Manual-only fallback; automated native install is intentionally disabled |
 
 ### Local development
 
@@ -56,18 +57,42 @@ node bin/install.js --claude
 - Node.js 18+
 - One of the 9 AI CLI runtimes listed above (support tier varies by runtime)
 
+### Codex note
+
+If you install with `--codex`, Legion writes its workflow files into `.legion/`, installs native prompt commands into `.codex/prompts/` for local installs or `~/.codex/prompts/` for global installs, and also installs a `legion` bridge skill into `.agents/skills/legion/`.
+
+- Local Codex installs appear as `/project:legion-start`, `/project:legion-plan`, `/project:legion-build`, and so on
+- Global Codex installs appear as `/prompts:legion-start`, `/prompts:legion-plan`, `/prompts:legion-build`, and so on
+- Legacy `/legion:*` aliases remain bridge-only fallbacks, and plain-language Legion intents still work
+
+### Native entry points
+
+| Runtime | Local install | Global install |
+|---------|---------------|----------------|
+| Claude Code | `/legion:start` | `/legion:start` |
+| OpenAI Codex CLI | `/project:legion-start` | `/prompts:legion-start` |
+| GitHub Copilot CLI | `/legion-start` or `/agent legion-orchestrator` | `/legion-start` or `/agent legion-orchestrator` |
+| Google Gemini CLI | `/legion:start` | `/legion:start` |
+| Kiro CLI | `@legion-orchestrator` | `@legion-orchestrator` |
+| OpenCode | `/legion-start` | `/legion-start` |
+| Cursor | Plain-language request after local rules install | Not supported |
+| Windsurf | Plain-language request after local rules install | Not supported |
+| Aider | Manual-only | Manual-only |
+
 ## Getting Started
 
 1. Install Legion (see above)
-2. In any project directory, run `/legion:start`
+2. Start Legion with the runtime-native entry point from the table above
 3. Answer the guided questions — the system explores your vision before jumping to implementation
 4. Review the generated PROJECT.md and ROADMAP.md
-5. Run `/legion:plan 1` to plan the first phase with agent recommendations
-6. Run `/legion:build` to execute with parallel agent teams
-7. Run `/legion:review` for quality review
-8. Repeat `/legion:plan N` → `/legion:build` → `/legion:review` for each phase
+5. Plan the first phase with the runtime-native Legion plan entry
+6. Execute the phase with the runtime-native Legion build entry
+7. Review the phase with the runtime-native Legion review entry
+8. Repeat plan → build → review for each phase
 
 ## Commands
+
+These are the canonical Legion command names. Each runtime maps them to its own discovery surface. Codex uses flat prompt names such as `/project:legion-start`; Gemini keeps `/legion:start`; Copilot and OpenCode use flat `/legion-start`; Kiro uses `@legion-orchestrator`; Cursor and Windsurf rely on their installed rules and plain-language intent routing.
 
 | Command | Description | Usage |
 |---------|-------------|-------|
@@ -717,7 +742,7 @@ These activate automatically when their prerequisites are met:
 
 - Node.js 18+ (install-time only — zero runtime dependencies)
 - One of the 9 supported AI CLI runtimes:
-  Claude Code, OpenAI Codex CLI, Cursor, GitHub Copilot CLI, Google Gemini CLI, Amazon Q Developer, Windsurf, OpenCode, or Aider
+  Claude Code, OpenAI Codex CLI, Cursor, GitHub Copilot CLI, Google Gemini CLI, Kiro CLI, Windsurf, OpenCode, or Aider
 
 ## Contributing
 

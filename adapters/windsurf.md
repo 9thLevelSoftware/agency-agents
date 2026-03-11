@@ -8,9 +8,9 @@ capabilities:
   agent_spawning: false
   structured_messaging: false
   native_task_tracking: false
-  read_only_agents: false
+  read_only_agents: true
 detection:
-  primary: "WINDSURF_VERSION environment variable is set"
+  primary: ".windsurf/rules/legion.md exists in CWD"
   secondary: ".windsurf/rules/ directory exists in CWD"
 max_prompt_size: 128000
 known_quirks:
@@ -20,15 +20,15 @@ known_quirks:
 
 # Windsurf Adapter
 
-Windsurf's Cascade is a single-agent system with deep context awareness. No subagent spawning — all plans execute within the current session. Extension via Rules files and MCP servers.
+Windsurf's Cascade is a single-session agent with Rules, Planning mode, Ask mode, and Todo tracking. Legion uses the native workspace-rules surface only. There are no native Legion `/legion:*` command files in Windsurf, so the installed rule routes plain-language Legion requests to the authoritative workflow files under `.legion/commands/legion/`.
 
 ## Tool Mappings
 
 | Generic Concept | Implementation |
 |-----------------|---------------|
-| `spawn_agent_personality` | No subagent spawning. Prepend the personality content to the current session context as a behavioral directive, then execute the plan tasks inline. |
-| `spawn_agent_autonomous` | Execute the plan tasks directly in the current session. |
-| `spawn_agent_readonly` | Instruct the session explicitly: "READ-ONLY MODE: Do not create, modify, or delete any files." No platform enforcement. |
+| `spawn_agent_personality` | Read the matching Legion workflow from `.legion/commands/legion/`, then apply the requested personality inline in the current Cascade session. |
+| `spawn_agent_autonomous` | Execute the matching Legion workflow directly in the current session. |
+| `spawn_agent_readonly` | Prefer Ask mode for read-only Legion advisory work. |
 | `coordinate_parallel` | Not available. All plans execute sequentially. |
 | `collect_results` | After each plan, write a structured result to `.planning/phases/{NN}/{NN}-{PP}-RESULT.md`. |
 | `shutdown_agents` | No-op. |
@@ -37,8 +37,8 @@ Windsurf's Cascade is a single-agent system with deep context awareness. No suba
 | `model_planning` | User-configured model (Cascade default) |
 | `model_execution` | User-configured model (Cascade default) |
 | `model_check` | User-configured model |
-| `global_config_dir` | `~/.legion/` |
-| `plugin_discovery_glob` | `{HOME}/.legion/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
+| `global_config_dir` | `.windsurf/rules/` (workspace installs only) |
+| `plugin_discovery_glob` | `.windsurf/rules/legion.md` |
 | `commit_signature` | `Co-Authored-By: Windsurf <noreply@codeium.com>` |
 
 ## Interaction Protocol
@@ -51,7 +51,7 @@ Print numbered choices in plain text and wait for user response. Parse the integ
 
 ### Phase Initialization
 
-Write a wave checklist to `.planning/phases/{NN}/WAVE-CHECKLIST.md`.
+Read the matching Legion workflow from `.legion/commands/legion/` and write a wave checklist to `.planning/phases/{NN}/WAVE-CHECKLIST.md`.
 
 ### Wave Execution
 
@@ -69,5 +69,5 @@ No cleanup needed. Update checklist.
 
 ## Rules Integration
 
-Windsurf Rules files in `.windsurf/rules/` can be configured to load Legion conventions automatically. Consider creating a `legion.rule` that references key workflow-common patterns.
+Windsurf rules in `.windsurf/rules/` are the native Legion discovery surface. They should point Cascade at the installed `.legion/commands/legion/` workflow files and keep the runtime honest about the lack of native `/legion:*` command registration.
 

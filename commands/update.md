@@ -26,15 +26,21 @@ skills/workflow-common-core/SKILL.md
      - cursor → --cursor
      - copilot-cli → --copilot
      - gemini-cli → --gemini
-     - amazon-q → --amazon-q
+     - kiro-cli → --kiro
+     - amazon-q → --amazon-q (deprecated alias for --kiro)
      - windsurf → --windsurf
      - opencode → --opencode
      - aider → --aider
 
 2. READ INSTALLED VERSION
-   - Determine manifest location based on detected runtime:
-     - Claude Code: ~/.claude/legion/manifest.json
-     - All others: ~/.legion/manifest.json
+   - Determine install scope and manifest location:
+     - First check for a local install in the current project:
+       - Claude Code: `.claude/legion/manifest.json`
+       - All others: `.legion/manifest.json`
+     - If no local manifest exists, fall back to the global install path:
+       - Claude Code: `~/.claude/legion/manifest.json`
+       - All others: `~/.legion/manifest.json`
+   - Store the winning scope as INSTALL_SCOPE (`local` or `global`)
    - Run: Bash  cat "{MANIFEST_PATH}" 2>/dev/null
    - If file not found or empty:
      Display: "Legion is not installed. Run: npx @9thlevelsoftware/legion {runtime_flag}"
@@ -61,7 +67,7 @@ skills/workflow-common-core/SKILL.md
      - Option 1: "Yes, update now"
      - Option 2: "No, skip this update"
    - If user confirms:
-     Run: Bash  npx @9thlevelsoftware/legion@latest {runtime_flag} --global
+     Run: Bash  npx @9thlevelsoftware/legion@latest {runtime_flag} --{INSTALL_SCOPE}
      Display the installer output
    - Remind user to restart their CLI to pick up updated commands
 </process>

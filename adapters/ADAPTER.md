@@ -66,7 +66,7 @@ A table mapping every generic Legion concept to this CLI's implementation:
 | `model_execution` | Model name for implementation/execution | Yes |
 | `model_check` | Model name for lightweight checks | Yes |
 | `global_config_dir` | Where to store global files (portfolio registry) | Yes |
-| `plugin_discovery_glob` | Glob pattern for finding installed Legion agents. Use `{HOME}` instead of `~` — Glob tools do not expand tilde. | Yes |
+| `plugin_discovery_glob` | Glob pattern for finding installed Legion agents. Use `<home>` as a placeholder — agents MUST resolve it to an absolute path via `echo $HOME` (bash) or `os.homedir()` before passing to Glob. Do NOT pass `~`, `$HOME`, `{HOME}`, or any variable literal to the Glob tool. | Yes |
 | `commit_signature` | Co-Authored-By line for git commits | Yes |
 
 ### Interaction Protocol
@@ -98,7 +98,7 @@ adapters/
   cursor.md           — Cursor IDE
   copilot-cli.md      — GitHub Copilot CLI
   gemini-cli.md       — Google Gemini CLI
-  amazon-q.md         — Amazon Q Developer CLI
+  kiro-cli.md         — Kiro CLI (formerly Amazon Q Developer CLI)
   windsurf.md         — Windsurf (Codeium)
   opencode.md         — OpenCode
   aider.md            — Aider

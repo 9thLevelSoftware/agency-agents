@@ -2,7 +2,7 @@
 cli: opencode
 cli_display_name: "OpenCode"
 version: "1.0"
-support_tier: "experimental"
+support_tier: "beta"
 capabilities:
   parallel_execution: true
   agent_spawning: true
@@ -10,8 +10,8 @@ capabilities:
   native_task_tracking: true
   read_only_agents: true
 detection:
-  primary: "OPENCODE_CONFIG_DIR environment variable is set"
-  secondary: ".opencode/ directory exists in CWD or ~/.config/opencode/ directory exists"
+  primary: ".opencode/command/legion-start.md exists in CWD or ~/.config/opencode/command/legion-start.md exists"
+  secondary: ".opencode/agent/legion-orchestrator.md exists in CWD or ~/.config/opencode/agent/legion-orchestrator.md exists"
 max_prompt_size: 128000
 known_quirks:
   - "terminal-ui-only"
@@ -19,14 +19,14 @@ known_quirks:
 
 # OpenCode Adapter
 
-OpenCode supports subagent spawning with parallel execution, read-only Explore agents, MCP servers, and custom agents via JSON config or markdown files. Subagents communicate through the Task tool — no structured inter-agent messaging like Claude Code's SendMessage, but task-based coordination is available.
+OpenCode supports native custom commands, custom agents, task-based subagents, and read-only exploration. Legion installs flat command entry points such as `/legion-start` plus a `legion-orchestrator` subagent. Coordination still happens through `.planning/` artifacts rather than runtime mailboxes.
 
 ## Tool Mappings
 
 | Generic Concept | Implementation |
 |-----------------|---------------|
-| `spawn_agent_personality` | Spawn a subagent with the personality content as the prompt prefix, followed by the task. Use `@general` or a custom agent with the full personality as system instructions. |
-| `spawn_agent_autonomous` | Spawn a subagent with the task prompt directly, no personality prefix. |
+| `spawn_agent_personality` | Invoke the installed `legion-orchestrator` agent and load the matching Legion workflow from `.legion/commands/legion/`. |
+| `spawn_agent_autonomous` | Run the matching installed OpenCode command directly. |
 | `spawn_agent_readonly` | Use the built-in Explore agent (`@explore`) — cannot modify files, enforced at the platform level. Provide personality + task in the prompt. |
 | `coordinate_parallel` | Spawn multiple subagents in parallel via the Task tool. Each writes results to a file. |
 | `collect_results` | Each agent writes its structured result to `.planning/phases/{NN}/{NN}-{PP}-RESULT.md`. The coordinator reads these files after each wave. |
@@ -36,8 +36,8 @@ OpenCode supports subagent spawning with parallel execution, read-only Explore a
 | `model_planning` | User-configured model (e.g., `claude-opus-4-6`, `o3`) |
 | `model_execution` | User-configured model (e.g., `claude-sonnet-4-6`, `gpt-5.3-codex`) |
 | `model_check` | User-configured model (e.g., `claude-haiku-4-5`, `o3-mini`) |
-| `global_config_dir` | `~/.legion/` |
-| `plugin_discovery_glob` | `{HOME}/.legion/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
+| `global_config_dir` | `~/.config/opencode/command/` plus `~/.config/opencode/agent/` |
+| `plugin_discovery_glob` | `.opencode/command/legion-start.md` and `.opencode/agent/legion-orchestrator.md`, or the matching paths under `~/.config/opencode/` |
 | `commit_signature` | `Co-Authored-By: OpenCode <noreply@opencode.ai>` |
 
 ## Interaction Protocol
@@ -76,7 +76,7 @@ The built-in Explore agent (`@explore`) enforces read-only at the platform level
 
 ### Custom Agent Integration
 
-Legion agents can be installed as OpenCode custom agents in `~/.config/opencode/agents/` or `.opencode/agents/`. Each personality .md file maps to an OpenCode agent definition.
+Legion installs a native `legion-orchestrator` OpenCode agent in `~/.config/opencode/agent/` or `.opencode/agent/`, and flat commands such as `/legion-start` in the matching command directory.
 
 ### Result Collection
 

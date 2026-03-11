@@ -8,10 +8,10 @@ capabilities:
   agent_spawning: false
   structured_messaging: false
   native_task_tracking: false
-  read_only_agents: false
+  read_only_agents: true
 detection:
-  primary: "AIDER_VERSION environment variable is set"
-  secondary: ".aider.conf.yml or .aider/ directory exists in CWD"
+  primary: ".aider.conf.yml exists in CWD or HOME"
+  secondary: "AGENTS.md or CONVENTIONS.md exists in CWD"
 max_prompt_size: 128000
 known_quirks:
   - "no-agent-spawning"
@@ -22,7 +22,7 @@ known_quirks:
 
 # Aider Adapter
 
-Aider is a single-agent pair programming tool. No subagent spawning, no teams, no MCP (as of early 2026). Personality injection works as a prompt prefix in the current session. All execution is sequential and single-session.
+Aider is a single-agent pair-programming tool with `/ask`, `/architect`, and convention files. Legion treats Aider as manual-only because there is no official native Legion command, agent, or plugin discovery surface to install into. This adapter documents the fallback behavior, but the automated installer does not register native Legion artifacts for Aider.
 
 ## Tool Mappings
 
@@ -39,8 +39,8 @@ Aider is a single-agent pair programming tool. No subagent spawning, no teams, n
 | `model_planning` | User-configured architect model (e.g., `claude-opus-4-6`, `o1`) |
 | `model_execution` | User-configured editor model (e.g., `claude-sonnet-4-6`, `deepseek-v3`) |
 | `model_check` | User-configured lightweight model (e.g., `claude-haiku-4-5`, `o1-mini`) |
-| `global_config_dir` | `~/.legion/` |
-| `plugin_discovery_glob` | `{HOME}/.legion/agents/agents-orchestrator.md` (expand `{HOME}` via `echo $HOME` — Glob tools do not expand `~`) |
+| `global_config_dir` | `~/.aider.conf.yml` plus repo-level `AGENTS.md` or `CONVENTIONS.md` |
+| `plugin_discovery_glob` | Manual-only — no native Legion discovery surface; use `AGENTS.md`, `CONVENTIONS.md`, and the Legion manual checklist instead |
 | `commit_signature` | `Co-Authored-By: Aider <noreply@aider.chat>` |
 
 ## Interaction Protocol
@@ -51,7 +51,7 @@ Print numbered choices in plain text and wait for user response. Parse the integ
 
 ### Phase Initialization
 
-Write a wave checklist to `.planning/phases/{NN}/WAVE-CHECKLIST.md`.
+Manual setup only. If the user chooses to run Legion conventions in Aider, write a wave checklist to `.planning/phases/{NN}/WAVE-CHECKLIST.md` after loading the relevant Legion workflow file by hand.
 
 ### Wave Execution
 
@@ -74,6 +74,7 @@ Aider's architect mode (a reasoning model plans, then an editor model implements
 
 - **No file context injection**: Files must be added manually via `/add`
 - **No shell execution**: Aider cannot run verification commands directly — the user must run them
+- **No native Legion installer surface**: Legion cannot register commands or agents automatically in Aider
 - **No MCP support**: Cannot extend with external tool servers
 - **Weakest personality isolation**: Single session with no context separation between plans
 

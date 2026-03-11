@@ -21,6 +21,8 @@
     "settings.json",
     "checksums.sha256",
     "docs/control-modes.md",
+    "docs/runtime-audit.md",
+    "docs/runtime-certification-checklists.md",
     "docs/security/",
     "docs/settings.schema.json"
   ],
