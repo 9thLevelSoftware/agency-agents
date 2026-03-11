@@ -8,19 +8,31 @@ const crypto = require('crypto');
 const ROOT = path.resolve(__dirname, '..');
 const OUTPUT_FILE = path.join(ROOT, 'checksums.sha256');
 
-const INCLUDE = [
-  'bin',
-  'agents',
-  'commands',
-  'skills',
-  'adapters',
-  'settings.json',
-  'package.json',
-  'README.md',
-  'CHANGELOG.md',
-  'docs/security',
-  'docs/settings.schema.json',
-];
+function readPackageJson() {
+  return JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
+}
+
+function collectPublishedEntries() {
+  const pkg = readPackageJson();
+  const include = new Set(pkg.files || []);
+
+  // npm always packs package metadata and README files, even when they are
+  // omitted from the "files" allowlist.
+  include.add('package.json');
+
+  for (const entry of fs.readdirSync(ROOT)) {
+    if (/^README(?:\..+)?$/i.test(entry)) {
+      include.add(entry);
+    }
+  }
+
+  const bins = Object.values(pkg.bin || {});
+  for (const entry of bins) {
+    include.add(entry);
+  }
+
+  return Array.from(include);
+}
 
 function normalize(filePath) {
   return filePath.split(path.sep).join('/');
@@ -48,7 +60,7 @@ function walk(dirPath, out) {
 function collectFiles() {
   const files = [];
 
-  for (const rel of INCLUDE) {
+  for (const rel of collectPublishedEntries()) {
     const abs = path.join(ROOT, rel);
     if (!fs.existsSync(abs)) continue;
 
@@ -59,9 +71,19 @@ function collectFiles() {
     }
   }
 
-  return files
-    .filter((abs) => path.basename(abs) !== 'checksums.sha256')
-    .sort((a, b) => normalize(path.relative(ROOT, a)).localeCompare(normalize(path.relative(ROOT, b))));
+  const uniqueFiles = new Map();
+
+  for (const abs of files) {
+    const rel = normalize(path.relative(ROOT, abs));
+    if (path.basename(rel) === 'checksums.sha256') continue;
+    if (!uniqueFiles.has(rel)) {
+      uniqueFiles.set(rel, abs);
+    }
+  }
+
+  return Array.from(uniqueFiles.entries())
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([, abs]) => abs);
 }
 
 function main() {
@@ -77,4 +99,3 @@ function main() {
 }
 
 main();
-
