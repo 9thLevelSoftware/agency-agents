@@ -5,6 +5,13 @@ All notable changes to the Legion plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.3] - 2026-03-11
+
+### Fixed
+- **Release checksum drift** — `checksums.sha256` generation now derives from the actual npm publish allowlist plus npm's always-included package metadata and `bin` entrypoints, preventing CI from regenerating a different manifest during publish.
+- **Runtime metadata conformance** — Synced the Windsurf adapter frontmatter display name with the authoritative runtime metadata contract used by the conformance tests.
+- **Package metadata sync** — Updated the lockfile package version to match the published package version so release metadata is internally consistent.
+
 ## [6.0.2] - 2026-03-08
 
 ### Fixed
