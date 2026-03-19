@@ -5,7 +5,7 @@ All notable changes to the Legion plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [7.0.0] - 2026-03-19
 
 ### Added
 - **Board of Directors** (`/legion:board`) — governance escalation tier with dynamic agent composition, 5-phase deliberation (assess → discuss → vote → resolve → persist), and audit trail persistence

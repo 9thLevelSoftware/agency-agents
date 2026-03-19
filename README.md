@@ -107,6 +107,7 @@ These are the canonical Legion command names. Each runtime maps them to its own 
 | `/legion:milestone` | Milestone completion, archiving, and metrics | At project milestones |
 | `/legion:agent` | Create a new agent personality through guided workflow | When you need a specialist that doesn't exist |
 | `/legion:explore` | Pre-flight exploration with Polymath — crystallize, onboard, compare, or debate | Before `/legion:start` — align on ideas before committing to a project |
+| `/legion:board` | Convene board of directors for governance decisions | For architecture decisions, go/no-go calls, conflict resolution |
 | `/legion:update` | Check for updates and install latest version from npm | After installation — keeps Legion current |
 
 ## How It Works
@@ -475,6 +476,34 @@ The brownfield analysis (`/legion:start` → codebase-mapper) now produces two a
 - **Natural language intent parsing** — Ambiguous inputs are parsed to command + flags (e.g., "fix the tests" routes to `/legion:review`, "add a new agent" routes to `/legion:agent`).
 - **Context-aware suggestions** — The intent router considers current STATE.md position when recommending actions. If you're post-build, it suggests review. If you're between phases, it suggests planning.
 
+## v7.0 Governance & Cross-CLI Dispatch
+
+v7.0 adds a governance layer and cross-CLI orchestration to Legion. Claude Code can now convene boards of directors for high-stakes decisions and dispatch work to Gemini CLI and Codex CLI based on capability matching.
+
+### Board of Directors
+
+A governance escalation tier for decisions that matter too much for routine review:
+
+- **Dynamic composition** — Board members are assembled from Legion's 53 agents by the recommendation engine, scored by topic relevance. No fixed director roles.
+- **5-phase deliberation** — Independent assessment (parallel, dispatch-aware) → structured discussion (2 rounds) → final vote (with confidence scores) → resolution (supermajority formula) → persistence (auditable artifact trail).
+- **Two modes** — `/legion:board meet <topic>` for full deliberation with voting; `/legion:board review` for quick parallel assessments without deliberation.
+- **Cross-CLI assessments** — Board assessments can be dispatched to Gemini (for UX evaluation) or Codex (for implementation feasibility) via the dispatch layer.
+
+### Cross-CLI Dispatch
+
+Infrastructure enabling Claude Code to route work to external CLIs as subagents:
+
+- **Capability-based routing** — Each CLI declares capabilities (e.g., Gemini: `ui_design`, `web_search`; Codex: `code_implementation`, `testing`). Tasks are matched to the best-fit CLI automatically.
+- **File-based handoff** — Prompts and results flow through `.planning/dispatch/` files. Auditable, reliable, works across all CLIs.
+- **Control-mode-aware** — Dispatch behavior adapts to the current control mode. In `surgical` mode, external CLIs are restricted to read-only assessments.
+- **Graceful fallback** — If an external CLI isn't installed, the dispatch layer falls back to an internal Claude Code agent with a warning.
+
+### Enhanced Review System
+
+- **Multi-pass evaluators** — Four specialized evaluator types (Code Quality, UI/UX, Integration, Business Logic) with domain-specific rubrics. Each evaluator runs 6-7 focused passes in a single invocation.
+- **Anti-sycophancy rules** — Injected into all review agent prompts: no performative agreement, pushback expected, every finding must include file:line + what/why/how-to-fix, clear verdict mandatory.
+- **Structured review requests** — Review context is auto-populated from build phase SUMMARY.md files, giving reviewers complete scope without manual assembly.
+
 ## Standing on the Shoulders of Giants
 
 Legion didn't invent its patterns from scratch. It cherry-picked the best ideas from twelve proven Claude Code projects, combined them into something greater than the sum of its parts, and left behind the complexity that made each hard to adopt.
@@ -730,10 +759,13 @@ These activate automatically when their prerequisites are met:
 | **Control Modes** | `control_mode` set in `settings.json` | Adjusts authority enforcement: autonomous, guarded, advisory, surgical |
 | **Intent Routing** | Ambiguous input to any command | Natural language parsing routes to the right command + flags |
 | **Explore Modes** | `/legion:explore` with mode selection | Onboard, compare, debate modes beyond default crystallize |
+| **Board of Directors** | `/legion:board meet <topic>` or `/legion:board review` | Governance deliberation with dynamic agent panels, voting, and audit trail |
+| **Cross-CLI Dispatch** | `dispatch.enabled` in `settings.json` + external CLI installed | Routes work to Gemini/Codex/Copilot via capability matching |
+| **Multi-Pass Evaluators** | `review.evaluator_depth: "multi-pass"` in settings | Deep evaluation with 4 specialized evaluator types (6-7 passes each) |
 
 <!-- legion-metrics:start -->
-- Commands: 12
-- Skills: 25
+- Commands: 13
+- Skills: 28
 - Agents: 53
 - Agent personality line range (current): 89-678
 <!-- legion-metrics:end -->
