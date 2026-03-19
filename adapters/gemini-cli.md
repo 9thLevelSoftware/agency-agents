@@ -81,3 +81,24 @@ Gemini CLI extensions can supplement Legion with:
 - GEMINI.md context files
 - MCP server connections
 
+## Dispatch Configuration
+
+When Claude Code is the orchestrator, Gemini CLI can be dispatched to for UI/UX evaluation, web research, and large codebase analysis. Gemini's 1M token context window makes it ideal for comprehensive analysis tasks.
+
+```yaml
+available: true
+capabilities: [web_search, ui_design, ux_research, large_analysis, code_review]
+invoke_command: "gemini"
+invoke_flags: ["--sandbox"]
+prompt_delivery: stdin_pipe
+prompt_flag: null
+result_mode: file
+result_path: ".planning/dispatch/{task-id}-RESULT.md"
+result_instruction: "Write your complete output to {result_path} using the format specified below."
+max_concurrent: 3
+timeout_ms: 300000
+detection_command: "gemini --version"
+prerequisites:
+  - "Gemini CLI settings.json must have experimental.enableAgents set to true"
+```
+

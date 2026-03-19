@@ -18,7 +18,26 @@
   },
   "review": {
     "default_mode": "panel",
-    "max_cycles": 3
+    "max_cycles": 3,
+    "evaluator_depth": "multi-pass",
+    "coverage_thresholds": {
+      "overall": 70,
+      "business_logic": 90,
+      "api_routes": 80
+    }
+  },
+  "board": {
+    "default_size": 5,
+    "min_size": 3,
+    "discussion_rounds": 2,
+    "assessment_timeout_ms": 300000,
+    "persist_artifacts": true
+  },
+  "dispatch": {
+    "enabled": true,
+    "fallback_to_internal": true,
+    "timeout_ms": 300000,
+    "max_retries": 1
   },
   "memory": {
     "enabled": true,

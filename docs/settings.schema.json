@@ -46,9 +46,46 @@
       "additionalProperties": false,
       "properties": {
         "default_mode": { "type": "string", "enum": ["classic", "panel"] },
-        "max_cycles": { "type": "integer", "minimum": 1, "maximum": 5 }
+        "max_cycles": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "evaluator_depth": {
+          "type": "string",
+          "enum": ["single", "multi-pass"],
+          "default": "multi-pass"
+        },
+        "coverage_thresholds": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "overall": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "business_logic": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "api_routes": { "type": "integer", "minimum": 0, "maximum": 100 }
+          }
+        }
       },
       "required": ["default_mode", "max_cycles"]
+    },
+    "board": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default_size": { "type": "integer", "minimum": 2, "maximum": 7 },
+        "min_size": { "type": "integer", "minimum": 2, "maximum": 5 },
+        "discussion_rounds": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "assessment_timeout_ms": { "type": "integer", "minimum": 30000 },
+        "persist_artifacts": { "type": "boolean" }
+      },
+      "required": ["default_size", "min_size", "discussion_rounds", "assessment_timeout_ms", "persist_artifacts"]
+    },
+    "dispatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "fallback_to_internal": { "type": "boolean" },
+        "timeout_ms": { "type": "integer", "minimum": 10000 },
+        "max_retries": { "type": "integer", "minimum": 0, "maximum": 3 }
+      },
+      "required": ["enabled", "fallback_to_internal", "timeout_ms", "max_retries"]
     },
     "memory": {
       "type": "object",

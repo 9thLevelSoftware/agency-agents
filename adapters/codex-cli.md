@@ -103,3 +103,23 @@ Before executing a plan with `depends_on`, verify that the referenced `{NN}-{PP}
 
 No cleanup needed — no agents spawned persistently, no teams created. Update WAVE-CHECKLIST.md to mark phase as Finalized.
 
+## Dispatch Configuration
+
+When Claude Code is the orchestrator, Codex CLI can be dispatched to for code implementation, testing, refactoring, and bug fixing. Codex runs in full-auto approval mode for non-interactive execution.
+
+```yaml
+available: true
+capabilities: [code_implementation, testing, refactoring, bug_fixing, code_review]
+invoke_command: "codex"
+invoke_flags: ["--approval-mode", "full-auto", "--quiet"]
+prompt_delivery: content_flag
+prompt_flag: "-p"
+result_mode: file
+result_path: ".planning/dispatch/{task-id}-RESULT.md"
+result_instruction: "Write your complete output to {result_path} using the format specified below."
+max_concurrent: 1
+timeout_ms: 600000
+detection_command: "codex --version"
+prerequisites: []
+```
+

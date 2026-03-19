@@ -21,14 +21,15 @@ A multi-CLI plugin for orchestrating 53 AI specialist personalities as a coordin
 | `/legion:milestone` | Milestone completion, archiving, and metrics |
 | `/legion:agent` | Create a new agent personality through a guided workflow |
 | `/legion:explore` | Pre-flight exploration with Polymath — crystallize, onboard, compare, or debate |
+| `/legion:board` | Convene board of directors for governance decisions |
 | `/legion:update` | Check for updates and install latest version from npm |
 
 ## Project Structure
 
 ```
 bin/                  — npm installer (install.js)
-commands/             — 12 /legion: command entry points
-skills/               — 25 reusable workflow skills (SKILL.md per directory)
+commands/             — 13 /legion: command entry points
+skills/               — 28 reusable workflow skills (SKILL.md per directory)
 agents/               — 53 agent personality .md files (flat, with division in frontmatter)
 adapters/             — Per-CLI adapter files (claude-code.md, codex-cli.md, cursor.md, etc.)
 .planning/            — Project state (PROJECT.md, ROADMAP.md, STATE.md)
@@ -61,6 +62,8 @@ Agent frontmatter includes enriched metadata: `languages`, `frameworks`, `artifa
 Each phase: plan (decompose + assign agents) → build (execution — parallel or sequential per CLI) → review (QA loop)
 
 Advisory: `/legion:advise <topic>` — standalone consultation, no phase context needed
+Advisory: `/legion:board meet <topic>` — governance escalation for high-stakes decisions
+Advisory: `/legion:board review` — quick strategic assessments
 
 Intent routing: `/legion:status` and other commands use natural language intent parsing with context-aware suggestions, routing ambiguous inputs to the most relevant command based on project state.
 

@@ -49,12 +49,14 @@ Examples:
 
 0. CONDITIONAL SKILL LOADING (context budget)
    Load optional skills only when prerequisites are present:
-   
+
    - `skills/workflow-common-memory/SKILL.md` only if `.planning/memory/` exists or this review stores outcomes/preferences.
-   
+
    - `skills/workflow-common-github/SKILL.md` only if `gh auth status` succeeds and a git remote exists.
-   
+
    - `skills/workflow-common-domains/SKILL.md` only for design/marketing domain review contexts.
+
+   - `skills/review-evaluators/SKILL.md` only if `settings.review.evaluator_depth` is `"multi-pass"` (default).
    If a condition is not met, skip that skill silently and continue.
 
 ## Step 0.5: INTENT DETECTION AND VALIDATION
@@ -285,6 +287,20 @@ c. **No match**: If NL parsing returns confidence 0 or no candidates, proceed wi
 
    **Panel mode reviewers are used in Step 5 identically to classic reviewers**, with one
    addition: each reviewer's prompt includes the rubric injection from review-panel Section 2.
+
+#### Evaluator Depth
+
+Read `settings.review.evaluator_depth` (default: `"multi-pass"`).
+
+If `"multi-pass"`:
+- Load the `review-evaluators` skill (read `skills/review-evaluators/SKILL.md`)
+- After panel composition, determine which evaluator types apply based on phase type
+- Each selected evaluator runs its full pass list as a single rubric
+- Findings from evaluators are merged with panel findings and deduplicated
+
+If `"single"`:
+- Standard single-pass review per agent (existing behavior)
+- review-evaluators skill is NOT loaded
 
 5. EXECUTE REVIEW CYCLE
    Initialize: cycle_count = 0

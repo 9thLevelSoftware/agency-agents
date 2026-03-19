@@ -184,6 +184,18 @@ DRY-RUN MODE (deterministic, no side effects)
    If memory is not available (no OUTCOMES.md, or file exists but is empty):
    Omit this section entirely. Do NOT show a placeholder, suggestion, or "no memory" message.
 
+   If `.planning/board/` directory exists and contains meeting directories:
+
+   ## Board Decisions
+   | Date | Topic | Verdict | Conditions | Board Size |
+   |------|-------|---------|------------|------------|
+   | {date} | {topic from dir name} | {verdict from resolution.md} | {conditions count} | {N members} |
+
+   Show the 5 most recent meetings, sorted by date descending. If any meeting has pending conditions (APPROVED WITH CONDITIONS where conditions have not been verified), flag with a warning indicator.
+
+   If `.planning/board/` does not exist or contains no meeting directories:
+   Omit this section entirely. Do NOT show a placeholder.
+
    If github_metadata_available:
 
    ## GitHub

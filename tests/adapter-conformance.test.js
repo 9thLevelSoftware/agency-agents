@@ -119,7 +119,7 @@ function parseAdapterFrontmatter(filePath) {
       const key = topMatch[1];
       const val = topMatch[2].trim();
       // UPDATE THIS LIST when ADAPTER.md adds new nested objects
-      if (key === 'capabilities' || key === 'detection') {
+      if (key === 'capabilities' || key === 'detection' || key === 'dispatch') {
         currentNested = key;
         fm[key] = {};
       } else if (key === 'known_quirks') {

@@ -75,3 +75,23 @@ Copilot CLI has tight GitHub integration. When a GitHub remote exists:
 - PR creation: `gh pr create`
 - The built-in GitHub MCP server provides direct access to repos, issues, and PRs
 
+## Dispatch Configuration
+
+When Claude Code is the orchestrator, Copilot CLI can be dispatched to for code review and implementation tasks. Copilot uses Claude Sonnet via GitHub's infrastructure.
+
+```yaml
+available: true
+capabilities: [code_implementation, code_review, bug_fixing, testing]
+invoke_command: "copilot"
+invoke_flags: ["--allow-all-paths", "--allow-all-tools"]
+prompt_delivery: content_flag
+prompt_flag: "-p"
+result_mode: file
+result_path: ".planning/dispatch/{task-id}-RESULT.md"
+result_instruction: "Write your complete output to {result_path} using the format specified below."
+max_concurrent: 1
+timeout_ms: 300000
+detection_command: "copilot --version"
+prerequisites: []
+```
+

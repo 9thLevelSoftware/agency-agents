@@ -5,6 +5,22 @@ All notable changes to the Legion plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.0.0] - 2026-03-19
+
+### Added
+- **Board of Directors** (`/legion:board`) — governance escalation tier with dynamic agent composition, 5-phase deliberation (assess → discuss → vote → resolve → persist), and audit trail persistence
+- **Cross-CLI Dispatch** — infrastructure for routing work to external CLIs (Gemini, Codex, Copilot) via capability-based matching with file-based result handoff
+- **Multi-pass review evaluators** — four specialized evaluator types (Code Quality, UI/UX, Integration, Business Logic) with domain-specific pass lists
+- **Anti-sycophancy review rules** — injected into all review agent prompts to ensure rigorous, specific, actionable feedback
+- **Structured review requests** — auto-populated review context from SUMMARY.md files
+- Dispatch configuration sections in Gemini, Codex, and Copilot adapters
+- Board and dispatch settings in settings.json with JSON Schema validation
+
+### Changed
+- `review` settings extended with `evaluator_depth` and `coverage_thresholds`
+- Status dashboard shows recent board decisions and pending conditions
+- Workflow-common-core skill mapping includes `/legion:board` command
+
 ## [6.0.4] - 2026-03-13
 
 ### Fixed
