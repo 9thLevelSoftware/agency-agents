@@ -50,8 +50,8 @@ dispatch:
   capabilities: [web_search, ui_design, ux_research, large_analysis, code_review]
   invoke_command: "gemini"
   invoke_flags: ["--sandbox"]
-  prompt_delivery: file_arg         # stdin_pipe | file_arg | inline_flag
-  prompt_flag: "-p"                 # flag used when prompt_delivery is inline_flag or file_arg
+  prompt_delivery: stdin_pipe        # file_path | stdin_pipe | content_flag
+  prompt_flag: null                 # not needed for stdin_pipe
   result_mode: file
   result_path: ".planning/dispatch/{task-id}-RESULT.md"
   result_instruction: "Write your complete output to {result_path} using the format specified below."
@@ -70,7 +70,7 @@ dispatch:
   capabilities: [code_implementation, testing, refactoring, bug_fixing, code_review]
   invoke_command: "codex"
   invoke_flags: ["--approval-mode", "full-auto", "--quiet"]
-  prompt_delivery: file_arg
+  prompt_delivery: content_flag
   prompt_flag: "-p"
   result_mode: file
   result_path: ".planning/dispatch/{task-id}-RESULT.md"
@@ -89,9 +89,9 @@ dispatch:
 | `capabilities` | Yes | string[] | Canonical capabilities (see Capability Vocabulary below) |
 | `invoke_command` | Yes | string | CLI binary name |
 | `invoke_flags` | Yes | string[] | Default flags for non-interactive execution |
-| `prompt_delivery` | Yes | enum | How the prompt reaches the CLI: `stdin_pipe` (pipe via stdin), `file_arg` (pass prompt file path as argument), `inline_flag` (pass prompt string via flag) |
-| `prompt_flag` | Conditional | string | Required when `prompt_delivery` is `file_arg` or `inline_flag`. The flag that accepts the prompt (e.g., `-p`, `--prompt`) |
-| `result_mode` | Yes | enum | `file` (CLI writes to result_path) or `stdout` (capture stdout) |
+| `prompt_delivery` | Yes | enum | How the prompt reaches the CLI: `file_path` (pass file path for CLI to read), `stdin_pipe` (pipe content via stdin), `content_flag` (expand content into flag value) |
+| `prompt_flag` | Conditional | string | Required when `prompt_delivery` is `file_path` or `content_flag`. The flag that accepts the prompt (e.g., `-p`, `--prompt`) |
+| `result_mode` | Yes | enum | `file` (CLI writes to result_path — preferred) |
 | `result_path` | Yes | string | Path template for result files. `{task-id}` is replaced at runtime |
 | `result_instruction` | Yes | string | Injected into prompt to tell CLI where/how to write results |
 | `max_concurrent` | Yes | integer | Max parallel dispatches to this CLI |
@@ -157,9 +157,13 @@ Uses Claude Code's `Bash` tool to invoke the external CLI. The prompt is always 
 
 | Method | Command Template | Example |
 |--------|-----------------|---------|
-| `file_arg` | `{invoke_command} {invoke_flags} {prompt_flag} "$(cat {prompt_path})"` | `codex --approval-mode full-auto --quiet -p "$(cat .planning/dispatch/abc-PROMPT.md)"` |
+| `file_path` | `{invoke_command} {invoke_flags} {prompt_flag} {prompt_path}` | `codex --approval-mode full-auto --quiet -p .planning/dispatch/abc-PROMPT.md` (CLI reads the file itself) |
 | `stdin_pipe` | `cat {prompt_path} \| {invoke_command} {invoke_flags}` | `cat .planning/dispatch/abc-PROMPT.md \| gemini --sandbox` |
-| `inline_flag` | `{invoke_command} {invoke_flags} {prompt_flag} "$(cat {prompt_path})"` | Same as file_arg but semantically the CLI treats the value as the prompt text, not a file path |
+| `content_flag` | `{invoke_command} {invoke_flags} {prompt_flag} "$(cat {prompt_path})"` | `codex -p "$(cat .planning/dispatch/abc-PROMPT.md)"` (prompt text expanded into flag value) |
+
+- **`file_path`**: The CLI receives the path to the prompt file and reads it internally. Preferred when the CLI supports file input — avoids shell argument limits entirely.
+- **`stdin_pipe`**: The prompt file content is piped to the CLI via stdin. Best for CLIs with no file-input flag. No argument length limit.
+- **`content_flag`**: The prompt file content is expanded into a flag value via `$(cat ...)`. Use only when the CLI requires an inline prompt flag and doesn't support file input. Subject to shell argument limits (~32K on bash).
 
 **Note on shell limits:** The prompt file can be arbitrarily large (agent personality + task + context). By always writing to a file first and using `$(cat ...)` or stdin piping, we avoid the 8191-character Windows cmd.exe limit. Bash on Windows (MSYS2/Git Bash) supports arguments up to ~32K, but stdin piping has no practical limit.
 
@@ -192,7 +196,7 @@ External CLIs cannot programmatically enforce Legion's control modes — they re
 | CLI not installed | Detected at dispatch time via `detection_command`. Falls back to internal agent with warning. |
 | Timeout | Kill process after `timeout_ms`. Report partial results if result file exists. |
 | Non-zero exit | Capture stderr, report failure to calling skill. |
-| No result file | Fall back to stdout capture (belt-and-suspenders). |
+| No result file | Capture stdout from the completed process and write it to `result_path` as a fallback. If stdout is also empty, report failure. |
 | Max retries exceeded | 1 retry per dispatch (configurable). After that, escalate to user. |
 
 ### Directory Structure
@@ -335,7 +339,9 @@ Board members respond to each other's concerns and questions. Runs **internally*
 
 #### Phase 3 — Final Vote
 
-Each board member casts a final vote, incorporating any position shifts from Phase 2. The vote is cast by the same agent persona using the complete Phase 1 assessment + Phase 2 discussion context:
+Each board member casts a final vote, incorporating any position shifts from Phase 2. The vote is cast by the same agent persona using the complete Phase 1 assessment + Phase 2 discussion context.
+
+**CONCERNS → Vote mapping:** Board members who assessed `CONCERNS` in Phase 1 and did not issue a `SHIFT` message during Phase 2 must explicitly choose `APPROVE` or `REJECT` in their final vote — no default is applied. The Phase 3 prompt reminds each member of their Phase 1 verdict and asks for a final binary decision.
 
 ```markdown
 ### Vote: {Agent Name}
@@ -346,14 +352,14 @@ Each board member casts a final vote, incorporating any position shifts from Pha
 
 #### Phase 4 — Resolution
 
-Resolution uses a general formula that works for any board size N (where `min_size` <= N <= `default_size`):
+Resolution uses a general formula that works for any board size N (where 2 <= N <= `default_size`). Conditions are evaluated in order — first match wins:
 
 | Condition | Resolution |
 |-----------|------------|
-| Approve votes > 2/3 of N (rounded up) | **APPROVED** |
-| Approve votes > 1/2 of N (simple majority) | **APPROVED WITH CONDITIONS** (all stated conditions mandatory) |
-| Approve votes = exactly 1/2 of N (even boards only) | **ESCALATE** to user |
-| Approve votes < 1/2 of N | **REJECTED** |
+| Approve votes >= ceil(2*N/3) | **APPROVED** |
+| Approve votes > floor(N/2) | **APPROVED WITH CONDITIONS** (all stated conditions mandatory) |
+| Approve votes = N/2 (even N only) | **ESCALATE** to user |
+| Otherwise | **REJECTED** |
 
 **Examples for common board sizes:**
 
@@ -364,8 +370,8 @@ Resolution uses a general formula that works for any board size N (where `min_si
 | 2-3 → REJECTED | 1-3, 0-4 → REJECTED | 1-2, 0-3 → REJECTED |
 | 1-4, 0-5 → REJECTED | | |
 
-**When agent-registry cannot populate `min_size` members:**
-If fewer than `board.min_size` agents match the topic (e.g., a niche framework only 2 agents know), the board command warns the user and offers two options: (a) proceed with a smaller board (minimum 2), or (b) let the user manually select additional agents. A 2-member board uses simple rules: unanimous = APPROVED, split = ESCALATE.
+**Under-population (fewer than `min_size` qualifying agents):**
+If the agent-registry cannot find `board.min_size` (default 3) matching agents, the board command warns the user and offers two options: (a) proceed with a smaller board (absolute floor: 2, requires explicit user opt-in), or (b) let the user manually select additional agents to reach `min_size`. The formula above covers N=2 natively: ceil(2*2/3) = 2, so unanimous (2-0) = APPROVED, split (1-1) = ESCALATE via the even-N tie rule.
 
 #### Phase 5 — Persistence
 
