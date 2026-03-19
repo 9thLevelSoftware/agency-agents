@@ -841,7 +841,7 @@
         <section class="reveal-section">
             <h2>The Commands</h2>
             <p class="intro-text" style="margin-bottom: 1rem;">
-                Twelve commands. Each a word of power.
+                Thirteen commands. Each a word of power.
             </p>
             <table class="command-table">
                 <thead>
@@ -859,6 +859,7 @@
                     <tr><td>/legion:milestone</td><td>Milestone completion, archiving, and metrics</td></tr>
                     <tr><td>/legion:agent</td><td>Create a new agent personality through guided workflow</td></tr>
                     <tr><td>/legion:explore</td><td>Pre-flight exploration &mdash; crystallize, onboard, compare, or debate</td></tr>
+                    <tr><td>/legion:board</td><td>Convene board of directors for governance decisions</td></tr>
                     <tr><td>/legion:update</td><td>Check for updates and install latest version from npm</td></tr>
                 </tbody>
             </table>
@@ -1013,6 +1014,31 @@
                         <li><strong>Authority &amp; Conflict</strong> &mdash; Escalation protocol, agent-to-agent communication conventions</li>
                         <li><strong>Intent Routing v2</strong> &mdash; Natural language parsing, context-aware suggestions</li>
                         <li><strong>Integration &amp; Release</strong> &mdash; Cross-platform checksums, full regression suite, version 6.0.0</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"><div class="divider-line"></div></div>
+
+        <!-- ===== v7.0 ===== -->
+        <section class="reveal-section">
+            <h2>v7.0 &mdash; Governance &amp; Cross-CLI Dispatch</h2>
+            <p class="intro-text" style="margin-bottom: 1.5rem;">
+                A governance layer and cross-CLI orchestration. Claude Code can now convene boards of directors
+                for high-stakes decisions and dispatch work to Gemini CLI and Codex CLI based on capability matching.
+            </p>
+            <div class="features" style="grid-template-columns: 1fr;">
+                <div class="feature-card" style="text-align: left;">
+                    <h3 style="margin-bottom: 0.8rem;">What Changed</h3>
+                    <ul style="list-style: none; padding: 0; line-height: 2;">
+                        <li><strong>Board of Directors</strong> &mdash; <code>/legion:board meet</code> for 5-phase deliberation (assess &rarr; discuss &rarr; vote &rarr; resolve &rarr; persist); <code>/legion:board review</code> for quick assessments</li>
+                        <li><strong>Cross-CLI Dispatch</strong> &mdash; Capability-based routing to Gemini (UI/UX, web research) and Codex (implementation, testing) with file-based handoff</li>
+                        <li><strong>Multi-Pass Evaluators</strong> &mdash; Code Quality (6 passes), UI/UX (7 passes), Integration (6 passes), Business Logic (6 passes)</li>
+                        <li><strong>Anti-Sycophancy Rules</strong> &mdash; No performative agreement, pushback expected, every finding needs file:line + what/why/how</li>
+                        <li><strong>Structured Review Requests</strong> &mdash; Auto-populated context from SUMMARY.md files</li>
+                        <li><strong>Dynamic Board Composition</strong> &mdash; Agent-registry assembles 3-5 directors per topic from the 53-agent pool, no fixed roles</li>
+                        <li><strong>Control-Mode-Aware Dispatch</strong> &mdash; External CLIs respect current control mode (read-only in surgical mode)</li>
                     </ul>
                 </div>
             </div>
