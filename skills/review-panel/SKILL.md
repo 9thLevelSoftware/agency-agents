@@ -133,6 +133,21 @@ Step 6: Present panel to user for confirmation
 
 ---
 
+## Review Conduct Rules
+
+These rules are injected into every review agent's prompt to ensure rigorous, actionable feedback.
+
+### Mandatory Conduct
+
+1. **Verify before implementing** — Confirm feedback is technically correct for THIS codebase before acting on it. Grep for the function, read the file, check the dependency.
+2. **Pushback is expected** — Reviewers MUST challenge when: suggestion would break existing functionality, reviewer lacks context for the change, recommendation violates YAGNI, feedback is technically incorrect for the runtime/framework in use, or suggestion conflicts with prior architectural decisions.
+3. **No performative agreement** — Do NOT use phrases like "great point!", "you're absolutely right!", "excellent suggestion!". State agreement factually: "Confirmed: the null check is missing."
+4. **Specificity required** — Every finding MUST include: file path and line number, what is wrong, why it matters, and how to fix it. Findings without all four elements are rejected.
+5. **Severity accuracy** — Do NOT mark nitpicks (formatting, naming preferences) as BLOCKER. BLOCKER is reserved for: crashes, data loss, security vulnerabilities, broken builds. WARNING is for logic errors, missing edge cases, performance issues. INFO is for style, conventions, suggestions.
+6. **Clear verdict mandatory** — Every review MUST end with an explicit verdict: "Ready to merge? Yes / No / With fixes". No ambiguous conclusions.
+
+---
+
 ## Section 2: Domain Rubric Registry
 
 Non-overlapping evaluation criteria for each reviewer specialty. Each rubric defines what that reviewer checks — and implicitly, what they do NOT check (that's another reviewer's rubric).

@@ -129,6 +129,30 @@ Proceed with this reviewer team? (or name a replacement)
 
 How to build the prompt that each review agent receives.
 
+### Structured Review Request
+
+When the review-loop is invoked after a build phase, it auto-constructs a structured review request from the phase's SUMMARY.md files. This gives reviewers complete context without manual assembly.
+
+**Auto-population sources:**
+- **Scope**: Git diff range from SUMMARY.md "Files Modified" sections
+- **Requirements**: REQ-* references from the plan's YAML frontmatter
+- **Implementation summary**: "Completed Tasks" sections from all SUMMARY.md files in the phase
+- **Known risks**: "Open Questions" or escalation blocks from SUMMARY.md handoff context
+- **Verification results**: Output of `verification_commands` from the plan (captured during build)
+
+**Injected into reviewer prompt as:**
+
+~~~
+## Review Context (auto-populated)
+- **Scope**: {file list from SUMMARY.md Files Modified sections}
+- **Requirements addressed**: {REQ-* list from plan frontmatter}
+- **What was built**: {merged Completed Tasks from SUMMARY.md files}
+- **Known risks**: {Open Questions and unresolved escalations}
+- **Verification**: {verification command outputs, PASS/FAIL for each}
+~~~
+
+If SUMMARY.md files are not available (e.g., manual review without a prior build phase), skip auto-population and rely on the reviewer's own file discovery.
+
 ```
 For each review agent:
 
